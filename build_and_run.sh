@@ -1,3 +1,3 @@
 #!/bin/bash
-g++ pacman.cpp -lncurses -o pacman
+g++ pacman.cpp -lncursesw -o pacman
 ./pacman
