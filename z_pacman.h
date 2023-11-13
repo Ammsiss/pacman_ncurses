@@ -1,9 +1,11 @@
 #pragma once
 
 #include <ncurses.h>
+#include <vector>
 
 #include "z_aggregate.h"
 #include "z_window.h"
+#include "z_obstacle.h"
 
 class Pacman
 {
@@ -16,11 +18,12 @@ private:
     void setY(DirectionEval direction);
     void setX(DirectionEval direction);
     void setDirection();
+    bool obstacleBoundsCheck(std::vector<Obstacle>& obstacleList);
 
 public:
     Pacman();
     void printAndRefresh(Window& win);
     void erase(Window& win);
     void getUserInputAndSetDirection(Window& win);
-    void movePacmanBasedOnDirection(Window& win);
+    void movePacmanBasedOnDirection(Window& win, std::vector<Obstacle>& obstacleList);
 };
