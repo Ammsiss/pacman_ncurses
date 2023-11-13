@@ -6,6 +6,8 @@
 #include <vector>
 #include <thread>
 
+using namespace std::chrono_literals;
+
 enum class WindowState
 {
     Menu,
@@ -44,6 +46,12 @@ private:
     int m_screenX{};
     WINDOW* m_window{};
 
+    void drawBoxAndRefresh()
+    {
+        wborder(m_window, ACS_CKBOARD, ACS_CKBOARD, ACS_CKBOARD, ACS_CKBOARD, ACS_CKBOARD, ACS_CKBOARD, ACS_CKBOARD, ACS_CKBOARD);
+        wrefresh(m_window);
+    }
+
 public:
     // default constructor (centered window)
     Window(int screenY = defaultGameY, int screenX = defaultGameX)
@@ -54,6 +62,7 @@ public:
         int maxX{};
         getmaxyx(stdscr, maxY, maxX);
         m_window = newwin(m_screenY, m_screenX, (maxY - m_screenY) / 2, (maxX - m_screenX) / 2);
+        drawBoxAndRefresh();
     }
 
     // paramatized constructor (custom window)
@@ -62,16 +71,11 @@ public:
     , m_screenX {screenX}
     {
         m_window = newwin(screenY, screenX, startY, startX);
+        drawBoxAndRefresh();
     }
 
     // destructor
     ~Window() { delwin(m_window); }
-
-    void drawBoxAndRefresh()
-    {
-        wborder(m_window, ACS_CKBOARD, ACS_CKBOARD, ACS_CKBOARD, ACS_CKBOARD, ACS_CKBOARD, ACS_CKBOARD, ACS_CKBOARD, ACS_CKBOARD);
-        wrefresh(m_window);
-    }
 
     // getters
     WINDOW* getWindow() { return m_window; }
@@ -137,26 +141,8 @@ private:
     Direction m_direction{Direction::right};
     Vec m_pacVec{1, 1};
     char m_pacman{'@'};
+    char m_userInput{};
 
-public:
-    Pacman() = default;
-
-    void printAndRefresh(Window& win)
-    {
-        mvwaddch(win.getWindow(), m_pacVec.y, m_pacVec.x, m_pacman);
-        wrefresh(win.getWindow());
-    }
-
-    void eraseAndRefresh(Window& win)
-    {
-        mvwprintw(win.getWindow(), m_pacVec.y, m_pacVec.x, " ");
-        wrefresh(win.getWindow());
-    }
-
-    // getter
-    Direction getDirection() {return m_direction; }
-
-    // setter
     void setY(DirectionEval direction) 
     {
         if (direction == DirectionEval::decrement) --m_pacVec.y;
@@ -169,9 +155,9 @@ public:
         else if (direction == DirectionEval::increment) ++m_pacVec.x;
     }
 
-    void changeDirection(char storage) 
+    void setDirection() 
     {
-        switch(storage)
+        switch(m_userInput)
         {
             case 'w': m_direction = Direction::up; break;
             case 'a': m_direction = Direction::left; break;
@@ -179,6 +165,44 @@ public:
             case 'd': m_direction = Direction::right; break;
             default: m_direction = Direction::null; break;
         }
+    }
+
+public:
+    Pacman() = default;
+
+    void printAndRefresh(Window& win)
+    {
+        mvwaddch(win.getWindow(), m_pacVec.y, m_pacVec.x, m_pacman);
+        wrefresh(win.getWindow());
+    }
+
+    void erase(Window& win)
+    {
+        mvwprintw(win.getWindow(), m_pacVec.y, m_pacVec.x, " ");
+    }
+
+    void getUserInputAndSetDirection(Window& win)
+    {
+        m_userInput = wgetch(win.getWindow());
+        if (m_userInput != ERR)
+        {
+            setDirection();
+        }
+
+        // clears extra input as to not cause input buffer
+        while (wgetch(win.getWindow()) != ERR) {}
+    }
+
+    void movePacmanBasedOnDirection()
+    {
+        switch(m_direction)
+            {
+                case Direction::up: setY(DirectionEval::decrement); break;
+                case Direction::down: setY(DirectionEval::increment); break;
+                case Direction::left: setX(DirectionEval::decrement); break;
+                case Direction::right: setX(DirectionEval::increment); break;
+                default: break;
+            }
     }
 };
 
@@ -206,48 +230,27 @@ std::vector<Obstacle> obstacleInitAndRefresh(Window& gameW)
     return obstacleList;
 }
 
-void gameLoop(Window& gameW, const std::vector<Obstacle>& obstacleList)
+void gameLoop(Window& gameW)
 {
     Pacman p1{};
-    char storage{};
 
-    nodelay(gameW.getWindow(), true);
-
-    using namespace std::chrono_literals;
-
+    // define chrono duration and 2 system time instances to create pacman's timed movement
     auto interval{200ms};
     auto lastTime{std::chrono::high_resolution_clock::now()};
     while(true)
     {
         auto currentTime{std::chrono::high_resolution_clock::now()};
 
-        storage = wgetch(gameW.getWindow());
-        if (storage != ERR)
-        {
-            p1.changeDirection(storage);
-        }
-
-        // clears extra input as to not cause input buffer
-        while (wgetch(gameW.getWindow()) != ERR) {}
-
+        p1.getUserInputAndSetDirection(gameW);
         if (currentTime - lastTime >= interval)
         {
-            p1.eraseAndRefresh(gameW);
-
-            switch(p1.getDirection())
-            {
-                case Direction::up: p1.setY(DirectionEval::decrement); break;
-                case Direction::down: p1.setY(DirectionEval::increment); break;
-                case Direction::left: p1.setX(DirectionEval::decrement); break;
-                case Direction::right: p1.setX(DirectionEval::increment); break;
-                default: break;
-            }
-
+            p1.erase(gameW);
+            p1.movePacmanBasedOnDirection();
             p1.printAndRefresh(gameW);
 
             lastTime = currentTime;
         }
-
+        // sleep to avoid infinite checks
         std::this_thread::sleep_for(5ms);
     }
 }
@@ -256,12 +259,17 @@ int main()
 {
     ncursesInit(); 
 
+    // Init windows
     Window gameW{};
-    gameW.drawBoxAndRefresh();
+    nodelay(gameW.getWindow(), true);
+
+    // Init Obstacles
     std::vector<Obstacle> obstacleList{obstacleInitAndRefresh(gameW)};
 
-    gameLoop(gameW, obstacleList);
+    // Start Game
+    gameLoop(gameW);
     
+    // wait for user input before exiting...
     getch();
     endwin();
     return 0;
