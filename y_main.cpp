@@ -33,7 +33,12 @@ std::vector<Obstacle> obstacleInitAndRefresh(Window& gameW)
         // Initialize obstacle use format: 
         // { {yoffset, xoffset}, {ydimension, xdimension}, gameW}
         { {10, 10}, {4, 4}, gameW }, 
-        { {20, 10}, {2, 2}, gameW }
+        { {20, 10}, {2, 2}, gameW },
+        { {7 , 15}, {2, 10}, gameW },
+        { {30, 20}, {1, 10}, gameW },
+        { {3, 30}, {10, 3}, gameW },
+        { {2, 2}, {10, 2}, gameW },
+        { {14, 2}, {10, 2}, gameW }
     };
 
     return obstacleList;

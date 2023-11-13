@@ -15,8 +15,8 @@ private:
     char m_pacman;
     char m_userInput;
 
-    void setY(DirectionEval direction);
-    void setX(DirectionEval direction);
+    void setY(PositionChange direction);
+    void setX(PositionChange direction);
     void setDirection();
     bool obstacleBoundsCheck(std::vector<Obstacle>& obstacleList);
 

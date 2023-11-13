@@ -8,16 +8,16 @@
 
 // private members:
 
-void Pacman::setY(DirectionEval direction) 
+void Pacman::setY(PositionChange direction) 
 {
-    if (direction == DirectionEval::decrement) --m_pacVec.y;
-    else if (direction == DirectionEval::increment) ++m_pacVec.y;
+    if (direction == PositionChange::decrement) --m_pacVec.y;
+    else if (direction == PositionChange::increment) ++m_pacVec.y;
 }
 
-void Pacman::setX(DirectionEval direction)
+void Pacman::setX(PositionChange direction)
 {
-    if (direction == DirectionEval::decrement) --m_pacVec.x;
-    else if (direction == DirectionEval::increment) ++m_pacVec.x;
+    if (direction == PositionChange::decrement) --m_pacVec.x;
+    else if (direction == PositionChange::increment) ++m_pacVec.x;
 }
 
 void Pacman::setDirection() 
@@ -89,9 +89,9 @@ void Pacman::movePacmanBasedOnDirection(Window& win, std::vector<Obstacle>& obst
             {
                 if(m_pacVec.y != 1)
                 {
-                    setY(DirectionEval::decrement);
+                    setY(PositionChange::decrement);
                     if(obstacleBoundsCheck(obstacleList))
-                        setY(DirectionEval::increment);
+                        setY(PositionChange::increment);
                 }
                 break;
             }
@@ -99,9 +99,9 @@ void Pacman::movePacmanBasedOnDirection(Window& win, std::vector<Obstacle>& obst
             {
                 if(m_pacVec.y != (win.getScreenY() - 2))
                 {
-                    setY(DirectionEval::increment);
+                    setY(PositionChange::increment);
                     if(obstacleBoundsCheck(obstacleList))
-                        setY(DirectionEval::decrement);
+                        setY(PositionChange::decrement);
                 }
                 break;
             }
@@ -109,9 +109,9 @@ void Pacman::movePacmanBasedOnDirection(Window& win, std::vector<Obstacle>& obst
             {
                 if(m_pacVec.x != 1)
                 {
-                    setX(DirectionEval::decrement); 
+                    setX(PositionChange::decrement); 
                     if(obstacleBoundsCheck(obstacleList))
-                        setX(DirectionEval::increment);
+                        setX(PositionChange::increment);
                 }
                 break;
             }
@@ -119,9 +119,9 @@ void Pacman::movePacmanBasedOnDirection(Window& win, std::vector<Obstacle>& obst
             {
                 if(m_pacVec.x != (win.getScreenX() - 2))
                 {
-                    setX(DirectionEval::increment); 
+                    setX(PositionChange::increment); 
                     if(obstacleBoundsCheck(obstacleList))
-                        setX(DirectionEval::decrement);
+                        setX(PositionChange::decrement);
                 }
                 break;
             }

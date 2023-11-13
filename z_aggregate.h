@@ -1,6 +1,6 @@
 #pragma once
 
-enum class DirectionEval
+enum class PositionChange
 {
     increment,
     decrement,
