@@ -2,6 +2,8 @@
 
 #include "z_window.h"
 
+// private
+
 const int Window::defaultGameX{35};
 const int Window::defaultGameY{35};
 
@@ -10,6 +12,8 @@ void Window::drawBoxAndRefresh()
     wborder(m_window, ACS_CKBOARD, ACS_CKBOARD, ACS_CKBOARD, ACS_CKBOARD, ACS_CKBOARD, ACS_CKBOARD, ACS_CKBOARD, ACS_CKBOARD);
     wrefresh(m_window);
 }
+
+// public
 
 Window::Window(int screenY, int screenX)
 : m_screenY {screenY}

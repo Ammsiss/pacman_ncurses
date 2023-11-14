@@ -4,7 +4,9 @@
     #include "z_aggregate.h"
     #include "z_obstacle.h"
     
-    void Obstacle::initVector(Vec& startPoint, Vec& obsDimensions)
+    // private
+
+    void Obstacle::initObsVector(Vec& startPoint, Vec& obsDimensions)
     {
         int totalVectors{obsDimensions.y * obsDimensions.x};
 
@@ -36,9 +38,11 @@
         wrefresh(win.getWindow());
     }
 
+    // public
+
     Obstacle::Obstacle( Vec startPoint, Vec obsDimensions, Window& win)
     {
-        initVector(startPoint, obsDimensions);
+        initObsVector(startPoint, obsDimensions);
         printAndRefreshObstacle(win);
     }
 

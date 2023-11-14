@@ -13,7 +13,7 @@ private:
     std::vector<Vec> m_obsVec{};
     chtype obsCh{ACS_CKBOARD};
     
-    void initVector(Vec& startPoint, Vec& obsDimensions);
+    void initObsVector(Vec& startPoint, Vec& obsDimensions);
 
     void printAndRefreshObstacle(Window& win);
 

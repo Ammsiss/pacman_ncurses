@@ -7,6 +7,7 @@
 #include "z_aggregate.h"
 #include "z_window.h"
 #include "z_obstacle.h"
+#include "z_pellet.h"
 
 // std library
 #include <chrono>
@@ -28,28 +29,36 @@ void ncursesInit()
 
 std::vector<Obstacle> obstacleInitAndRefresh(Window& gameW)
 {
+
+    // Initialize obstacle use format: 
+    // { {yoffset, xoffset}, {ydimension, xdimension}, gameW}
     std::vector<Obstacle> obstacleList
     {
-        // Initialize obstacle use format: 
-        // { {yoffset, xoffset}, {ydimension, xdimension}, gameW}
-        { {10, 10}, {4, 4}, gameW }, 
-        { {20, 10}, {2, 2}, gameW },
-        { {7 , 15}, {2, 10}, gameW },
-        { {30, 20}, {1, 10}, gameW },
-        { {3, 30}, {10, 3}, gameW },
-        { {2, 2}, {10, 2}, gameW },
-        { {14, 2}, {10, 2}, gameW }
+        // Top map obstacles
+        {{2, 18}, {3, 15}, gameW},
+        {{2, 2}, {3, 15}, gameW},
     };
 
     return obstacleList;
 }
 
+std::vector<Pellet> pelletInitAndRefresh(Window& gameW)
+{
+    std::vector<Pellet> pelletList
+    {
+        { {10, 10}, {2, 10}, gameW}
+    };
+
+    return pelletList;
+}
+
 void gameLoop(Window& gameW, std::vector<Obstacle>& obstacleList)
 {
+    // init ya boi
     Pacman p1{};
 
     // define chrono duration and 2 system time instances to create pacman's timed movement
-    auto interval{200ms};
+    auto interval{175ms};
     auto lastTime{std::chrono::high_resolution_clock::now()};
     while(true)
     {
@@ -79,6 +88,9 @@ int main()
 
     // Init Obstacles
     std::vector<Obstacle> obstacleList{obstacleInitAndRefresh(gameW)};
+
+    // Init Pellets
+    std::vector<Pellet> pelletList{pelletInitAndRefresh(gameW)};
 
     // Start Game
     gameLoop(gameW, obstacleList);
