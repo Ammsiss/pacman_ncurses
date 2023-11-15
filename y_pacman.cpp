@@ -70,9 +70,17 @@ void Pacman::erase(Window& win)
     mvwprintw(win.getWindow(), m_pacVec.y, m_pacVec.x, " ");
 }
 
-void Pacman::printAndRefresh(Window& win)
+void Pacman::printPacmanBasedOnDirectionAndRefresh(Window& win)
 {
-    mvwaddch(win.getWindow(), m_pacVec.y, m_pacVec.x, m_pacman);
+    if(m_direction == Direction::up)
+        mvwaddch(win.getWindow(), m_pacVec.y, m_pacVec.x, 'V');
+    else if(m_direction == Direction::down)
+        mvwprintw(win.getWindow(), m_pacVec.y, m_pacVec.x, "ʌ");
+    else if(m_direction == Direction::left)
+        mvwaddch(win.getWindow(), m_pacVec.y, m_pacVec.x, '>');
+    else if(m_direction == Direction::right)
+        mvwaddch(win.getWindow(), m_pacVec.y, m_pacVec.x, '<');
+
     wrefresh(win.getWindow());
 }
 
@@ -129,8 +137,8 @@ void Pacman::movePacmanBasedOnDirection(Window& win, std::vector<Obstacle>& obst
 
 Pacman::Pacman()
     : m_direction {Direction::right}
-    , m_pacVec {1, 1}, m_pacman{'O'}
-    , m_userInput{}, m_interval{175ms}
+    , m_pacVec {1, 1}, m_userInput{}
+    , m_interval{175ms}
     , m_lastTime{std::chrono::high_resolution_clock::now()}
     {
     }
@@ -145,7 +153,7 @@ void Pacman::timeToMove(Window& win, std::vector<Obstacle>& obstacleList)
     {
         erase(win);
         movePacmanBasedOnDirection(win, obstacleList);
-        printAndRefresh(win);
+        printPacmanBasedOnDirectionAndRefresh(win);
 
         m_lastTime = currentTime;
     }

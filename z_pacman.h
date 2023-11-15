@@ -13,7 +13,6 @@ class Pacman
 private:
     Direction m_direction;
     Vec m_pacVec;
-    char m_pacman;
     char m_userInput;
     std::chrono::milliseconds m_interval;
     std::chrono::time_point<std::chrono::high_resolution_clock> m_lastTime;
@@ -22,7 +21,7 @@ private:
     void setX(PositionChange direction);
     void setDirection();
     bool obstacleBoundsCheck(std::vector<Obstacle>& obstacleList);
-    void printAndRefresh(Window& win);
+    void printPacmanBasedOnDirectionAndRefresh(Window& win);
     void erase(Window& win);
     void getUserInputAndSetDirection(Window& win);
     void movePacmanBasedOnDirection(Window& win, std::vector<Obstacle>& obstacleList);
