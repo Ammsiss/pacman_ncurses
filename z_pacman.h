@@ -29,6 +29,6 @@ private:
 
 public:
     Pacman();
-    void timeToMovePacman(Window& win, std::vector<Obstacle>& obstacleList);
+    void timeToMove(Window& win, std::vector<Obstacle>& obstacleList);
 
 };

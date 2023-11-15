@@ -55,12 +55,12 @@ std::vector<Pellet> pelletInitAndRefresh(Window& gameW)
 void gameLoop(Window& gameW, std::vector<Obstacle>& obstacleList)
 {
     // init ya boi
-    Pacman p1{};
+    Pacman pacman{};
 
     while(true)
     {
-        p1.timeToMovePacman(gameW, obstacleList);
-
+        pacman.timeToMove(gameW, obstacleList);
+        
         // sleep to avoid infinite checks
         std::this_thread::sleep_for(5ms);
     }
@@ -70,21 +70,15 @@ int main()
 {
     ncursesInit(); 
 
-    // Init windows
     Window gameW{};
     nodelay(gameW.getWindow(), true);
 
-    // Init Obstacles
     std::vector<Obstacle> obstacleList{obstacleInitAndRefresh(gameW)};
-
-    // Init Pellets
     std::vector<Pellet> pelletList{pelletInitAndRefresh(gameW)};
 
-    // Start Game
+    // Start!
     gameLoop(gameW, obstacleList);
     
-    // wait for user input before exiting...
-    getch();
     endwin();
     return 0;
 }

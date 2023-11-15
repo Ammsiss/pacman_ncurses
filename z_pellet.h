@@ -10,8 +10,7 @@
 class Pellet
 {
 private:
-    std::vector<Vec> m_pelletVec{};
-    char pelletCh{'*'};
+    std::vector<Vec> m_pelletVec;
     
     void initPelletVector(Vec& startPoint, Vec& pelletDimensions);
 

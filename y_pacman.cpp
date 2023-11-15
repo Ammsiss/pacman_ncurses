@@ -129,13 +129,13 @@ void Pacman::movePacmanBasedOnDirection(Window& win, std::vector<Obstacle>& obst
 
 Pacman::Pacman()
     : m_direction {Direction::right}
-    , m_pacVec {1, 1}, m_pacman{'@'}
+    , m_pacVec {1, 1}, m_pacman{'O'}
     , m_userInput{}, m_interval{175ms}
     , m_lastTime{std::chrono::high_resolution_clock::now()}
     {
     }
 
-void Pacman::timeToMovePacman(Window& win, std::vector<Obstacle>& obstacleList)
+void Pacman::timeToMove(Window& win, std::vector<Obstacle>& obstacleList)
 {
     // define chrono duration and 2 system time instances to create pacman's timed movement
     auto currentTime{std::chrono::high_resolution_clock::now()};

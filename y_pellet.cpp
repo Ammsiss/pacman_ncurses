@@ -33,7 +33,7 @@
     {
         for(std::size_t i{0}; i < m_pelletVec.size(); ++i)
         {
-            mvwaddch(win.getWindow(), m_pelletVec[i].y, m_pelletVec[i].x, pelletCh);
+            mvwprintw(win.getWindow(), m_pelletVec[i].y, m_pelletVec[i].x, "•");
         }
         wrefresh(win.getWindow());
     }
@@ -41,6 +41,7 @@
     // public
 
     Pellet::Pellet( Vec startPoint, Vec pelletDimensions, Window& win)
+        : m_pelletVec {}
     {
         initPelletVector(startPoint, pelletDimensions);
         printAndRefreshPellet(win);
