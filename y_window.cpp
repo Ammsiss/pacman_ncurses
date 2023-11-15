@@ -4,8 +4,8 @@
 
 // private
 
-const int Window::defaultGameX{35};
-const int Window::defaultGameY{35};
+const int Window::defaultGameX{28};
+const int Window::defaultGameY{31};
 
 void Window::drawBoxAndRefresh()
 {
