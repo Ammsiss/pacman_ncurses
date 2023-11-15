@@ -57,22 +57,10 @@ void gameLoop(Window& gameW, std::vector<Obstacle>& obstacleList)
     // init ya boi
     Pacman p1{};
 
-    // define chrono duration and 2 system time instances to create pacman's timed movement
-    auto interval{175ms};
-    auto lastTime{std::chrono::high_resolution_clock::now()};
     while(true)
     {
-        auto currentTime{std::chrono::high_resolution_clock::now()};
+        p1.timeToMovePacman(gameW, obstacleList);
 
-        p1.getUserInputAndSetDirection(gameW);
-        if (currentTime - lastTime >= interval)
-        {
-            p1.erase(gameW);
-            p1.movePacmanBasedOnDirection(gameW, obstacleList);
-            p1.printAndRefresh(gameW);
-
-            lastTime = currentTime;
-        }
         // sleep to avoid infinite checks
         std::this_thread::sleep_for(5ms);
     }

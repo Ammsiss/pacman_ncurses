@@ -2,6 +2,7 @@
 
 #include <ncurses.h>
 #include <vector>
+#include <chrono>
 
 #include "z_aggregate.h"
 #include "z_window.h"
@@ -14,16 +15,20 @@ private:
     Vec m_pacVec;
     char m_pacman;
     char m_userInput;
+    std::chrono::milliseconds m_interval;
+    std::chrono::time_point<std::chrono::high_resolution_clock> m_lastTime;
 
     void setY(PositionChange direction);
     void setX(PositionChange direction);
     void setDirection();
     bool obstacleBoundsCheck(std::vector<Obstacle>& obstacleList);
-
-public:
-    Pacman();
     void printAndRefresh(Window& win);
     void erase(Window& win);
     void getUserInputAndSetDirection(Window& win);
     void movePacmanBasedOnDirection(Window& win, std::vector<Obstacle>& obstacleList);
+
+public:
+    Pacman();
+    void timeToMovePacman(Window& win, std::vector<Obstacle>& obstacleList);
+
 };
