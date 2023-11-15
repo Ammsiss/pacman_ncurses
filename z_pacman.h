@@ -14,6 +14,8 @@ private:
     Direction m_direction;
     Vec m_pacVec;
     char m_userInput;
+    int m_rightPortalX;
+    int m_leftPortalX;
     std::chrono::milliseconds m_interval;
     std::chrono::time_point<std::chrono::high_resolution_clock> m_lastTime;
 

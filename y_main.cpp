@@ -89,16 +89,6 @@ std::vector<Obstacle> obstacleInitAndRefresh(Window& gameW)
     return obstacleList;
 }
 
-std::vector<Pellet> pelletInitAndRefresh(Window& gameW)
-{
-    std::vector<Pellet> pelletList
-    {
-        
-    };
-
-    return pelletList;
-}
-
 void gameLoop(Window& gameW, std::vector<Obstacle>& obstacleList)
 {
     // init ya boi
@@ -121,7 +111,6 @@ int main()
     nodelay(gameW.getWindow(), true);
 
     std::vector<Obstacle> obstacleList{obstacleInitAndRefresh(gameW)};
-    // std::vector<Pellet> pelletList{pelletInitAndRefresh(gameW)};
 
     // Start!
     gameLoop(gameW, obstacleList);

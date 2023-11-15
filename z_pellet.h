@@ -5,6 +5,7 @@
 
 #include "z_aggregate.h"
 #include "z_window.h"
+#include "z_obstacle.h"
 
 
 class Pellet
@@ -12,12 +13,12 @@ class Pellet
 private:
     std::vector<Vec> m_pelletVec;
     
-    void initPelletVector(Vec& startPoint, Vec& pelletDimensions);
+    void initPelletVector(Vec& startPoint, Vec& pelletDimensions, std::vector<Obstacle>& obstacleList);
 
     void printAndRefreshPellet(Window& win);
 
 public:
-    Pellet( Vec startPoint, Vec pelletDimensions, Window& win);
+    Pellet( Vec startPoint, Vec pelletDimensions, Window& win, std::vector<Obstacle>& obstacleList);
 
     const std::vector<Vec>& getPelletVec();
 };

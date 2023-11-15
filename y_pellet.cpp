@@ -3,30 +3,13 @@
 
     #include "z_aggregate.h"
     #include "z_pellet.h"
-    
+    #include "z_obstacle.h"
+
     // private
 
-    void Pellet::initPelletVector(Vec& startPoint, Vec& pelletDimensions)
+    void Pellet::initPelletVector(Vec& startPoint, Vec& pelletDimensions, std::vector<Obstacle>& obstacleList)
     {
-        int totalVectors{pelletDimensions.y * pelletDimensions.x};
 
-        for (std::size_t i{0}; i < totalVectors; ++i)
-        {
-            m_pelletVec.emplace_back(); 
-        }
-
-        std::size_t vectorIncrement{0};
-        for(std::size_t iY{0}; iY < pelletDimensions.y; ++iY)
-        {
-            for(std::size_t iX{0}; iX < pelletDimensions.x; ++iX)
-            {
-                m_pelletVec[vectorIncrement].y = (iY + startPoint.y);
-
-                m_pelletVec[vectorIncrement].x = (iX + startPoint.x);
-
-                ++vectorIncrement;
-            }
-        }
     }
 
     void Pellet::printAndRefreshPellet(Window& win)
@@ -40,10 +23,10 @@
 
     // public
 
-    Pellet::Pellet( Vec startPoint, Vec pelletDimensions, Window& win)
+    Pellet::Pellet( Vec startPoint, Vec pelletDimensions, Window& win, std::vector<Obstacle>& obstacleList)
         : m_pelletVec {}
     {
-        initPelletVector(startPoint, pelletDimensions);
+        initPelletVector(startPoint, pelletDimensions, obstacleList);
         printAndRefreshPellet(win);
     }
 
