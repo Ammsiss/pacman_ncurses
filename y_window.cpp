@@ -12,7 +12,10 @@ const int Window::defaultGameY{31};
 
 void Window::drawBoxAndRefresh()
 {
+    wattron(m_window, COLOR_PAIR(6));   
     wborder(m_window, ACS_CKBOARD, ACS_CKBOARD, ACS_CKBOARD, ACS_CKBOARD, ACS_CKBOARD, ACS_CKBOARD, ACS_CKBOARD, ACS_CKBOARD);
+    wattroff(m_window, COLOR_PAIR(6));
+    wattron(m_window, COLOR_PAIR(0));
     wrefresh(m_window);
 }
 

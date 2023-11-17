@@ -15,8 +15,17 @@ enum class Direction
     null,
 };
 
+enum class GhostColor
+{
+    red,
+    orange,
+    pink,
+    cyan,
+};
+
 struct Vec
 {
     int y{};
     int x{};
 };
+

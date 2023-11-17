@@ -73,14 +73,33 @@ void Pacman::erase(Window& win)
 void Pacman::printPacmanBasedOnDirectionAndRefresh(Window& win)
 {
     if(m_direction == Direction::up)
-        mvwaddch(win.getWindow(), m_pacVec.y, m_pacVec.x, 'V');
+    {
+        wattron(win.getWindow(), COLOR_PAIR(4));    
+        mvwprintw(win.getWindow(), m_pacVec.y, m_pacVec.x, "v");
+        wattroff(win.getWindow(), COLOR_PAIR(4));
+        wattron(win.getWindow(), COLOR_PAIR(0));
+    }
     else if(m_direction == Direction::down)
+    {
+        wattron(win.getWindow(), COLOR_PAIR(4));  
         mvwprintw(win.getWindow(), m_pacVec.y, m_pacVec.x, "ʌ");
+        wattroff(win.getWindow(), COLOR_PAIR(4));
+        wattron(win.getWindow(), COLOR_PAIR(0));
+    }
     else if(m_direction == Direction::left)
-        mvwaddch(win.getWindow(), m_pacVec.y, m_pacVec.x, '>');
+    {
+        wattron(win.getWindow(), COLOR_PAIR(4));  
+        mvwprintw(win.getWindow(), m_pacVec.y, m_pacVec.x, ">");
+        wattroff(win.getWindow(), COLOR_PAIR(4));
+        wattron(win.getWindow(), COLOR_PAIR(0));
+    }
     else if(m_direction == Direction::right)
-        mvwaddch(win.getWindow(), m_pacVec.y, m_pacVec.x, '<');
-
+    {
+        wattron(win.getWindow(), COLOR_PAIR(4));  
+        mvwprintw(win.getWindow(), m_pacVec.y, m_pacVec.x, "<");
+        wattroff(win.getWindow(), COLOR_PAIR(4));
+        wattron(win.getWindow(), COLOR_PAIR(0));
+    }
     wrefresh(win.getWindow());
 }
 

@@ -25,6 +25,19 @@ void ncursesInit()
     cbreak();
     noecho();
     curs_set(0);
+    start_color();
+    use_default_colors();
+    init_color(COLOR_BLACK, 0, 0, 0);
+    init_color(COLOR_MAGENTA, 1000, 550, 550);
+    init_color(COLOR_YELLOW, 1000, 1000, 0);
+    init_color(COLOR_GREEN, 1000, 550, 0);
+    init_pair(0, -1, -1);
+    init_pair(1, 1, 0);
+    init_pair(2, 6, 0);
+    init_pair(3, 5, 0);
+    init_pair(4, 3, 0);
+    init_pair(6, COLOR_BLUE, 0);
+    init_pair(5, COLOR_GREEN, 0);
     refresh();
 }
 
@@ -101,41 +114,48 @@ void gameLoop(Window& gameW, std::vector<Obstacle>& obstacleList, std::vector<Ve
 {
     // init ya boi
     Pacman pacman{};
-    Ghost pinky{175ms};
-    Ghost inky{200ms};
-    Ghost slinky{300ms};
-    Ghost g1{200ms};
+    Ghost pinky{175ms, GhostColor::pink};
+    Ghost inky{200ms, GhostColor::cyan};
+    Ghost blinky{300ms, GhostColor::red};
+    Ghost clyde{150ms, GhostColor::orange};
+
+    /*
+    Ghost g1{100ms};
     Ghost g2{200ms};
-    Ghost g3{200ms};
-    Ghost g4{200ms};
-    Ghost g5{200ms};
-    Ghost g6{200ms};
-    Ghost g7{200ms};
-    Ghost g8{200ms};
-    Ghost g9{200ms};
-    Ghost ga{200ms};
-    Ghost gb{200ms};
-    Ghost gc{200ms};
-    Ghost gd{200ms};
-    Ghost ge{200ms};
-    Ghost gf{200ms};
-    Ghost gg{200ms};
-    Ghost gh{200ms};
-    Ghost gi{200ms};
-    Ghost gj{200ms};
-    Ghost gk{200ms};
-    Ghost gl{200ms};
-    Ghost gm{200ms};
-    Ghost gn{200ms};
-    Ghost go{200ms};
-    Ghost gp{200ms};
+    Ghost g3{300ms};
+    Ghost g4{50ms};
+    Ghost g5{20ms};
+    Ghost g6{500ms};
+    Ghost g7{253ms};
+    Ghost g8{258ms};
+    Ghost g9{128ms};
+    Ghost ga{143ms};
+    Ghost gb{53ms};
+    Ghost gc{123ms};
+    Ghost gd{240ms};
+    Ghost ge{350ms};
+    Ghost gf{482ms};
+    Ghost gg{123ms};
+    Ghost gh{90ms};
+    Ghost gi{890ms};
+    Ghost gj{70ms};
+    Ghost gk{50ms};
+    Ghost gl{30ms};
+    Ghost gm{210ms};
+    Ghost gn{220ms};
+    Ghost go{230ms};
+    Ghost gp{240ms};
+    */
 
     while(true)
     {
         pacman.timeToMove(gameW, obstacleList);
         pinky.timeToMove(gameW, obstacleList, windowPerimeter);
         inky.timeToMove(gameW, obstacleList, windowPerimeter);
-        slinky.timeToMove(gameW, obstacleList, windowPerimeter);
+        blinky.timeToMove(gameW, obstacleList, windowPerimeter);
+        clyde.timeToMove(gameW, obstacleList, windowPerimeter);
+
+        /*
         g1.timeToMove(gameW, obstacleList, windowPerimeter);
         g2.timeToMove(gameW, obstacleList, windowPerimeter);
         g3.timeToMove(gameW, obstacleList, windowPerimeter);
@@ -161,6 +181,7 @@ void gameLoop(Window& gameW, std::vector<Obstacle>& obstacleList, std::vector<Ve
         gn.timeToMove(gameW, obstacleList, windowPerimeter);
         go.timeToMove(gameW, obstacleList, windowPerimeter);
         gp.timeToMove(gameW, obstacleList, windowPerimeter);
+        */
 
         // sleep to avoid infinite checks
         std::this_thread::sleep_for(5ms);

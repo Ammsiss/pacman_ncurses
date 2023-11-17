@@ -89,7 +89,35 @@ void Ghost::erase(Window& win)
 
 void Ghost::printAndRefreshGhost(Window& win)
 {
-    mvwprintw(win.getWindow(), m_ghostVec.y, m_ghostVec.x, "ᗣ");
+    if (m_ghostColor == GhostColor::red)
+    {
+        wattron(win.getWindow(), COLOR_PAIR(1));
+        mvwprintw(win.getWindow(), m_ghostVec.y, m_ghostVec.x, "ᗣ");
+        wattroff(win.getWindow(), COLOR_PAIR(1));
+        wattron(win.getWindow(), COLOR_PAIR(0));
+    }
+    else if(m_ghostColor == GhostColor::cyan)
+    {
+        wattron(win.getWindow(), COLOR_PAIR(2));
+        mvwprintw(win.getWindow(), m_ghostVec.y, m_ghostVec.x, "ᗣ");
+        wattroff(win.getWindow(), COLOR_PAIR(2));
+        wattron(win.getWindow(), COLOR_PAIR(0));
+    }
+    else if(m_ghostColor == GhostColor::orange)
+    {
+        wattron(win.getWindow(), COLOR_PAIR(5));
+        mvwprintw(win.getWindow(), m_ghostVec.y, m_ghostVec.x, "ᗣ");
+        wattroff(win.getWindow(), COLOR_PAIR(5));
+        wattron(win.getWindow(), COLOR_PAIR(0));
+    }
+    else if(m_ghostColor == GhostColor::pink)
+    {
+        wattron(win.getWindow(), COLOR_PAIR(3));    
+        mvwprintw(win.getWindow(), m_ghostVec.y, m_ghostVec.x, "ᗣ");
+        wattroff(win.getWindow(), COLOR_PAIR(3));
+        wattron(win.getWindow(), COLOR_PAIR(0));
+    }
+
     wrefresh(win.getWindow());
 }
 
@@ -159,13 +187,13 @@ bool Ghost::moveGhostBasedOnDirection(std::vector<Obstacle>& obstacleList, std::
 
 // public members:
 
-Ghost::Ghost(std::chrono::milliseconds speed)
+Ghost::Ghost(std::chrono::milliseconds speed, GhostColor ghostColor)
     : m_direction {Direction::right}
     , m_ghostVec {15, 12} // randomInput{},
     , m_interval{speed}
     , m_lastTime{std::chrono::high_resolution_clock::now()}
     , m_rightPortalX{ 26 }, m_leftPortalX{ 1 }
-    , m_portalY{ 14 }
+    , m_portalY{ 14 }, m_ghostColor{ ghostColor }
     {
     }
 

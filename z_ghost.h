@@ -18,6 +18,7 @@ private:
     int m_rightPortalX;
     int m_leftPortalX;
     int m_portalY;
+    GhostColor m_ghostColor;
     std::chrono::milliseconds m_interval;
     std::chrono::time_point<std::chrono::high_resolution_clock> m_lastTime;
 
@@ -31,7 +32,7 @@ private:
     bool perimeterBoundsCheck(std::vector<Vec>& windowPerimeter);
 
 public:
-    Ghost(std::chrono::milliseconds speed);
+    Ghost(std::chrono::milliseconds speed, GhostColor ghostColor);
     void timeToMove(Window& win, std::vector<Obstacle>& obstacleList, std::vector<Vec>& windowPerimeter);
 
 };

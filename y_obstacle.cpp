@@ -33,7 +33,10 @@
     {
         for(std::size_t i{0}; i < m_obsVec.size(); ++i)
         {
+            wattron(win.getWindow(), COLOR_PAIR(6));
             mvwaddch(win.getWindow(), m_obsVec[i].y, m_obsVec[i].x, obsCh);
+            wattroff(win.getWindow(), COLOR_PAIR(6));
+            wattron(win.getWindow(), COLOR_PAIR(0));
         }
         wrefresh(win.getWindow());
     }
