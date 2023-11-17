@@ -34,7 +34,6 @@ void Ghost::setValidDirection(std::vector<Obstacle>& obstacleList, std::vector<V
     {
         m_direction = static_cast<Direction>(Random::randomDirection(Random::mt));
 
-
         // Possible refactor
         if (directionCheck == Direction::up && m_direction == Direction::down)
             continue;
@@ -47,9 +46,7 @@ void Ghost::setValidDirection(std::vector<Obstacle>& obstacleList, std::vector<V
 
 
         // breaks from loop if valid direction to use in movement and printing
-        if( !moveGhostBasedOnDirection(obstacleList, windowPerimeter) )
-            continue;
-        else
+        if( moveGhostBasedOnDirection(obstacleList, windowPerimeter) )
             break;
     }
 }
@@ -84,11 +81,12 @@ bool Ghost::obstacleBoundsCheck(std::vector<Obstacle>& obstacleList)
 
 void Ghost::erase(Window& win)
 {
-    mvwprintw(win.getWindow(), m_ghostVec.y, m_ghostVec.x, " ");
+    mvwprintw(win.getWindow(), m_ghostVec.y, m_ghostVec.x, " "); 
 }
 
 void Ghost::printAndRefreshGhost(Window& win)
 {
+
     if (m_ghostColor == GhostColor::red)
     {
         wattron(win.getWindow(), COLOR_PAIR(1));
@@ -185,6 +183,65 @@ bool Ghost::moveGhostBasedOnDirection(std::vector<Obstacle>& obstacleList, std::
     return false;
 }
 
+GhostColor Ghost::checkGhostOverLap(Ghost& pinky, Ghost& inky, Ghost& blinky, Ghost& clyde)
+{
+    if(m_ghostVec.y == pinky.getGhostVec().y && m_ghostVec.x == pinky.getGhostVec().x && m_ghostColor != GhostColor::pink)
+    {
+        return GhostColor::pink;
+    }
+
+    if(m_ghostVec.y == inky.getGhostVec().y && m_ghostVec.x == inky.getGhostVec().x && m_ghostColor != GhostColor::cyan)
+    {
+        return GhostColor::cyan;
+    }
+
+    if(m_ghostVec.y == blinky.getGhostVec().y && m_ghostVec.x == blinky.getGhostVec().x && m_ghostColor != GhostColor::red)
+    {
+        return GhostColor::red;
+    }
+
+    if(m_ghostVec.y == clyde.getGhostVec().y && m_ghostVec.x == clyde.getGhostVec().x && m_ghostColor != GhostColor::orange)
+    {
+        return GhostColor::orange;
+    }
+
+    return GhostColor::null;
+}
+
+void Ghost::printOverLap(Window& win, GhostColor overLapColor)
+{
+    if (overLapColor == GhostColor::red)
+    {
+        wattron(win.getWindow(), COLOR_PAIR(1));
+        mvwprintw(win.getWindow(), m_ghostVec.y, m_ghostVec.x, "ᗣ");
+        wattroff(win.getWindow(), COLOR_PAIR(1));
+        wattron(win.getWindow(), COLOR_PAIR(0));
+    }
+    else if(overLapColor == GhostColor::cyan)
+    {
+        wattron(win.getWindow(), COLOR_PAIR(2));
+        mvwprintw(win.getWindow(), m_ghostVec.y, m_ghostVec.x, "ᗣ");
+        wattroff(win.getWindow(), COLOR_PAIR(2));
+        wattron(win.getWindow(), COLOR_PAIR(0));
+    }
+    else if(overLapColor == GhostColor::orange)
+    {
+        wattron(win.getWindow(), COLOR_PAIR(5));
+        mvwprintw(win.getWindow(), m_ghostVec.y, m_ghostVec.x, "ᗣ");
+        wattroff(win.getWindow(), COLOR_PAIR(5));
+        wattron(win.getWindow(), COLOR_PAIR(0));
+    }
+    else if(overLapColor == GhostColor::pink)
+    {
+        wattron(win.getWindow(), COLOR_PAIR(3));    
+        mvwprintw(win.getWindow(), m_ghostVec.y, m_ghostVec.x, "ᗣ");
+        wattroff(win.getWindow(), COLOR_PAIR(3));
+        wattron(win.getWindow(), COLOR_PAIR(0));
+    }
+
+    wrefresh(win.getWindow());
+}
+
 // public members:
 
 Ghost::Ghost(std::chrono::milliseconds speed, GhostColor ghostColor)
@@ -197,7 +254,7 @@ Ghost::Ghost(std::chrono::milliseconds speed, GhostColor ghostColor)
     {
     }
 
-void Ghost::timeToMove(Window& win, std::vector<Obstacle>& obstacleList, std::vector<Vec>& windowPerimeter)
+void Ghost::timeToMove(Window& win, std::vector<Obstacle>& obstacleList, std::vector<Vec>& windowPerimeter, Ghost& pinky, Ghost& inky, Ghost& blinky, Ghost& clyde)
 {
     // define chrono duration and 2 system time instances to create pacman's timed movement
     auto currentTime{std::chrono::high_resolution_clock::now()};
@@ -205,9 +262,14 @@ void Ghost::timeToMove(Window& win, std::vector<Obstacle>& obstacleList, std::ve
     if (currentTime - m_lastTime >= m_interval)
     {
         erase(win);
+        printOverLap(win, checkGhostOverLap(pinky, inky, blinky, clyde));
         setValidDirection(obstacleList, windowPerimeter);
         printAndRefreshGhost(win);
 
         m_lastTime = currentTime;
     }
 }
+
+GhostColor Ghost::getGhostColor() { return m_ghostColor; }
+
+Vec Ghost::getGhostVec() { return m_ghostVec; }

@@ -114,10 +114,10 @@ void gameLoop(Window& gameW, std::vector<Obstacle>& obstacleList, std::vector<Ve
 {
     // init ya boi
     Pacman pacman{};
-    Ghost pinky{175ms, GhostColor::pink};
-    Ghost inky{200ms, GhostColor::cyan};
-    Ghost blinky{300ms, GhostColor::red};
-    Ghost clyde{150ms, GhostColor::orange};
+    Ghost pinky{350ms, GhostColor::pink};
+    Ghost inky{325ms, GhostColor::cyan};
+    Ghost blinky{250ms, GhostColor::red};
+    Ghost clyde{275ms, GhostColor::orange};
 
     /*
     Ghost g1{100ms};
@@ -150,10 +150,10 @@ void gameLoop(Window& gameW, std::vector<Obstacle>& obstacleList, std::vector<Ve
     while(true)
     {
         pacman.timeToMove(gameW, obstacleList);
-        pinky.timeToMove(gameW, obstacleList, windowPerimeter);
-        inky.timeToMove(gameW, obstacleList, windowPerimeter);
-        blinky.timeToMove(gameW, obstacleList, windowPerimeter);
-        clyde.timeToMove(gameW, obstacleList, windowPerimeter);
+        pinky.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
+        inky.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
+        blinky.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
+        clyde.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
 
         /*
         g1.timeToMove(gameW, obstacleList, windowPerimeter);
@@ -195,7 +195,10 @@ int main()
     Window gameW{};
     nodelay(gameW.getWindow(), true);
     std::vector<Vec> windowPerimeter{ gameW.getWindowPerimeter() };
+    std::vector<std::vector<Vec>> windowArea{ gameW.getWindowArea() };
     std::vector<Obstacle> obstacleList{obstacleInitAndRefresh(gameW)};
+
+    Pellet pellets{gameW, obstacleList, windowPerimeter, windowArea};
 
     // Start!
     gameLoop(gameW, obstacleList, windowPerimeter);

@@ -21,6 +21,7 @@ enum class GhostColor
     orange,
     pink,
     cyan,
+    null,
 };
 
 struct Vec

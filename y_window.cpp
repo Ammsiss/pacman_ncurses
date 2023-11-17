@@ -45,6 +45,14 @@ void Window::initWindowPerimeter()
     }
 }
 
+void Window::initWindowArea()
+{
+    for(std::size_t rows{0}; rows < m_screenY; ++rows)
+    {
+        
+    }
+}
+
 // public
 
 Window::Window(int screenY, int screenX)
@@ -76,3 +84,4 @@ WINDOW* Window::getWindow() { return m_window; }
 const int& Window::getScreenY() { return m_screenY; }
 const int& Window::getScreenX() { return m_screenX; }
 std::vector<Vec> Window::getWindowPerimeter() { return m_windowPerimeter; }
+std::vector<std::vector<Vec>> Window::getWindowArea() { return m_windowArea; }

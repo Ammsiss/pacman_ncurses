@@ -11,14 +11,12 @@
 class Pellet
 {
 private:
-    std::vector<Vec> m_pelletVec;
-    
-    void initPelletVector(Vec& startPoint, Vec& pelletDimensions, std::vector<Obstacle>& obstacleList);
-
-    void printAndRefreshPellet(Window& win);
+    std::vector<std::vector<int>> m_pelletVec;
+    void initPelletVector(std::vector<Obstacle>& obstacleList, std::vector<std::vector<Vec>>& windowArea, std::vector<Vec>& windowPerimeter);
 
 public:
-    Pellet( Vec startPoint, Vec pelletDimensions, Window& win, std::vector<Obstacle>& obstacleList);
+    Pellet( Window& win, std::vector<Obstacle>& obstacleList, std::vector<Vec>& windowPerimeter, std::vector<std::vector<Vec>>& windowArea);
 
-    const std::vector<Vec>& getPelletVec();
+    void printAndRefreshPellet(Window& win);
+    std::vector<std::vector<int>> getPelletVec();
 };

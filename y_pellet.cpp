@@ -4,31 +4,32 @@
     #include "z_aggregate.h"
     #include "z_pellet.h"
     #include "z_obstacle.h"
+    #include "z_window.h"
 
     // private
 
-    void Pellet::initPelletVector(Vec& startPoint, Vec& pelletDimensions, std::vector<Obstacle>& obstacleList)
+    void Pellet::initPelletVector(std::vector<Obstacle>& obstacleList, std::vector<std::vector<Vec>>& windowArea, std::vector<Vec>& windowPerimeter)
     {
         // Algorithm to initialize a vector of all the correct coordinate positions based on obstacles
         // that dynamically resizes based on obstacles.
-    }
 
-    void Pellet::printAndRefreshPellet(Window& win)
-    {
-        for(std::size_t i{0}; i < m_pelletVec.size(); ++i)
+        for(std::size_t totalArea{0}; totalArea < windowArea.size(); ++totalArea)
         {
-            mvwprintw(win.getWindow(), m_pelletVec[i].y, m_pelletVec[i].x, "•");
+
         }
-        wrefresh(win.getWindow());
     }
 
     // public
 
-    Pellet::Pellet( Vec startPoint, Vec pelletDimensions, Window& win, std::vector<Obstacle>& obstacleList)
+    Pellet::Pellet( Window& win, std::vector<Obstacle>& obstacleList, std::vector<Vec>& windowPerimeter, std::vector<std::vector<Vec>>& windowArea)
         : m_pelletVec {}
     {
-        initPelletVector(startPoint, pelletDimensions, obstacleList);
-        printAndRefreshPellet(win);
+        initPelletVector(obstacleList, windowArea, windowPerimeter);
     }
 
-    const std::vector<Vec>& Pellet::getPelletVec() { return m_pelletVec; }
+    void Pellet::printAndRefreshPellet(Window& win)
+    {
+        
+    }
+
+    std::vector<std::vector<int>> Pellet::getPelletVec() { return m_pelletVec; }

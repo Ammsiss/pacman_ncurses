@@ -30,9 +30,15 @@ private:
     void erase(Window& win);
     bool moveGhostBasedOnDirection(std::vector<Obstacle>& obstacleList, std::vector<Vec>& windowPerimeter);
     bool perimeterBoundsCheck(std::vector<Vec>& windowPerimeter);
+    GhostColor checkGhostOverLap(Ghost& pinky, Ghost& inky, Ghost& blinky, Ghost& clyde);
+    void printOverLap(Window& win, GhostColor overLapColor);
 
 public:
     Ghost(std::chrono::milliseconds speed, GhostColor ghostColor);
-    void timeToMove(Window& win, std::vector<Obstacle>& obstacleList, std::vector<Vec>& windowPerimeter);
+    void timeToMove(Window& win, std::vector<Obstacle>& obstacleList, std::vector<Vec>& windowPerimeter, Ghost& pinky, Ghost& inky, Ghost& blinky, Ghost& clyde);
+
+    // getters
+    GhostColor getGhostColor();
+    Vec getGhostVec();
 
 };
