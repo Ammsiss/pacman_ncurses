@@ -8,6 +8,7 @@
 #include "z_window.h"
 #include "z_obstacle.h"
 #include "z_pellet.h"
+#include "z_ghost.h"
 
 // std library
 #include <chrono>
@@ -84,19 +85,82 @@ std::vector<Obstacle> obstacleInitAndRefresh(Window& gameW)
 
         { {24, 19}, {3, 2}, gameW },
         { {27, 16}, {2, 10}, gameW },
+
+        // ghost box
+        { {12, 10}, {1, 3}, gameW},
+        { {12, 15}, {1, 3}, gameW },
+        { {13, 10}, {4, 1}, gameW },
+        { {16, 11}, {1, 7}, gameW },
+        { {13, 17}, {3, 1}, gameW }
     };
 
     return obstacleList;
 }
 
-void gameLoop(Window& gameW, std::vector<Obstacle>& obstacleList)
+void gameLoop(Window& gameW, std::vector<Obstacle>& obstacleList, std::vector<Vec>& windowPerimeter)
 {
     // init ya boi
     Pacman pacman{};
+    Ghost pinky{175ms};
+    Ghost inky{200ms};
+    Ghost slinky{300ms};
+    Ghost g1{200ms};
+    Ghost g2{200ms};
+    Ghost g3{200ms};
+    Ghost g4{200ms};
+    Ghost g5{200ms};
+    Ghost g6{200ms};
+    Ghost g7{200ms};
+    Ghost g8{200ms};
+    Ghost g9{200ms};
+    Ghost ga{200ms};
+    Ghost gb{200ms};
+    Ghost gc{200ms};
+    Ghost gd{200ms};
+    Ghost ge{200ms};
+    Ghost gf{200ms};
+    Ghost gg{200ms};
+    Ghost gh{200ms};
+    Ghost gi{200ms};
+    Ghost gj{200ms};
+    Ghost gk{200ms};
+    Ghost gl{200ms};
+    Ghost gm{200ms};
+    Ghost gn{200ms};
+    Ghost go{200ms};
+    Ghost gp{200ms};
 
     while(true)
     {
         pacman.timeToMove(gameW, obstacleList);
+        pinky.timeToMove(gameW, obstacleList, windowPerimeter);
+        inky.timeToMove(gameW, obstacleList, windowPerimeter);
+        slinky.timeToMove(gameW, obstacleList, windowPerimeter);
+        g1.timeToMove(gameW, obstacleList, windowPerimeter);
+        g2.timeToMove(gameW, obstacleList, windowPerimeter);
+        g3.timeToMove(gameW, obstacleList, windowPerimeter);
+        g4.timeToMove(gameW, obstacleList, windowPerimeter);
+        g5.timeToMove(gameW, obstacleList, windowPerimeter);
+        g6.timeToMove(gameW, obstacleList, windowPerimeter);
+        g7.timeToMove(gameW, obstacleList, windowPerimeter);
+        g8.timeToMove(gameW, obstacleList, windowPerimeter);
+        g9.timeToMove(gameW, obstacleList, windowPerimeter);
+        ga.timeToMove(gameW, obstacleList, windowPerimeter);
+        gb.timeToMove(gameW, obstacleList, windowPerimeter);
+        gc.timeToMove(gameW, obstacleList, windowPerimeter);
+        gd.timeToMove(gameW, obstacleList, windowPerimeter);
+        ge.timeToMove(gameW, obstacleList, windowPerimeter);
+        gf.timeToMove(gameW, obstacleList, windowPerimeter);
+        gg.timeToMove(gameW, obstacleList, windowPerimeter);
+        gh.timeToMove(gameW, obstacleList, windowPerimeter);
+        gi.timeToMove(gameW, obstacleList, windowPerimeter);
+        gj.timeToMove(gameW, obstacleList, windowPerimeter);
+        gk.timeToMove(gameW, obstacleList, windowPerimeter);
+        gl.timeToMove(gameW, obstacleList, windowPerimeter);
+        gm.timeToMove(gameW, obstacleList, windowPerimeter);
+        gn.timeToMove(gameW, obstacleList, windowPerimeter);
+        go.timeToMove(gameW, obstacleList, windowPerimeter);
+        gp.timeToMove(gameW, obstacleList, windowPerimeter);
 
         // sleep to avoid infinite checks
         std::this_thread::sleep_for(5ms);
@@ -109,11 +173,11 @@ int main()
 
     Window gameW{};
     nodelay(gameW.getWindow(), true);
-
+    std::vector<Vec> windowPerimeter{ gameW.getWindowPerimeter() };
     std::vector<Obstacle> obstacleList{obstacleInitAndRefresh(gameW)};
 
     // Start!
-    gameLoop(gameW, obstacleList);
+    gameLoop(gameW, obstacleList, windowPerimeter);
     
     endwin();
     return 0;

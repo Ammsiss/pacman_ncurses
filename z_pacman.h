@@ -16,6 +16,7 @@ private:
     char m_userInput;
     int m_rightPortalX;
     int m_leftPortalX;
+    int m_portalY;
     std::chrono::milliseconds m_interval;
     std::chrono::time_point<std::chrono::high_resolution_clock> m_lastTime;
 

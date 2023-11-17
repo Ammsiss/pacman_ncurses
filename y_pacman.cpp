@@ -110,8 +110,9 @@ void Pacman::movePacmanBasedOnDirection(Window& win, std::vector<Obstacle>& obst
             }
             case Direction::left: 
             {
-                if(m_pacVec.x == 1 && m_pacVec.y == 14)
+                if(m_pacVec.x == m_leftPortalX && m_pacVec.y == m_portalY)
                 {
+                    // L -> R
                     m_pacVec.x = m_rightPortalX;
                 }
                 else if(m_pacVec.x != 1)
@@ -124,8 +125,9 @@ void Pacman::movePacmanBasedOnDirection(Window& win, std::vector<Obstacle>& obst
             }
             case Direction::right: 
             {
-                if(m_pacVec.x == 26 && m_pacVec.y == 14)
+                if(m_pacVec.x == m_rightPortalX && m_pacVec.y == m_portalY)
                 {
+                    // R -> L 
                     m_pacVec.x = m_leftPortalX;
                 }
                 else if(m_pacVec.x != (win.getScreenX() - 2))
@@ -149,6 +151,7 @@ Pacman::Pacman()
     , m_interval{175ms}
     , m_lastTime{std::chrono::high_resolution_clock::now()}
     , m_rightPortalX{ 26 }, m_leftPortalX{ 1 }
+    , m_portalY{ 14 }
     {
     }
 

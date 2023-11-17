@@ -9,7 +9,8 @@
 
     void Pellet::initPelletVector(Vec& startPoint, Vec& pelletDimensions, std::vector<Obstacle>& obstacleList)
     {
-
+        // Algorithm to initialize a vector of all the correct coordinate positions based on obstacles
+        // that dynamically resizes based on obstacles.
     }
 
     void Pellet::printAndRefreshPellet(Window& win)
