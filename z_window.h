@@ -31,4 +31,5 @@ public:
     const int& getScreenX();
     std::vector<Vec> getWindowPerimeter();
     std::vector<std::vector<int>> getWindowArea();
+    void gameCountDown();
 };

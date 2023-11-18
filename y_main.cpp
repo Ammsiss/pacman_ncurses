@@ -115,6 +115,7 @@ void gameLoop(Window& gameW, std::vector<Obstacle>& obstacleList, std::vector<Ve
 {
     // init ya boi
     Pacman pacman{};
+    // init ghosts
     Ghost pinky{350ms, GhostColor::pink};
     Ghost inky{325ms, GhostColor::cyan};
     Ghost blinky{250ms, GhostColor::red};
@@ -148,6 +149,9 @@ void gameLoop(Window& gameW, std::vector<Obstacle>& obstacleList, std::vector<Ve
     Ghost gp{240ms, GhostColor::orange};
     */
 
+    gameW.gameCountDown();
+
+    // main loop
     while(true)
     {
         pacman.timeToMove(gameW, obstacleList, pellets);

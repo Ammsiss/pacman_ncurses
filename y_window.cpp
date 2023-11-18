@@ -1,9 +1,13 @@
 #include <ncurses.h>
 
 #include <vector>
+#include <chrono>
+#include <thread>
 
 #include "z_window.h"
 #include "z_aggregate.h"
+
+using namespace std::chrono_literals;
 
 // private
 
@@ -92,3 +96,59 @@ const int& Window::getScreenY() { return m_screenY; }
 const int& Window::getScreenX() { return m_screenX; }
 std::vector<Vec> Window::getWindowPerimeter() { return m_windowPerimeter; }
 std::vector<std::vector<int>> Window::getWindowArea() { return m_windowArea; }
+
+void Window::gameCountDown()
+{
+    int count{3};
+
+    auto interval{1000ms};
+    auto lastTime{std::chrono::high_resolution_clock::now()};
+
+    wattron(m_window, COLOR_PAIR(2));  
+
+    while(true)
+    {
+        auto currentTime{std::chrono::high_resolution_clock::now()};
+
+        if(currentTime - lastTime >= interval)
+        {
+            if(count == 3)
+            {
+                mvwprintw(m_window, 14, 11, "3");
+                wrefresh(m_window);
+            }
+
+            if(count == 2)
+            {
+                mvwprintw(m_window, 14, 12, "2");
+                wrefresh(m_window);
+            }
+
+            if(count == 1)
+            {
+                mvwprintw(m_window, 14, 13, "1");
+                wrefresh(m_window);
+            }
+
+            if(count == 0)
+            {
+                mvwprintw(m_window, 14, 14, "GO!");
+                wrefresh(m_window);
+            }
+
+            lastTime = currentTime;
+            --count;
+
+            if(count == -2)
+            {
+                mvwprintw(m_window, 14, 11, "      ");
+                wrefresh(m_window);
+                wattroff(m_window, COLOR_PAIR(2));
+                wattron(m_window, COLOR_PAIR(0));
+                break;
+            }
+        }
+
+        std::this_thread::sleep_for(5ms);
+    }
+}
