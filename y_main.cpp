@@ -36,6 +36,7 @@ void ncursesInit()
     init_pair(2, 6, 0);
     init_pair(3, 5, 0);
     init_pair(4, 3, 0);
+    init_pair(7, 7, 0);
     init_pair(6, COLOR_BLUE, 0);
     init_pair(5, COLOR_GREEN, 0);
     refresh();
@@ -120,67 +121,67 @@ void gameLoop(Window& gameW, std::vector<Obstacle>& obstacleList, std::vector<Ve
     Ghost clyde{275ms, GhostColor::orange};
 
     /*
-    Ghost g1{100ms};
-    Ghost g2{200ms};
-    Ghost g3{300ms};
-    Ghost g4{50ms};
-    Ghost g5{20ms};
-    Ghost g6{500ms};
-    Ghost g7{253ms};
-    Ghost g8{258ms};
-    Ghost g9{128ms};
-    Ghost ga{143ms};
-    Ghost gb{53ms};
-    Ghost gc{123ms};
-    Ghost gd{240ms};
-    Ghost ge{350ms};
-    Ghost gf{482ms};
-    Ghost gg{123ms};
-    Ghost gh{90ms};
-    Ghost gi{890ms};
-    Ghost gj{70ms};
-    Ghost gk{50ms};
-    Ghost gl{30ms};
-    Ghost gm{210ms};
-    Ghost gn{220ms};
-    Ghost go{230ms};
-    Ghost gp{240ms};
+    Ghost g1{100ms, GhostColor::pink};
+    Ghost g2{200ms, GhostColor::pink};
+    Ghost g3{300ms, GhostColor::pink};
+    Ghost g4{50ms, GhostColor::pink};
+    Ghost g5{20ms, GhostColor::pink};
+    Ghost g6{500ms, GhostColor::pink};
+    Ghost g7{253ms, GhostColor::cyan};
+    Ghost g8{258ms, GhostColor::cyan};
+    Ghost g9{128ms, GhostColor::cyan};
+    Ghost ga{143ms, GhostColor::cyan};
+    Ghost gb{53ms, GhostColor::cyan};
+    Ghost gc{123ms, GhostColor::cyan};
+    Ghost gd{240ms, GhostColor::red};
+    Ghost ge{350ms, GhostColor::red};
+    Ghost gf{482ms, GhostColor::red};
+    Ghost gg{123ms, GhostColor::red};
+    Ghost gh{90ms, GhostColor::red};
+    Ghost gi{890ms, GhostColor::red};
+    Ghost gj{70ms, GhostColor::red};
+    Ghost gk{50ms, GhostColor::orange};
+    Ghost gl{30ms, GhostColor::orange};
+    Ghost gm{210ms, GhostColor::orange};
+    Ghost gn{220ms, GhostColor::orange};
+    Ghost go{230ms, GhostColor::orange};
+    Ghost gp{240ms, GhostColor::orange};
     */
 
     while(true)
     {
         pacman.timeToMove(gameW, obstacleList);
-        pinky.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
-        inky.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
-        blinky.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
-        clyde.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
+        // pinky.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
+        // inky.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
+        // blinky.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
+        // clyde.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
 
         /*
-        g1.timeToMove(gameW, obstacleList, windowPerimeter);
-        g2.timeToMove(gameW, obstacleList, windowPerimeter);
-        g3.timeToMove(gameW, obstacleList, windowPerimeter);
-        g4.timeToMove(gameW, obstacleList, windowPerimeter);
-        g5.timeToMove(gameW, obstacleList, windowPerimeter);
-        g6.timeToMove(gameW, obstacleList, windowPerimeter);
-        g7.timeToMove(gameW, obstacleList, windowPerimeter);
-        g8.timeToMove(gameW, obstacleList, windowPerimeter);
-        g9.timeToMove(gameW, obstacleList, windowPerimeter);
-        ga.timeToMove(gameW, obstacleList, windowPerimeter);
-        gb.timeToMove(gameW, obstacleList, windowPerimeter);
-        gc.timeToMove(gameW, obstacleList, windowPerimeter);
-        gd.timeToMove(gameW, obstacleList, windowPerimeter);
-        ge.timeToMove(gameW, obstacleList, windowPerimeter);
-        gf.timeToMove(gameW, obstacleList, windowPerimeter);
-        gg.timeToMove(gameW, obstacleList, windowPerimeter);
-        gh.timeToMove(gameW, obstacleList, windowPerimeter);
-        gi.timeToMove(gameW, obstacleList, windowPerimeter);
-        gj.timeToMove(gameW, obstacleList, windowPerimeter);
-        gk.timeToMove(gameW, obstacleList, windowPerimeter);
-        gl.timeToMove(gameW, obstacleList, windowPerimeter);
-        gm.timeToMove(gameW, obstacleList, windowPerimeter);
-        gn.timeToMove(gameW, obstacleList, windowPerimeter);
-        go.timeToMove(gameW, obstacleList, windowPerimeter);
-        gp.timeToMove(gameW, obstacleList, windowPerimeter);
+        g1.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
+        g2.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
+        g3.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
+        g4.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
+        g5.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
+        g6.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
+        g7.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
+        g8.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
+        g9.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
+        ga.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
+        gb.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
+        gc.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
+        gd.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
+        ge.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
+        gf.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
+        gg.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
+        gh.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
+        gi.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
+        gj.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
+        gk.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
+        gl.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
+        gm.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
+        gn.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
+        go.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
+        gp.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
         */
 
         // sleep to avoid infinite checks
@@ -195,7 +196,7 @@ int main()
     Window gameW{};
     nodelay(gameW.getWindow(), true);
     std::vector<Vec> windowPerimeter{ gameW.getWindowPerimeter() };
-    std::vector<std::vector<Vec>> windowArea{ gameW.getWindowArea() };
+    std::vector<std::vector<int>> windowArea{ gameW.getWindowArea() };
     std::vector<Obstacle> obstacleList{obstacleInitAndRefresh(gameW)};
 
     Pellet pellets{gameW, obstacleList, windowPerimeter, windowArea};

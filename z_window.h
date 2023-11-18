@@ -14,7 +14,7 @@ private:
     int m_screenX;
     WINDOW* m_window;
     std::vector<Vec> m_windowPerimeter{};
-    std::vector<std::vector<Vec>> m_windowArea{};
+    std::vector<std::vector<int>> m_windowArea{};
 
     void drawBoxAndRefresh();
     void initWindowPerimeter();
@@ -30,5 +30,5 @@ public:
     const int& getScreenY(); 
     const int& getScreenX();
     std::vector<Vec> getWindowPerimeter();
-    std::vector<std::vector<Vec>> getWindowArea();
+    std::vector<std::vector<int>> getWindowArea();
 };

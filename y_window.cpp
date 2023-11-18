@@ -49,7 +49,12 @@ void Window::initWindowArea()
 {
     for(std::size_t rows{0}; rows < m_screenY; ++rows)
     {
-        
+        m_windowArea.emplace_back();
+
+        for(std::size_t columns{0}; columns < m_screenX; ++columns)
+        {
+            m_windowArea[rows].emplace_back();
+        }
     }
 }
 
@@ -65,6 +70,7 @@ Window::Window(int screenY, int screenX)
     m_window = newwin(m_screenY, m_screenX, (maxY - m_screenY) / 2, (maxX - m_screenX) / 2);
     drawBoxAndRefresh();
     initWindowPerimeter();
+    initWindowArea();
 }
 
 
@@ -75,6 +81,7 @@ Window::Window(int screenY, int screenX, int startY, int startX)
     m_window = newwin(screenY, screenX, startY, startX);
     drawBoxAndRefresh();
     initWindowPerimeter();
+    initWindowArea();
 }
 
 
@@ -84,4 +91,4 @@ WINDOW* Window::getWindow() { return m_window; }
 const int& Window::getScreenY() { return m_screenY; }
 const int& Window::getScreenX() { return m_screenX; }
 std::vector<Vec> Window::getWindowPerimeter() { return m_windowPerimeter; }
-std::vector<std::vector<Vec>> Window::getWindowArea() { return m_windowArea; }
+std::vector<std::vector<int>> Window::getWindowArea() { return m_windowArea; }
