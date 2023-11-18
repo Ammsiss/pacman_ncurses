@@ -150,7 +150,7 @@ void gameLoop(Window& gameW, std::vector<Obstacle>& obstacleList, std::vector<Ve
 
     while(true)
     {
-        pacman.timeToMove(gameW, obstacleList);
+        pacman.timeToMove(gameW, obstacleList, pellets);
         pinky.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde, pellets);
         inky.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde, pellets);
         blinky.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde, pellets);
@@ -203,8 +203,8 @@ int main()
     std::vector<Obstacle> obstacleList{obstacleInitAndRefresh(gameW)};
 
     // init pellet stuff
-    Pellet pellets{gameW, obstacleList, windowPerimeter, windowArea};
-    pellets.printAndRefreshPellet(gameW);
+    Pellet pellets{};
+    pellets.initPelletVector(gameW, obstacleList, windowArea, windowPerimeter);
 
     // Start!
     gameLoop(gameW, obstacleList, windowPerimeter, pellets);

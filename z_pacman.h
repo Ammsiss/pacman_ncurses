@@ -7,6 +7,7 @@
 #include "z_aggregate.h"
 #include "z_window.h"
 #include "z_obstacle.h"
+#include "z_pellet.h"
 
 class Pacman
 {
@@ -28,9 +29,10 @@ private:
     void erase(Window& win);
     void getUserInputAndSetDirection(Window& win);
     void movePacmanBasedOnDirection(Window& win, std::vector<Obstacle>& obstacleList);
+    void setGarbageValue(Pellet& pellets);
 
 public:
     Pacman();
-    void timeToMove(Window& win, std::vector<Obstacle>& obstacleList);
+    void timeToMove(Window& win, std::vector<Obstacle>& obstacleList, Pellet& pellets);
 
 };

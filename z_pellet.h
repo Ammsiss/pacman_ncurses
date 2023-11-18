@@ -14,12 +14,13 @@ private:
     int m_garbage;
 
     std::vector<std::vector<int>> m_pelletVec;
-    void initPelletVector(std::vector<Obstacle>& obstacleList, std::vector<std::vector<int>>& windowArea, std::vector<Vec>& windowPerimeter);
     void removeGhostBoxPellet(Window& win);
+    void assignGarbageToGhostBox();
+    void printAndRefreshPellet(Window& win);
 
 public:
-    Pellet( Window& win, std::vector<Obstacle>& obstacleList, std::vector<Vec>& windowPerimeter, std::vector<std::vector<int>>& windowArea);
+    Pellet();
 
-    void printAndRefreshPellet(Window& win);
-    std::vector<std::vector<int>> getPelletVec();
+    void initPelletVector(Window& win, std::vector<Obstacle>& obstacleList, std::vector<std::vector<int>>& windowArea, std::vector<Vec>& windowPerimeter);
+    std::vector<std::vector<int>>& getPelletVec();
 };

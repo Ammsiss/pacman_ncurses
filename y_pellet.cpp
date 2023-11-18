@@ -11,7 +11,65 @@
 
     // private
 
-    void Pellet::initPelletVector(std::vector<Obstacle>& obstacleList, std::vector<std::vector<int>>& windowArea, std::vector<Vec>& windowPerimeter)
+    void Pellet::printAndRefreshPellet(Window& win)
+    {
+        for(std::size_t y{0}; y < m_pelletVec.size(); ++y)
+        {
+            for(std::size_t x{0}; x < m_pelletVec[y].size(); ++x)
+            {
+                if(m_pelletVec[y][x] != m_garbage)
+                {
+                    wattron(win.getWindow(), COLOR_PAIR(7));
+                    mvwprintw(win.getWindow(), y, x, "•");
+                    wattroff(win.getWindow(), COLOR_PAIR(7));
+                    wattron(win.getWindow(), COLOR_PAIR(0));
+                }
+            }
+        }
+
+        removeGhostBoxPellet(win);
+
+        wrefresh(win.getWindow());
+    }
+
+    void Pellet::assignGarbageToGhostBox()
+    {
+        // HARDCODED CHANGE MAYBE
+
+        for(int y{13}; y < 16; ++y)
+        {
+            for(int x{11}; x < 17; ++x)
+            {
+                m_pelletVec[y][x] = m_garbage;
+            }
+        }
+
+        m_pelletVec[12][13] = m_garbage;
+        m_pelletVec[12][14] = m_garbage;
+    }
+
+    void Pellet::removeGhostBoxPellet(Window& win)
+    {
+        // HARD CODED CHANGE MAYBE
+
+        mvwprintw(win.getWindow(), 13, 11, "      ");
+        mvwprintw(win.getWindow(), 14, 11, "      ");
+        mvwprintw(win.getWindow(), 15, 11, "      ");
+        mvwprintw(win.getWindow(), 12, 13, "  ");
+
+        assignGarbageToGhostBox();
+
+        wrefresh(win.getWindow());
+    }
+
+    // public
+
+    Pellet::Pellet()
+        : m_pelletVec {}, m_garbage{10000}
+    {
+    }
+
+    void Pellet::initPelletVector(Window& win, std::vector<Obstacle>& obstacleList, std::vector<std::vector<int>>& windowArea, std::vector<Vec>& windowPerimeter)
     {
         for(std::size_t y{0}; y < windowArea.size(); ++y)
         {
@@ -39,47 +97,8 @@
         }
 
         m_pelletVec = windowArea;
+
+        printAndRefreshPellet(win);
     }
 
-    void Pellet::removeGhostBoxPellet(Window& win)
-    {
-        // HARD CODED CHANGE MAYBE
-
-        mvwprintw(win.getWindow(), 13, 11, "      ");
-        mvwprintw(win.getWindow(), 14, 11, "      ");
-        mvwprintw(win.getWindow(), 15, 11, "      ");
-        mvwprintw(win.getWindow(), 12, 13, "  ");
-
-        wrefresh(win.getWindow());
-    }
-
-    // public
-
-    Pellet::Pellet( Window& win, std::vector<Obstacle>& obstacleList, std::vector<Vec>& windowPerimeter, std::vector<std::vector<int>>& windowArea)
-        : m_pelletVec {}, m_garbage{10000}
-    {
-        initPelletVector(obstacleList, windowArea, windowPerimeter);
-    }
-
-    void Pellet::printAndRefreshPellet(Window& win)
-    {
-        for(std::size_t y{0}; y < m_pelletVec.size(); ++y)
-        {
-            for(std::size_t x{0}; x < m_pelletVec[y].size(); ++x)
-            {
-                if(m_pelletVec[y][x] != m_garbage)
-                {
-                    wattron(win.getWindow(), COLOR_PAIR(7));
-                    mvwprintw(win.getWindow(), y, x, "•");
-                    wattroff(win.getWindow(), COLOR_PAIR(7));
-                    wattron(win.getWindow(), COLOR_PAIR(0));
-                }
-            }
-        }
-
-        removeGhostBoxPellet(win);
-
-        wrefresh(win.getWindow());
-    }
-
-    std::vector<std::vector<int>> Pellet::getPelletVec() { return m_pelletVec; }
+    std::vector<std::vector<int>>& Pellet::getPelletVec() { return m_pelletVec; }

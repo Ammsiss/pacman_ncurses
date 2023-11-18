@@ -243,11 +243,13 @@ void Ghost::printOverLap(Window& win, GhostColor overLapColor)
 
 void Ghost::printPelletBack(Pellet& pellets, Window& win)
 {
+    const int garbage{10000};
+
     for(std::size_t y{0}; y < pellets.getPelletVec().size(); ++y)
     {
         for(std::size_t x{0}; x < pellets.getPelletVec()[y].size(); ++x)
         {
-            if(m_ghostVec.y == y && m_ghostVec.x == x)
+            if(m_ghostVec.y == y && m_ghostVec.x == x && pellets.getPelletVec()[y][x] != garbage)
             {
                     wattron(win.getWindow(), COLOR_PAIR(7));
                     mvwprintw(win.getWindow(), y, x, "•");
