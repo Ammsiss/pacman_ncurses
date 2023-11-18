@@ -9,6 +9,7 @@
 #include "z_aggregate.h"
 #include "z_window.h"
 #include "z_obstacle.h"
+#include "z_pellet.h"
 
 class Ghost
 {
@@ -32,10 +33,11 @@ private:
     bool perimeterBoundsCheck(std::vector<Vec>& windowPerimeter);
     GhostColor checkGhostOverLap(Ghost& pinky, Ghost& inky, Ghost& blinky, Ghost& clyde);
     void printOverLap(Window& win, GhostColor overLapColor);
+    void printPelletBack(Pellet& pellets, Window& win);
 
 public:
     Ghost(std::chrono::milliseconds speed, GhostColor ghostColor);
-    void timeToMove(Window& win, std::vector<Obstacle>& obstacleList, std::vector<Vec>& windowPerimeter, Ghost& pinky, Ghost& inky, Ghost& blinky, Ghost& clyde);
+    void timeToMove(Window& win, std::vector<Obstacle>& obstacleList, std::vector<Vec>& windowPerimeter, Ghost& pinky, Ghost& inky, Ghost& blinky, Ghost& clyde, Pellet& pellets);
 
     // getters
     GhostColor getGhostColor();

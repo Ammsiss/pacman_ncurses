@@ -15,6 +15,7 @@ private:
 
     std::vector<std::vector<int>> m_pelletVec;
     void initPelletVector(std::vector<Obstacle>& obstacleList, std::vector<std::vector<int>>& windowArea, std::vector<Vec>& windowPerimeter);
+    void removeGhostBoxPellet(Window& win);
 
 public:
     Pellet( Window& win, std::vector<Obstacle>& obstacleList, std::vector<Vec>& windowPerimeter, std::vector<std::vector<int>>& windowArea);

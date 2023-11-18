@@ -5,6 +5,7 @@
 #include "z_ghost.h"
 #include "z_obstacle.h"
 #include "z_random.h"
+#include "z_pellet.h"
 
 #include <chrono>
 #include <thread>
@@ -238,8 +239,23 @@ void Ghost::printOverLap(Window& win, GhostColor overLapColor)
         wattroff(win.getWindow(), COLOR_PAIR(3));
         wattron(win.getWindow(), COLOR_PAIR(0));
     }
+}
 
-    wrefresh(win.getWindow());
+void Ghost::printPelletBack(Pellet& pellets, Window& win)
+{
+    for(std::size_t y{0}; y < pellets.getPelletVec().size(); ++y)
+    {
+        for(std::size_t x{0}; x < pellets.getPelletVec()[y].size(); ++x)
+        {
+            if(m_ghostVec.y == y && m_ghostVec.x == x)
+            {
+                    wattron(win.getWindow(), COLOR_PAIR(7));
+                    mvwprintw(win.getWindow(), y, x, "•");
+                    wattroff(win.getWindow(), COLOR_PAIR(7));
+                    wattron(win.getWindow(), COLOR_PAIR(0));
+            }
+        }
+    }
 }
 
 // public members:
@@ -254,7 +270,7 @@ Ghost::Ghost(std::chrono::milliseconds speed, GhostColor ghostColor)
     {
     }
 
-void Ghost::timeToMove(Window& win, std::vector<Obstacle>& obstacleList, std::vector<Vec>& windowPerimeter, Ghost& pinky, Ghost& inky, Ghost& blinky, Ghost& clyde)
+void Ghost::timeToMove(Window& win, std::vector<Obstacle>& obstacleList, std::vector<Vec>& windowPerimeter, Ghost& pinky, Ghost& inky, Ghost& blinky, Ghost& clyde, Pellet& pellets)
 {
     // define chrono duration and 2 system time instances to create pacman's timed movement
     auto currentTime{std::chrono::high_resolution_clock::now()};
@@ -262,6 +278,7 @@ void Ghost::timeToMove(Window& win, std::vector<Obstacle>& obstacleList, std::ve
     if (currentTime - m_lastTime >= m_interval)
     {
         erase(win);
+        printPelletBack(pellets, win);
         printOverLap(win, checkGhostOverLap(pinky, inky, blinky, clyde));
         setValidDirection(obstacleList, windowPerimeter);
         printAndRefreshGhost(win);

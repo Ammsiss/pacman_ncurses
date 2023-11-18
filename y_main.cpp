@@ -111,7 +111,7 @@ std::vector<Obstacle> obstacleInitAndRefresh(Window& gameW)
     return obstacleList;
 }
 
-void gameLoop(Window& gameW, std::vector<Obstacle>& obstacleList, std::vector<Vec>& windowPerimeter)
+void gameLoop(Window& gameW, std::vector<Obstacle>& obstacleList, std::vector<Vec>& windowPerimeter, Pellet& pellets)
 {
     // init ya boi
     Pacman pacman{};
@@ -151,10 +151,10 @@ void gameLoop(Window& gameW, std::vector<Obstacle>& obstacleList, std::vector<Ve
     while(true)
     {
         pacman.timeToMove(gameW, obstacleList);
-        // pinky.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
-        // inky.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
-        // blinky.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
-        // clyde.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
+        pinky.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde, pellets);
+        inky.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde, pellets);
+        blinky.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde, pellets);
+        clyde.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde, pellets);
 
         /*
         g1.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
@@ -193,16 +193,21 @@ int main()
 {
     ncursesInit(); 
 
+    // init window stuff
     Window gameW{};
     nodelay(gameW.getWindow(), true);
     std::vector<Vec> windowPerimeter{ gameW.getWindowPerimeter() };
     std::vector<std::vector<int>> windowArea{ gameW.getWindowArea() };
+
+    // init obstacles stuff
     std::vector<Obstacle> obstacleList{obstacleInitAndRefresh(gameW)};
 
+    // init pellet stuff
     Pellet pellets{gameW, obstacleList, windowPerimeter, windowArea};
+    pellets.printAndRefreshPellet(gameW);
 
     // Start!
-    gameLoop(gameW, obstacleList, windowPerimeter);
+    gameLoop(gameW, obstacleList, windowPerimeter, pellets);
     
     endwin();
     return 0;

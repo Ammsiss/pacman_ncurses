@@ -41,13 +41,24 @@
         m_pelletVec = windowArea;
     }
 
+    void Pellet::removeGhostBoxPellet(Window& win)
+    {
+        // HARD CODED CHANGE MAYBE
+
+        mvwprintw(win.getWindow(), 13, 11, "      ");
+        mvwprintw(win.getWindow(), 14, 11, "      ");
+        mvwprintw(win.getWindow(), 15, 11, "      ");
+        mvwprintw(win.getWindow(), 12, 13, "  ");
+
+        wrefresh(win.getWindow());
+    }
+
     // public
 
     Pellet::Pellet( Window& win, std::vector<Obstacle>& obstacleList, std::vector<Vec>& windowPerimeter, std::vector<std::vector<int>>& windowArea)
         : m_pelletVec {}, m_garbage{10000}
     {
         initPelletVector(obstacleList, windowArea, windowPerimeter);
-        printAndRefreshPellet(win);
     }
 
     void Pellet::printAndRefreshPellet(Window& win)
@@ -65,6 +76,8 @@
                 }
             }
         }
+
+        removeGhostBoxPellet(win);
 
         wrefresh(win.getWindow());
     }
