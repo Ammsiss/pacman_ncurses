@@ -26,6 +26,8 @@ void ncursesInit()
     cbreak();
     noecho();
     curs_set(0);
+
+    // color stuff
     start_color();
     use_default_colors();
     init_color(COLOR_BLACK, 0, 0, 0);
@@ -40,6 +42,8 @@ void ncursesInit()
     init_pair(Color::white_black, COLOR_WHITE, COLOR_BLACK);
     init_pair(Color::blue_black, COLOR_BLUE, COLOR_BLACK);
     init_pair(Color::orange_black, COLOR_GREEN, COLOR_BLACK);
+
+    // init refresh
     refresh();
 }
 
@@ -230,6 +234,7 @@ int main()
 {
     ncursesInit(); 
 
+    bool closeGame{false};
     while(true)
     {
         switch(menuLoop())
@@ -240,12 +245,16 @@ int main()
             case MenuSelection::controls:
                 break;
             case MenuSelection::exit:
+                closeGame = true;
                 break;
         }
+
+        if(closeGame)
+            break;
     }
     
     endwin();
     return 0;
 }
 
-// IMPLEMENTATION IDEAS:: PACMAN MENU ANIMATION, PATHFINDING
+// IMPLEMENTATION IDEAS:: PACMAN MENU ANIMATION, PATHFINDING, OBSTACLE FLASHING ON COUNT DOWN

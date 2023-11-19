@@ -22,8 +22,15 @@ MenuSelection Menu::getMenuSelection() { return m_userMenuSelection; }
 
 void Menu::printOptions()
 {
-        for(std::size_t i{0}; i < m_options.size(); ++i)
+    for(std::size_t i{0}; i < m_options.size(); ++i)
     {
+        // joke
+        wattron(m_menuPerimeterWindow.getWindow(), COLOR_PAIR(Color::red_black));
+        mvwprintw(m_menuPerimeterWindow.getWindow(), 18, 26, "™");
+        wattroff(m_menuPerimeterWindow.getWindow(), COLOR_PAIR(Color::red_black));
+        wattron(m_menuPerimeterWindow.getWindow(), COLOR_PAIR(Color::default_color));
+        //
+
         if(m_selection == i)
         {
             wattron(m_menuPerimeterWindow.getWindow(), COLOR_PAIR(Color::yellow_black));

@@ -31,7 +31,6 @@ bool Ghost::oppositeDirectionCheck(Direction directionCheck)
 {
     m_direction = static_cast<Direction>(Random::randomDirection(Random::mt));
 
-    // Possible refactor
     if (directionCheck == Direction::up && m_direction == Direction::down)
         return true;
     else if (directionCheck == Direction::left && m_direction == Direction::right)
@@ -175,25 +174,15 @@ bool Ghost::moveGhostInValidDirection(std::vector<Obstacle>& obstacleList, std::
 Color::ColorPair Ghost::checkGhostOverLap(Ghost& pinky, Ghost& inky, Ghost& blinky, Ghost& clyde)
 {
     // checks to see if implicit ghost is in the same coordinate as a explicit ghost
+    std::vector<Ghost> ghostList{pinky, inky, blinky, clyde};
 
-    if(m_ghostVec.y == pinky.getGhostVec().y && m_ghostVec.x == pinky.getGhostVec().x && m_ghostColor != Color::pink_black)
+    for(std::size_t i{0}; i < ghostList.size(); ++i)
     {
-        return Color::pink_black;
-    }
-
-    if(m_ghostVec.y == inky.getGhostVec().y && m_ghostVec.x == inky.getGhostVec().x && m_ghostColor != Color::cyan_black)
-    {
-        return Color::cyan_black;
-    }
-
-    if(m_ghostVec.y == blinky.getGhostVec().y && m_ghostVec.x == blinky.getGhostVec().x && m_ghostColor != Color::red_black)
-    {
-        return Color::red_black;
-    }
-
-    if(m_ghostVec.y == clyde.getGhostVec().y && m_ghostVec.x == clyde.getGhostVec().x && m_ghostColor != Color::orange_black)
-    {
-        return Color::orange_black;
+        if(m_ghostVec.y == ghostList[i].getGhostVec().y && m_ghostVec.x == ghostList[i].getGhostVec().x && 
+            m_ghostColor != ghostList[i].getGhostColor())
+            {
+                return ghostList[i].getGhostColor();
+            }
     }
 
     return Color::null;
@@ -202,35 +191,10 @@ Color::ColorPair Ghost::checkGhostOverLap(Ghost& pinky, Ghost& inky, Ghost& blin
 void Ghost::printOverLap(Window& win, Color::ColorPair overLapColor)
 {
     // prints ghost back if overlapped
-
-    if (overLapColor == Color::red_black)
-    {
-        wattron(win.getWindow(), COLOR_PAIR(Color::red_black));
-        mvwprintw(win.getWindow(), m_ghostVec.y, m_ghostVec.x, "ᗣ");
-        wattroff(win.getWindow(), COLOR_PAIR(Color::red_black));
-        wattron(win.getWindow(), COLOR_PAIR(Color::default_color));
-    }
-    else if(overLapColor == Color::cyan_black)
-    {
-        wattron(win.getWindow(), COLOR_PAIR(Color::cyan_black));
-        mvwprintw(win.getWindow(), m_ghostVec.y, m_ghostVec.x, "ᗣ");
-        wattroff(win.getWindow(), COLOR_PAIR(Color::cyan_black));
-        wattron(win.getWindow(), COLOR_PAIR(Color::default_color));
-    }
-    else if(overLapColor == Color::orange_black)
-    {
-        wattron(win.getWindow(), COLOR_PAIR(Color::orange_black));
-        mvwprintw(win.getWindow(), m_ghostVec.y, m_ghostVec.x, "ᗣ");
-        wattroff(win.getWindow(), COLOR_PAIR(Color::orange_black));
-        wattron(win.getWindow(), COLOR_PAIR(Color::default_color));
-    }
-    else if(overLapColor == Color::pink_black)
-    {
-        wattron(win.getWindow(), COLOR_PAIR(Color::pink_black));    
-        mvwprintw(win.getWindow(), m_ghostVec.y, m_ghostVec.x, "ᗣ");
-        wattroff(win.getWindow(), COLOR_PAIR(Color::pink_black));
-        wattron(win.getWindow(), COLOR_PAIR(Color::default_color));
-    }
+    wattron(win.getWindow(), COLOR_PAIR(overLapColor));
+    mvwprintw(win.getWindow(), m_ghostVec.y, m_ghostVec.x, "ᗣ");
+    wattroff(win.getWindow(), COLOR_PAIR(overLapColor));
+    wattron(win.getWindow(), COLOR_PAIR(Color::default_color));
 }
 
 void Ghost::printPelletBack(Pellet& pellets, Window& win)
@@ -264,6 +228,7 @@ Ghost::Ghost(std::chrono::milliseconds speed, Color::ColorPair ghostColor)
     {
     }
 
+// refactor this ****
 void Ghost::timeToMove(Window& win, std::vector<Obstacle>& obstacleList, std::vector<Vec>& windowPerimeter, Ghost& pinky, Ghost& inky, Ghost& blinky, Ghost& clyde, Pellet& pellets)
 {
     // define chrono duration and 2 system time instances to create pacman's timed movement
