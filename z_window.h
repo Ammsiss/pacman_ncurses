@@ -12,11 +12,11 @@ private:
     static const int defaultGameY;
     int m_screenY;
     int m_screenX;
+    
     WINDOW* m_window;
     std::vector<Vec> m_windowPerimeter{};
     std::vector<std::vector<int>> m_windowArea{};
 
-    void drawBoxAndRefresh();
     void initWindowPerimeter();
     void initWindowArea();
 
@@ -31,5 +31,7 @@ public:
     const int& getScreenX();
     std::vector<Vec> getWindowPerimeter();
     std::vector<std::vector<int>> getWindowArea();
+
+    void drawBoxAndRefresh();
     void gameCountDown();
 };

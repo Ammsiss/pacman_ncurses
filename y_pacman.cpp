@@ -76,31 +76,31 @@ void Pacman::printPacmanBasedOnDirectionAndRefresh(Window& win)
 {
     if(m_direction == Direction::up)
     {
-        wattron(win.getWindow(), COLOR_PAIR(4));    
+        wattron(win.getWindow(), COLOR_PAIR(Color::yellow_black));    
         mvwprintw(win.getWindow(), m_pacVec.y, m_pacVec.x, "v");
-        wattroff(win.getWindow(), COLOR_PAIR(4));
-        wattron(win.getWindow(), COLOR_PAIR(0));
+        wattroff(win.getWindow(), COLOR_PAIR(Color::yellow_black));
+        wattron(win.getWindow(), COLOR_PAIR(Color::default_color));
     }
     else if(m_direction == Direction::down)
     {
-        wattron(win.getWindow(), COLOR_PAIR(4));  
+        wattron(win.getWindow(), COLOR_PAIR(Color::yellow_black));  
         mvwprintw(win.getWindow(), m_pacVec.y, m_pacVec.x, "ʌ");
-        wattroff(win.getWindow(), COLOR_PAIR(4));
-        wattron(win.getWindow(), COLOR_PAIR(0));
+        wattroff(win.getWindow(), COLOR_PAIR(Color::yellow_black));
+        wattron(win.getWindow(), COLOR_PAIR(Color::default_color));
     }
     else if(m_direction == Direction::left)
     {
-        wattron(win.getWindow(), COLOR_PAIR(4));  
+        wattron(win.getWindow(), COLOR_PAIR(Color::yellow_black));  
         mvwprintw(win.getWindow(), m_pacVec.y, m_pacVec.x, ">");
-        wattroff(win.getWindow(), COLOR_PAIR(4));
-        wattron(win.getWindow(), COLOR_PAIR(0));
+        wattroff(win.getWindow(), COLOR_PAIR(Color::yellow_black));
+        wattron(win.getWindow(), COLOR_PAIR(Color::default_color));
     }
     else if(m_direction == Direction::right)
     {
-        wattron(win.getWindow(), COLOR_PAIR(4));  
+        wattron(win.getWindow(), COLOR_PAIR(Color::yellow_black));  
         mvwprintw(win.getWindow(), m_pacVec.y, m_pacVec.x, "<");
-        wattroff(win.getWindow(), COLOR_PAIR(4));
-        wattron(win.getWindow(), COLOR_PAIR(0));
+        wattroff(win.getWindow(), COLOR_PAIR(Color::yellow_black));
+        wattron(win.getWindow(), COLOR_PAIR(Color::default_color));
     }
     wrefresh(win.getWindow());
 }

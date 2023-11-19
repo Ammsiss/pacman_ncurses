@@ -1,52 +1,52 @@
-    #include <vector>
-    #include <ncurses.h>
+#include <vector>
+#include <ncurses.h>
 
-    #include "z_aggregate.h"
-    #include "z_obstacle.h"
+#include "z_aggregate.h"
+#include "z_obstacle.h"
     
-    // private
+// private
 
-    void Obstacle::initObsVector(Vec& startPoint, Vec& obsDimensions)
+void Obstacle::initObsVector(Vec& startPoint, Vec& obsDimensions)
+{
+    int totalVectors{obsDimensions.y * obsDimensions.x};
+
+    for (std::size_t i{0}; i < totalVectors; ++i)
     {
-        int totalVectors{obsDimensions.y * obsDimensions.x};
-
-        for (std::size_t i{0}; i < totalVectors; ++i)
-        {
-            m_obsVec.emplace_back(); 
-        }
-
-        std::size_t vectorIncrement{0};
-        for(std::size_t iY{0}; iY < obsDimensions.y; ++iY)
-        {
-            for(std::size_t iX{0}; iX < obsDimensions.x; ++iX)
-            {
-                m_obsVec[vectorIncrement].y = (iY + startPoint.y);
-
-                m_obsVec[vectorIncrement].x = (iX + startPoint.x);
-
-                ++vectorIncrement;
-            }
-        }
+        m_obsVec.emplace_back(); 
     }
 
-    void Obstacle::printAndRefreshObstacle(Window& win)
+    std::size_t vectorIncrement{0};
+    for(std::size_t iY{0}; iY < obsDimensions.y; ++iY)
     {
-        for(std::size_t i{0}; i < m_obsVec.size(); ++i)
+        for(std::size_t iX{0}; iX < obsDimensions.x; ++iX)
         {
-            wattron(win.getWindow(), COLOR_PAIR(6));
-            mvwaddch(win.getWindow(), m_obsVec[i].y, m_obsVec[i].x, obsCh);
-            wattroff(win.getWindow(), COLOR_PAIR(6));
-            wattron(win.getWindow(), COLOR_PAIR(0));
+            m_obsVec[vectorIncrement].y = (iY + startPoint.y);
+
+            m_obsVec[vectorIncrement].x = (iX + startPoint.x);
+
+            ++vectorIncrement;
         }
-        wrefresh(win.getWindow());
     }
+}
 
-    // public
-
-    Obstacle::Obstacle( Vec startPoint, Vec obsDimensions, Window& win)
+void Obstacle::printAndRefreshObstacle(Window& win)
+{
+    for(std::size_t i{0}; i < m_obsVec.size(); ++i)
     {
-        initObsVector(startPoint, obsDimensions);
-        printAndRefreshObstacle(win);
+        wattron(win.getWindow(), COLOR_PAIR(Color::blue_black));
+        mvwaddch(win.getWindow(), m_obsVec[i].y, m_obsVec[i].x, obsCh);
+        wattroff(win.getWindow(), COLOR_PAIR(Color::blue_black));
+        wattron(win.getWindow(), COLOR_PAIR(Color::default_color));
     }
+    wrefresh(win.getWindow());
+}
 
-    const std::vector<Vec>& Obstacle::getObsVec() { return m_obsVec; }
+// public
+
+Obstacle::Obstacle( Vec startPoint, Vec obsDimensions, Window& win)
+{
+    initObsVector(startPoint, obsDimensions);
+    printAndRefreshObstacle(win);
+}
+
+const std::vector<Vec>& Obstacle::getObsVec() { return m_obsVec; }

@@ -19,10 +19,10 @@
             {
                 if(m_pelletVec[y][x] != m_garbage)
                 {
-                    wattron(win.getWindow(), COLOR_PAIR(7));
+                    wattron(win.getWindow(), COLOR_PAIR(Color::white_black));
                     mvwprintw(win.getWindow(), y, x, "•");
-                    wattroff(win.getWindow(), COLOR_PAIR(7));
-                    wattron(win.getWindow(), COLOR_PAIR(0));
+                    wattroff(win.getWindow(), COLOR_PAIR(Color::white_black));
+                    wattron(win.getWindow(), COLOR_PAIR(Color::default_color));
                 }
             }
         }

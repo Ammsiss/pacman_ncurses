@@ -14,15 +14,6 @@ using namespace std::chrono_literals;
 const int Window::defaultGameX{28};
 const int Window::defaultGameY{31};
 
-void Window::drawBoxAndRefresh()
-{
-    wattron(m_window, COLOR_PAIR(6));   
-    wborder(m_window, ACS_CKBOARD, ACS_CKBOARD, ACS_CKBOARD, ACS_CKBOARD, ACS_CKBOARD, ACS_CKBOARD, ACS_CKBOARD, ACS_CKBOARD);
-    wattroff(m_window, COLOR_PAIR(6));
-    wattron(m_window, COLOR_PAIR(0));
-    wrefresh(m_window);
-}
-
 void Window::initWindowPerimeter()
 {
     // X: 0 - 27
@@ -64,6 +55,7 @@ void Window::initWindowArea()
 
 // public
 
+// constructs centered window with optional dimensions
 Window::Window(int screenY, int screenX)
 : m_screenY {screenY}
 , m_screenX {screenX}
@@ -72,30 +64,39 @@ Window::Window(int screenY, int screenX)
     int maxX{};
     getmaxyx(stdscr, maxY, maxX);
     m_window = newwin(m_screenY, m_screenX, (maxY - m_screenY) / 2, (maxX - m_screenX) / 2);
-    drawBoxAndRefresh();
     initWindowPerimeter();
     initWindowArea();
 }
 
-
+// Constructs custum window with custum start point and dimensions based on stdscr
 Window::Window(int screenY, int screenX, int startY, int startX)
 : m_screenY {screenY}
 , m_screenX {screenX}
 {
     m_window = newwin(screenY, screenX, startY, startX);
-    drawBoxAndRefresh();
     initWindowPerimeter();
     initWindowArea();
 }
 
-
+// deconstructor
 Window::~Window() { delwin(m_window); }
 
+
+// getters
 WINDOW* Window::getWindow() { return m_window; }
 const int& Window::getScreenY() { return m_screenY; }
 const int& Window::getScreenX() { return m_screenX; }
 std::vector<Vec> Window::getWindowPerimeter() { return m_windowPerimeter; }
 std::vector<std::vector<int>> Window::getWindowArea() { return m_windowArea; }
+
+void Window::drawBoxAndRefresh()
+{
+    wattron(m_window, COLOR_PAIR(Color::blue_black));   
+    wborder(m_window, ACS_CKBOARD, ACS_CKBOARD, ACS_CKBOARD, ACS_CKBOARD, ACS_CKBOARD, ACS_CKBOARD, ACS_CKBOARD, ACS_CKBOARD);
+    wattroff(m_window, COLOR_PAIR(Color::blue_black));
+    wattron(m_window, COLOR_PAIR(Color::default_color));
+    wrefresh(m_window);
+}
 
 void Window::gameCountDown()
 {
@@ -104,7 +105,7 @@ void Window::gameCountDown()
     auto interval{1000ms};
     auto lastTime{std::chrono::high_resolution_clock::now()};
 
-    wattron(m_window, COLOR_PAIR(2));  
+    wattron(m_window, COLOR_PAIR(Color::cyan_black));  
 
     while(true)
     {
@@ -143,8 +144,8 @@ void Window::gameCountDown()
             {
                 mvwprintw(m_window, 14, 11, "      ");
                 wrefresh(m_window);
-                wattroff(m_window, COLOR_PAIR(2));
-                wattron(m_window, COLOR_PAIR(0));
+                wattroff(m_window, COLOR_PAIR(Color::blue_black));
+                wattron(m_window, COLOR_PAIR(Color::default_color));
                 break;
             }
         }

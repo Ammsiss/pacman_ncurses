@@ -9,6 +9,7 @@
 #include "z_obstacle.h"
 #include "z_pellet.h"
 #include "z_ghost.h"
+#include "z_menu.h"
 
 // std library
 #include <chrono>
@@ -28,17 +29,17 @@ void ncursesInit()
     start_color();
     use_default_colors();
     init_color(COLOR_BLACK, 0, 0, 0);
-    init_color(COLOR_MAGENTA, 1000, 550, 550);
-    init_color(COLOR_YELLOW, 1000, 1000, 0);
-    init_color(COLOR_GREEN, 1000, 550, 0);
-    init_pair(0, -1, -1);
-    init_pair(1, 1, 0);
-    init_pair(2, 6, 0);
-    init_pair(3, 5, 0);
-    init_pair(4, 3, 0);
-    init_pair(7, 7, 0);
-    init_pair(6, COLOR_BLUE, 0);
-    init_pair(5, COLOR_GREEN, 0);
+    init_color(COLOR_MAGENTA, 1000, 550, 550); // pink
+    init_color(COLOR_YELLOW, 1000, 1000, 0); // better yellow
+    init_color(COLOR_GREEN, 1000, 550, 0); // orange
+    init_pair(Color::default_color, -1, -1);
+    init_pair(Color::red_black, COLOR_RED, COLOR_BLACK);
+    init_pair(Color::cyan_black, COLOR_CYAN, COLOR_BLACK);
+    init_pair(Color::pink_black, COLOR_MAGENTA, COLOR_BLACK);
+    init_pair(Color::yellow_black, COLOR_YELLOW, COLOR_BLACK);
+    init_pair(Color::white_black, COLOR_WHITE, COLOR_BLACK);
+    init_pair(Color::blue_black, COLOR_BLUE, COLOR_BLACK);
+    init_pair(Color::orange_black, COLOR_GREEN, COLOR_BLACK);
     refresh();
 }
 
@@ -111,15 +112,68 @@ std::vector<Obstacle> obstacleInitAndRefresh(Window& gameW)
     return obstacleList;
 }
 
-void gameLoop(Window& gameW, std::vector<Obstacle>& obstacleList, std::vector<Vec>& windowPerimeter, Pellet& pellets)
+MenuSelection menuLoop()
 {
+    Menu menu;
+    menu.getMenuPerimeterWindow().drawBoxAndRefresh();
+    menu.getWelcomeDisplayWindow().drawBoxAndRefresh();
+    menu.printWelcomeDisplayAndRefresh();
+
+    // 21
+
+    while(true)
+    {
+        for(std::size_t i{0}; i < menu.getOptions().size(); ++i)
+        {
+            if(menu.getSelection() == i)
+            {
+                wattron(menu.getMenuPerimeterWindow().getWindow(), COLOR_PAIR(Color::yellow_black));
+                mvwprintw(menu.getMenuPerimeterWindow().getWindow(), 22 + (2 * i), 9, "%s", "<");
+                wattroff(menu.getMenuPerimeterWindow().getWindow(), COLOR_PAIR(Color::yellow_black));
+                wattron(menu.getMenuPerimeterWindow().getWindow(), COLOR_PAIR(Color::default_color));
+
+                wattron(menu.getMenuPerimeterWindow().getWindow(), COLOR_PAIR(Color::red_black));
+                mvwprintw(menu.getMenuPerimeterWindow().getWindow(), (22 + (2 * i)), 11, "%s", menu.getOptions()[i].c_str());
+                wattroff(menu.getMenuPerimeterWindow().getWindow(), COLOR_PAIR((COLOR_PAIR(Color::red_black)))); 
+                wattron(menu.getMenuPerimeterWindow().getWindow(), COLOR_PAIR(Color::default_color));
+            }
+            else
+            {
+                wattron(menu.getMenuPerimeterWindow().getWindow(), COLOR_PAIR(Color::red_black));
+                mvwprintw(menu.getMenuPerimeterWindow().getWindow(), (22 + (2 * i)), 11, "%s", menu.getOptions()[i].c_str());
+                wattroff(menu.getMenuPerimeterWindow().getWindow(), COLOR_PAIR(Color::red_black));
+                wattron(menu.getMenuPerimeterWindow().getWindow(), COLOR_PAIR(Color::default_color));
+            }
+        }
+
+        wrefresh(menu.getMenuPerimeterWindow().getWindow());
+        getch();
+    }
+}
+
+void gameLoop()
+{
+    // init game window stuff
+    Window gameW{};
+    gameW.drawBoxAndRefresh();
+    std::vector<Vec> windowPerimeter{ gameW.getWindowPerimeter() };
+    std::vector<std::vector<int>> windowArea{ gameW.getWindowArea() };
+    nodelay(gameW.getWindow(), true);
+
+    // init obstacles stuff
+    std::vector<Obstacle> obstacleList{obstacleInitAndRefresh(gameW)};
+
+    // init pellet stuff
+    Pellet pellets{};
+    pellets.initPelletVector(gameW, obstacleList, windowArea, windowPerimeter);
+
     // init ya boi
     Pacman pacman{};
     // init ghosts
-    Ghost pinky{350ms, GhostColor::pink};
-    Ghost inky{325ms, GhostColor::cyan};
-    Ghost blinky{250ms, GhostColor::red};
-    Ghost clyde{275ms, GhostColor::orange};
+    Ghost pinky{ 350ms, GhostColor::pink };
+    Ghost inky{ 325ms, GhostColor::cyan };
+    Ghost blinky{ 250ms, GhostColor::red };
+    Ghost clyde{ 275ms, GhostColor::orange };
 
     /*
     Ghost g1{100ms, GhostColor::pink};
@@ -150,7 +204,6 @@ void gameLoop(Window& gameW, std::vector<Obstacle>& obstacleList, std::vector<Ve
     */
 
     gameW.gameCountDown();
-
     // main loop
     while(true)
     {
@@ -188,7 +241,7 @@ void gameLoop(Window& gameW, std::vector<Obstacle>& obstacleList, std::vector<Ve
         gp.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
         */
 
-        // sleep to avoid infinite checks
+        // sleep to avoid redundant checks
         std::this_thread::sleep_for(5ms);
     }
 }
@@ -197,22 +250,12 @@ int main()
 {
     ncursesInit(); 
 
-    // init window stuff
-    Window gameW{};
-    nodelay(gameW.getWindow(), true);
-    std::vector<Vec> windowPerimeter{ gameW.getWindowPerimeter() };
-    std::vector<std::vector<int>> windowArea{ gameW.getWindowArea() };
+    //menuLoop();
 
-    // init obstacles stuff
-    std::vector<Obstacle> obstacleList{obstacleInitAndRefresh(gameW)};
-
-    // init pellet stuff
-    Pellet pellets{};
-    pellets.initPelletVector(gameW, obstacleList, windowArea, windowPerimeter);
-
-    // Start!
-    gameLoop(gameW, obstacleList, windowPerimeter, pellets);
+    gameLoop();
     
     endwin();
     return 0;
 }
+
+// IMPLEMENTATION IDEAS:: PACMAN MENU ANIMATION, PATHFINDING

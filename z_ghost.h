@@ -29,11 +29,12 @@ private:
     bool obstacleBoundsCheck(std::vector<Obstacle>& obstacleList);
     void printAndRefreshGhost(Window& win);
     void erase(Window& win);
-    bool moveGhostBasedOnDirection(std::vector<Obstacle>& obstacleList, std::vector<Vec>& windowPerimeter);
+    bool moveGhostInValidDirection(std::vector<Obstacle>& obstacleList, std::vector<Vec>& windowPerimeter);
     bool perimeterBoundsCheck(std::vector<Vec>& windowPerimeter);
     GhostColor checkGhostOverLap(Ghost& pinky, Ghost& inky, Ghost& blinky, Ghost& clyde);
     void printOverLap(Window& win, GhostColor overLapColor);
     void printPelletBack(Pellet& pellets, Window& win);
+    bool oppositeDirectionCheck(Direction directionCheck);
 
 public:
     Ghost(std::chrono::milliseconds speed, GhostColor ghostColor);
