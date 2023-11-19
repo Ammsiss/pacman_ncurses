@@ -114,40 +114,20 @@ std::vector<Obstacle> obstacleInitAndRefresh(Window& gameW)
 
 MenuSelection menuLoop()
 {
+    // Init menu stuff
     Menu menu;
     menu.getMenuPerimeterWindow().drawBoxAndRefresh();
     menu.getWelcomeDisplayWindow().drawBoxAndRefresh();
     menu.printWelcomeDisplayAndRefresh();
 
-    // 21
-
     while(true)
     {
-        for(std::size_t i{0}; i < menu.getOptions().size(); ++i)
-        {
-            if(menu.getSelection() == i)
-            {
-                wattron(menu.getMenuPerimeterWindow().getWindow(), COLOR_PAIR(Color::yellow_black));
-                mvwprintw(menu.getMenuPerimeterWindow().getWindow(), 22 + (2 * i), 9, "%s", "<");
-                wattroff(menu.getMenuPerimeterWindow().getWindow(), COLOR_PAIR(Color::yellow_black));
-                wattron(menu.getMenuPerimeterWindow().getWindow(), COLOR_PAIR(Color::default_color));
-
-                wattron(menu.getMenuPerimeterWindow().getWindow(), COLOR_PAIR(Color::red_black));
-                mvwprintw(menu.getMenuPerimeterWindow().getWindow(), (22 + (2 * i)), 11, "%s", menu.getOptions()[i].c_str());
-                wattroff(menu.getMenuPerimeterWindow().getWindow(), COLOR_PAIR((COLOR_PAIR(Color::red_black)))); 
-                wattron(menu.getMenuPerimeterWindow().getWindow(), COLOR_PAIR(Color::default_color));
-            }
-            else
-            {
-                wattron(menu.getMenuPerimeterWindow().getWindow(), COLOR_PAIR(Color::red_black));
-                mvwprintw(menu.getMenuPerimeterWindow().getWindow(), (22 + (2 * i)), 11, "%s", menu.getOptions()[i].c_str());
-                wattroff(menu.getMenuPerimeterWindow().getWindow(), COLOR_PAIR(Color::red_black));
-                wattron(menu.getMenuPerimeterWindow().getWindow(), COLOR_PAIR(Color::default_color));
-            }
-        }
-
+        menu.printOptions();
         wrefresh(menu.getMenuPerimeterWindow().getWindow());
-        getch();
+
+        // if user selected an option return the option
+        if(menu.getUserInputAndSetSelection())
+            return menu.getMenuSelection();
     }
 }
 
@@ -160,20 +140,20 @@ void gameLoop()
     std::vector<std::vector<int>> windowArea{ gameW.getWindowArea() };
     nodelay(gameW.getWindow(), true);
 
-    // init obstacles stuff
+    // init game obstacles stuff
     std::vector<Obstacle> obstacleList{obstacleInitAndRefresh(gameW)};
 
-    // init pellet stuff
+    // init game pellet stuff
     Pellet pellets{};
     pellets.initPelletVector(gameW, obstacleList, windowArea, windowPerimeter);
 
     // init ya boi
     Pacman pacman{};
     // init ghosts
-    Ghost pinky{ 350ms, GhostColor::pink };
-    Ghost inky{ 325ms, GhostColor::cyan };
-    Ghost blinky{ 250ms, GhostColor::red };
-    Ghost clyde{ 275ms, GhostColor::orange };
+    Ghost pinky{ 350ms, Color::pink_black };
+    Ghost inky{ 325ms, Color::cyan_black };
+    Ghost blinky{ 250ms, Color::red_black };
+    Ghost clyde{ 275ms, Color::orange_black };
 
     /*
     Ghost g1{100ms, GhostColor::pink};
@@ -250,9 +230,19 @@ int main()
 {
     ncursesInit(); 
 
-    //menuLoop();
-
-    gameLoop();
+    while(true)
+    {
+        switch(menuLoop())
+        {
+            case MenuSelection::start:
+                gameLoop();
+                break;
+            case MenuSelection::controls:
+                break;
+            case MenuSelection::exit:
+                break;
+        }
+    }
     
     endwin();
     return 0;

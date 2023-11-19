@@ -14,6 +14,9 @@ private:
     std::size_t m_selection{0};
     std::vector<std::string> m_options{"START", "CONTROLS", "EXIT"};
     char m_userInput{};
+    MenuSelection m_userMenuSelection{};
+
+    void clearOldSelection();
 
 public:
 
@@ -22,7 +25,11 @@ public:
     Window& getMenuPerimeterWindow();
     std::vector<std::string> getOptions();
     std::size_t getSelection();
+    MenuSelection getMenuSelection();
 
 
     void printWelcomeDisplayAndRefresh();
+    void printOptions();
+    bool getUserInputAndSetSelection();
+    void setUserSelection();
 };

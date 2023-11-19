@@ -15,18 +15,11 @@ enum class Direction
     null,
 };
 
-enum class GhostColor
-{
-    red,
-    orange,
-    pink,
-    cyan,
-    null,
-};
-
 enum class MenuSelection
 {
-    game,
+    start,
+    controls,
+    exit,
 };
 
 namespace Color
@@ -41,6 +34,7 @@ namespace Color
         yellow_black,
         white_black,
         orange_black,
+        null,
     };
 }
 

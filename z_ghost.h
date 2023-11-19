@@ -19,7 +19,7 @@ private:
     int m_rightPortalX;
     int m_leftPortalX;
     int m_portalY;
-    GhostColor m_ghostColor;
+    Color::ColorPair m_ghostColor;
     std::chrono::milliseconds m_interval;
     std::chrono::time_point<std::chrono::high_resolution_clock> m_lastTime;
 
@@ -31,17 +31,17 @@ private:
     void erase(Window& win);
     bool moveGhostInValidDirection(std::vector<Obstacle>& obstacleList, std::vector<Vec>& windowPerimeter);
     bool perimeterBoundsCheck(std::vector<Vec>& windowPerimeter);
-    GhostColor checkGhostOverLap(Ghost& pinky, Ghost& inky, Ghost& blinky, Ghost& clyde);
-    void printOverLap(Window& win, GhostColor overLapColor);
+    Color::ColorPair checkGhostOverLap(Ghost& pinky, Ghost& inky, Ghost& blinky, Ghost& clyde);
+    void printOverLap(Window& win, Color::ColorPair overLapColor);
     void printPelletBack(Pellet& pellets, Window& win);
     bool oppositeDirectionCheck(Direction directionCheck);
 
 public:
-    Ghost(std::chrono::milliseconds speed, GhostColor ghostColor);
+    Ghost(std::chrono::milliseconds speed, Color::ColorPair ghostColor);
     void timeToMove(Window& win, std::vector<Obstacle>& obstacleList, std::vector<Vec>& windowPerimeter, Ghost& pinky, Ghost& inky, Ghost& blinky, Ghost& clyde, Pellet& pellets);
 
     // getters
-    GhostColor getGhostColor();
+    Color::ColorPair getGhostColor();
     Vec getGhostVec();
 
 };

@@ -1,7 +1,16 @@
 #include "z_window.h"
 #include "z_menu.h"
 
+#include <vector>
+
 // private:
+
+void Menu::clearOldSelection()
+{
+    mvwprintw(m_menuPerimeterWindow.getWindow(), 22, 9, " ");
+    mvwprintw(m_menuPerimeterWindow.getWindow(), 24, 9, " ");
+    mvwprintw(m_menuPerimeterWindow.getWindow(), 26, 9, " ");
+}
 
 // public:
 
@@ -9,6 +18,70 @@ Window& Menu::getWelcomeDisplayWindow() { return m_welcomeDisplayWindow; }
 Window& Menu::getMenuPerimeterWindow() { return m_menuPerimeterWindow; }
 std::vector<std::string> Menu::getOptions() { return m_options; }
 std::size_t Menu::getSelection() { return m_selection; }
+MenuSelection Menu::getMenuSelection() { return m_userMenuSelection; }
+
+void Menu::printOptions()
+{
+        for(std::size_t i{0}; i < m_options.size(); ++i)
+    {
+        if(m_selection == i)
+        {
+            wattron(m_menuPerimeterWindow.getWindow(), COLOR_PAIR(Color::yellow_black));
+            mvwprintw(m_menuPerimeterWindow.getWindow(), 22 + (2 * i), 9, "%s", "<");
+            wattroff(m_menuPerimeterWindow.getWindow(), COLOR_PAIR(Color::yellow_black));
+            wattron(m_menuPerimeterWindow.getWindow(), COLOR_PAIR(Color::default_color));
+
+            wattron(m_menuPerimeterWindow.getWindow(), COLOR_PAIR(Color::red_black));
+            mvwprintw(m_menuPerimeterWindow.getWindow(), (22 + (2 * i)), 11, "%s", m_options[i].c_str());
+            wattroff(m_menuPerimeterWindow.getWindow(), COLOR_PAIR((COLOR_PAIR(Color::red_black)))); 
+            wattron(m_menuPerimeterWindow.getWindow(), COLOR_PAIR(Color::default_color));
+        }
+        else
+        {
+            wattron(m_menuPerimeterWindow.getWindow(), COLOR_PAIR(Color::red_black));
+            mvwprintw(m_menuPerimeterWindow.getWindow(), (22 + (2 * i)), 11, "%s", m_options[i].c_str());
+            wattroff(m_menuPerimeterWindow.getWindow(), COLOR_PAIR(Color::red_black));
+            wattron(m_menuPerimeterWindow.getWindow(), COLOR_PAIR(Color::default_color));
+        }
+    }
+}
+
+bool Menu::getUserInputAndSetSelection()
+{
+    m_userInput = wgetch(m_menuPerimeterWindow.getWindow());
+
+    clearOldSelection();
+
+    switch(m_userInput)
+    {
+        case 'w':
+            if (m_selection != 0)
+                --m_selection;
+            break;
+        case 's':
+            if (m_selection != 2)
+                ++m_selection;
+            break;
+        case '\n':
+            setUserSelection();
+            return true;
+        default:
+            break;
+    }
+
+    return false;
+}
+
+void Menu::setUserSelection()
+{
+    if(m_selection == 0)
+        m_userMenuSelection = MenuSelection::start;
+    else if(m_selection == 1)
+        m_userMenuSelection = MenuSelection::controls;
+    else if(m_selection == 2)
+        m_userMenuSelection = MenuSelection::exit;
+
+}
 
 void Menu::printWelcomeDisplayAndRefresh()
 
@@ -132,3 +205,4 @@ void Menu::printWelcomeDisplayAndRefresh()
 
     wrefresh(m_welcomeDisplayWindow.getWindow());
 }
+
