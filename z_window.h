@@ -15,12 +15,14 @@ private:
     int m_perimeterValue{10001};
     
     WINDOW* m_window;
-    std::vector<Vec> m_windowPerimeter{};
 
+    std::vector<Vec> m_windowPerimeter{};
     std::vector<std::vector<int>> m_windowArea{};
 
     void initWindowPerimeter();
     void initWindowArea();
+    void assignPelletEatenToGhostBox();
+    void removeGhostBoxPelletAndAssignEaten();
 
 public:
     Window(int screenY = defaultGameY, int screenX = defaultGameX);
@@ -29,10 +31,10 @@ public:
 
     // getters
     WINDOW* getWindow();
-    const int& getScreenY(); 
-    const int& getScreenX();
-    std::vector<Vec> getWindowPerimeter();
-    std::vector<std::vector<int>> getWindowArea();
+    int& getScreenY(); 
+    int& getScreenX();
+    std::vector<Vec>& getWindowPerimeter();
+    std::vector<std::vector<int>>& getWindowArea();
 
     void drawBoxAndRefresh();
     void gameCountDown();

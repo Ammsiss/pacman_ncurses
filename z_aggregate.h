@@ -39,6 +39,15 @@ namespace Color
     };
 }
 
+namespace CellName
+{
+    enum CellNames
+    {
+        pelletEaten = 10000,
+        perimeterValue,
+        obstacleValue,
+    };
+}
 struct Vec
 {
     int y{};

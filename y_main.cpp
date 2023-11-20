@@ -1,8 +1,8 @@
-// external libraries
+//external
 #include <ncurses.h>
 #include <clocale>
 
-// header's
+//user
 #include "z_pacman.h"
 #include "z_aggregate.h"
 #include "z_window.h"
@@ -11,7 +11,7 @@
 #include "z_ghost.h"
 #include "z_menu.h"
 
-// std library
+//std
 #include <chrono>
 #include <thread>
 #include <vector>
@@ -142,8 +142,8 @@ void gameLoop()
     // init game window stuff
     Window gameW{};
     gameW.drawBoxAndRefresh();
-    std::vector<Vec> windowPerimeter{ gameW.getWindowPerimeter() };
-    std::vector<std::vector<int>> windowArea{ gameW.getWindowArea() };
+    std::vector<Vec>& windowPerimeter{ gameW.getWindowPerimeter() };
+    std::vector<std::vector<int>>& windowArea{ gameW.getWindowArea() };
     nodelay(gameW.getWindow(), true);
 
     // init game obstacles stuff
@@ -151,81 +151,23 @@ void gameLoop()
 
     // init game pellet stuff
     Pellet pellets{};
-    pellets.initAndPrintPelletVector(gameW, obstacleList, windowArea, windowPerimeter);
+    pellets.initAndPrintPellets(gameW, obstacleList);
 
-    // init ya boi
+    // init characters
     Pacman pacman{};
-    // init ghosts
     Ghost pinky{ 350ms, Color::pink_black };
     Ghost inky{ 325ms, Color::cyan_black };
     Ghost blinky{ 250ms, Color::red_black };
     Ghost clyde{ 275ms, Color::orange_black };
 
-    /*
-    Ghost g1{100ms, GhostColor::pink};
-    Ghost g2{200ms, GhostColor::pink};
-    Ghost g3{300ms, GhostColor::pink};
-    Ghost g4{50ms, GhostColor::pink};
-    Ghost g5{20ms, GhostColor::pink};
-    Ghost g6{500ms, GhostColor::pink};
-    Ghost g7{253ms, GhostColor::cyan};
-    Ghost g8{258ms, GhostColor::cyan};
-    Ghost g9{128ms, GhostColor::cyan};
-    Ghost ga{143ms, GhostColor::cyan};
-    Ghost gb{53ms, GhostColor::cyan};
-    Ghost gc{123ms, GhostColor::cyan};
-    Ghost gd{240ms, GhostColor::red};
-    Ghost ge{350ms, GhostColor::red};
-    Ghost gf{482ms, GhostColor::red};
-    Ghost gg{123ms, GhostColor::red};
-    Ghost gh{90ms, GhostColor::red};
-    Ghost gi{890ms, GhostColor::red};
-    Ghost gj{70ms, GhostColor::red};
-    Ghost gk{50ms, GhostColor::orange};
-    Ghost gl{30ms, GhostColor::orange};
-    Ghost gm{210ms, GhostColor::orange};
-    Ghost gn{220ms, GhostColor::orange};
-    Ghost go{230ms, GhostColor::orange};
-    Ghost gp{240ms, GhostColor::orange};
-    */
-
     gameW.gameCountDown();
-    // main loop
     while(true)
     {
-        pacman.timeToMove(gameW, obstacleList, pellets);
-        pinky.timeToMove(gameW, obstacleList, windowPerimeter, windowArea, pinky, inky, blinky, clyde, pellets);
-        inky.timeToMove(gameW, obstacleList, windowPerimeter, windowArea, pinky, inky, blinky, clyde, pellets);
-        blinky.timeToMove(gameW, obstacleList, windowPerimeter, windowArea, pinky, inky, blinky, clyde, pellets);
-        clyde.timeToMove(gameW, obstacleList, windowPerimeter, windowArea, pinky, inky, blinky, clyde, pellets);
-
-        /*
-        g1.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
-        g2.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
-        g3.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
-        g4.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
-        g5.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
-        g6.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
-        g7.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
-        g8.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
-        g9.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
-        ga.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
-        gb.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
-        gc.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
-        gd.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
-        ge.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
-        gf.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
-        gg.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
-        gh.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
-        gi.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
-        gj.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
-        gk.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
-        gl.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
-        gm.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
-        gn.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
-        go.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
-        gp.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
-        */
+        pacman.timeToMove(gameW, obstacleList);
+        pinky.timeToMove(gameW, obstacleList, pinky, inky, blinky, clyde, pellets);
+        inky.timeToMove(gameW, obstacleList, pinky, inky, blinky, clyde, pellets);
+        blinky.timeToMove(gameW, obstacleList, pinky, inky, blinky, clyde, pellets);
+        clyde.timeToMove(gameW, obstacleList, pinky, inky, blinky, clyde, pellets);
 
         // sleep to avoid redundant checks
         std::this_thread::sleep_for(5ms);
@@ -264,8 +206,10 @@ int main()
 //PACMAN MENU ANIMATION
 //PATHFINDING
 //OBSTACLE FLASHING ON COUNT DOWN
-// optimize score board calc and printing
+// optimize score board printing
 // animate pacman death animation
 // pacman lives
 // controls section
 // Improve movement responsivness
+// fix unfrequent ghost flicker (HARD)
+// CHANGE WINDOW AREA 2d VECTOR TO STORE PROPER VALUES NOT JUST "GARBAGE"

@@ -1,11 +1,15 @@
+//external
 #include <ncurses.h>
 
+//user
 #include <vector>
 #include <chrono>
 #include <thread>
 
+//std
 #include "z_window.h"
 #include "z_aggregate.h"
+#include "z_obstacle.h"
 
 using namespace std::chrono_literals;
 
@@ -53,6 +57,34 @@ void Window::initWindowArea()
     }
 }
 
+void Window::assignPelletEatenToGhostBox()
+{
+    // HARDCODED CHANGE MAYBE
+        
+    for(int y{13}; y < 16; ++y)
+    {
+        for(int x{11}; x < 17; ++x)
+        {
+            m_windowArea[y][x] = CellName::pelletEaten;
+        }
+    }
+
+    m_windowArea[12][13] = CellName::pelletEaten;
+    m_windowArea[12][14] = CellName::pelletEaten;
+}
+
+void Window::removeGhostBoxPelletAndAssignEaten()
+{
+    mvwprintw(m_window, 13, 11, "      ");
+    mvwprintw(m_window, 14, 11, "      ");
+    mvwprintw(m_window, 15, 11, "      ");
+    mvwprintw(m_window, 12, 13, "  ");
+
+    assignPelletEatenToGhostBox();
+
+    wrefresh(m_window);
+}
+
 // public
 
 // constructs centered window with optional dimensions
@@ -66,6 +98,7 @@ Window::Window(int screenY, int screenX)
     m_window = newwin(m_screenY, m_screenX, (maxY - m_screenY) / 2, (maxX - m_screenX) / 2);
     initWindowPerimeter();
     initWindowArea();
+    removeGhostBoxPelletAndAssignEaten();
 }
 
 // Constructs custum window with custum start point and dimensions based on stdscr
@@ -84,10 +117,10 @@ Window::~Window() { delwin(m_window); }
 
 // getters
 WINDOW* Window::getWindow() { return m_window; }
-const int& Window::getScreenY() { return m_screenY; }
-const int& Window::getScreenX() { return m_screenX; }
-std::vector<Vec> Window::getWindowPerimeter() { return m_windowPerimeter; }
-std::vector<std::vector<int>> Window::getWindowArea() { return m_windowArea; }
+int& Window::getScreenY() { return m_screenY; }
+int& Window::getScreenX() { return m_screenX; }
+std::vector<Vec>& Window::getWindowPerimeter() { return m_windowPerimeter; }
+std::vector<std::vector<int>>& Window::getWindowArea() { return m_windowArea; }
 
 void Window::drawBoxAndRefresh()
 {

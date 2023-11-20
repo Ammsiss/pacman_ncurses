@@ -1,13 +1,16 @@
+//external
 #include <ncurses.h>
-#include <vector>
-#include <chrono>
 
+//user
 #include "z_aggregate.h"
 #include "z_pellet.h"
 #include "z_window.h"
 #include "z_pacman.h"
 #include "z_obstacle.h"
 
+//std
+#include <vector>
+#include <chrono>
 #include <thread>
 
 using namespace std::chrono_literals;
@@ -164,14 +167,12 @@ void Pacman::movePacmanBasedOnDirection(Window& win, std::vector<Obstacle>& obst
         }
 }
 
-void Pacman::setGarbageValue(Pellet& pellets)
+void Pacman::setGarbageValue(Window& win)
 {
-    const int garbage{10000};
-
-    if(pellets.getPelletVec()[m_pacVec.y][m_pacVec.x] != garbage)
+    if(win.getWindowArea()[m_pacVec.y][m_pacVec.x] != CellName::pelletEaten)
     {
         ++m_score;
-        pellets.getPelletVec()[m_pacVec.y][m_pacVec.x] = garbage;
+        win.getWindowArea()[m_pacVec.y][m_pacVec.x] = CellName::pelletEaten;
     }
 }
 
@@ -200,7 +201,7 @@ Pacman::Pacman()
     {
     }
 
-void Pacman::timeToMove(Window& win, std::vector<Obstacle>& obstacleList, Pellet& pellets)
+void Pacman::timeToMove(Window& win, std::vector<Obstacle>& obstacleList)
 {
     // define chrono duration and 2 system time instances to create pacman's timed movement
     auto currentTime{std::chrono::high_resolution_clock::now()};
@@ -209,7 +210,7 @@ void Pacman::timeToMove(Window& win, std::vector<Obstacle>& obstacleList, Pellet
     if (currentTime - m_lastTime >= m_interval)
     {
         erase(win);
-        setGarbageValue(pellets);
+        setGarbageValue(win);
         printScore(win);
         movePacmanBasedOnDirection(win, obstacleList);
         printPacmanBasedOnDirectionAndRefresh(win);

@@ -1,5 +1,7 @@
+//external
 #include <ncurses.h>
 
+//user
 #include "z_aggregate.h"
 #include "z_window.h"
 #include "z_ghost.h"
@@ -7,24 +9,71 @@
 #include "z_random.h"
 #include "z_pellet.h"
 
+//std
 #include <chrono>
 #include <thread>
 #include <vector>
 
 using namespace std::chrono_literals;
 
-// private members:
+/********************************************************************** PRIVATE MEMBERS **********************************************************************/
 
-void Ghost::setY(PositionChange direction) 
+// constructor
+Ghost::Ghost(std::chrono::milliseconds speed, Color::ColorPair ghostColor)
+    : m_direction {Direction::right}
+    , m_ghostVec {15, 12} // randomInput{},
+    , m_interval{speed}
+    , m_lastTime{std::chrono::high_resolution_clock::now()}
+    , m_rightPortalX{ 26 }, m_leftPortalX{ 1 }
+    , m_portalY{ 14 }, m_ghostColor{ ghostColor }
+    {
+    }
+
+// public methods
+void Ghost::timeToMove(Window& win, std::vector<Obstacle>& obstacleList, Ghost& pinky, Ghost& inky, Ghost& blinky, Ghost& clyde, Pellet& pellets)
 {
-    if (direction == PositionChange::decrement) --m_ghostVec.y;
-    else if (direction == PositionChange::increment) ++m_ghostVec.y;
+    // define chrono duration and 2 system time instances to create pacman's timed movement
+    auto currentTime{std::chrono::high_resolution_clock::now()};
+
+    if (currentTime - m_lastTime >= m_interval)
+    {
+        eraseLastPosition(win);
+        CheckForAndPrintOverLaps(win, pinky, inky, blinky, clyde);
+        setValidDirection(obstacleList, win);
+        printAndRefreshGhost(win);
+
+        m_lastTime = currentTime;
+    }
 }
 
-void Ghost::setX(PositionChange direction)
+// getters
+Color::ColorPair Ghost::getGhostColor() { return m_ghostColor; }
+Vec Ghost::getGhostVec() { return m_ghostVec; }
+
+
+/********************************************************************** PRIVATE MEMBERS **********************************************************************/
+
+/* _   _   _   _   _   _   _     _   _   _   _   _   _   _   _   _  
+  / \ / \ / \ / \ / \ / \ / \   / \ / \ / \ / \ / \ / \ / \ / \ / \   Functions related to checking ghost's location and either using it for printing or
+ ( S | E | T | T | I | N | G ) ( D | I | R | E | C | T | I | O | N )  reverting it and trying again until a valid input is found.
+  \_/ \_/ \_/ \_/ \_/ \_/ \_/   \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/   
+*/
+
+void Ghost::setValidDirection(std::vector<Obstacle>& obstacleList, Window& win)  
 {
-    if (direction == PositionChange::decrement) --m_ghostVec.x;
-    else if (direction == PositionChange::increment) ++m_ghostVec.x;
+    // sets value to current direction to check if new random value is the direction ghost came from
+    Direction directionCheck{ m_direction };
+
+    while(true)
+    {
+        // Ghost cant move in direction he came
+        if(oppositeDirectionCheck(directionCheck))
+            continue;
+
+        // breaks from loop if valid direction to use in movement and printing
+        if(moveGhostInValidDirection(obstacleList, win))
+            break;
+    }
 }
 
 bool Ghost::oppositeDirectionCheck(Direction directionCheck)
@@ -44,72 +93,9 @@ bool Ghost::oppositeDirectionCheck(Direction directionCheck)
         default:
             return false;
     }
-
-    return false;
 }
 
-// SHOULD CHECK 3 CONDITIONS: 1) ghost not in perimeter 2) ghost not in obstacle 3) ghost not move opposite direction
-// delegates checks to oppositeDirectionCheck for the direction check and moveGhostInValidDirection for the obstacle and perimeter check
-void Ghost::setValidDirection(std::vector<Obstacle>& obstacleList, std::vector<Vec>& windowPerimeter, std::vector<std::vector<int>>& windowArea)  
-{
-    Direction directionCheck{ m_direction };
-
-    while(true)
-    {
-        // Ghost cant move in direction he came
-        if(oppositeDirectionCheck(directionCheck))
-            continue;
-
-        // breaks from loop if valid direction to use in movement and printing
-        if(moveGhostInValidDirection(obstacleList, windowPerimeter, windowArea))
-            break;
-    }
-}
-
-bool Ghost::perimeterBoundsCheck(std::vector<Vec>& windowPerimeter, std::vector<std::vector<int>>& windowArea)
-{
-    const int perimeterValue{10001};
-
-    if(windowArea[m_ghostVec.y][m_ghostVec.x] == perimeterValue)
-        return false;
-
-    return true;
-}
-
-bool Ghost::obstacleBoundsCheck(std::vector<Obstacle>& obstacleList)
-{
-    for(std::size_t iOuter{0}; iOuter < obstacleList.size(); ++iOuter)
-    {
-        for(std::size_t iInner{0}; iInner < obstacleList[iOuter].getObsVec().size(); ++iInner)
-        {
-            if(m_ghostVec.y == obstacleList[iOuter].getObsVec()[iInner].y 
-                && m_ghostVec.x == obstacleList[iOuter].getObsVec()[iInner].x)
-                {
-                    return false;
-                }
-        }
-    }
-
-    return true;
-}
-
-void Ghost::erase(Window& win)
-{
-    mvwprintw(win.getWindow(), m_ghostVec.y, m_ghostVec.x, " "); 
-}
-
-void Ghost::printAndRefreshGhost(Window& win)
-{
-    wattron(win.getWindow(), COLOR_PAIR(m_ghostColor));
-    mvwprintw(win.getWindow(), m_ghostVec.y, m_ghostVec.x, "ᗣ");
-    wattroff(win.getWindow(), COLOR_PAIR(m_ghostColor));
-    wattroff(win.getWindow(), COLOR_PAIR(Color::default_color));
-
-    wrefresh(win.getWindow());
-}
-
-
-bool Ghost::moveGhostInValidDirection(std::vector<Obstacle>& obstacleList, std::vector<Vec>& windowPerimeter, std::vector<std::vector<int>>& windowArea)
+bool Ghost::moveGhostInValidDirection(std::vector<Obstacle>& obstacleList, Window& win)
 {
     // attempt a move, check if valid, and revert the move if its not
     // delegates checks to obstacle and perimeter bounds check
@@ -118,7 +104,7 @@ bool Ghost::moveGhostInValidDirection(std::vector<Obstacle>& obstacleList, std::
             case Direction::up: 
             {
                 setY(PositionChange::decrement);
-                if(!obstacleBoundsCheck(obstacleList) || !perimeterBoundsCheck(windowPerimeter, windowArea))
+                if(!obstacleBoundsCheck(win) || !perimeterBoundsCheck(win))
                 {
                     setY(PositionChange::increment);
                     return false;
@@ -129,7 +115,7 @@ bool Ghost::moveGhostInValidDirection(std::vector<Obstacle>& obstacleList, std::
             {
 
                 setY(PositionChange::increment);
-                if(!obstacleBoundsCheck(obstacleList) || !perimeterBoundsCheck(windowPerimeter, windowArea))
+                if(!obstacleBoundsCheck(win) || !perimeterBoundsCheck(win))
                 {
                    setY(PositionChange::decrement);
                    return false;
@@ -145,7 +131,7 @@ bool Ghost::moveGhostInValidDirection(std::vector<Obstacle>& obstacleList, std::
                     return true;
                 }
                 setX(PositionChange::decrement); 
-                if(!obstacleBoundsCheck(obstacleList) || !perimeterBoundsCheck(windowPerimeter, windowArea))
+                if(!obstacleBoundsCheck(win) || !perimeterBoundsCheck(win))
                 {
                     setX(PositionChange::increment);
                     return false;
@@ -161,7 +147,7 @@ bool Ghost::moveGhostInValidDirection(std::vector<Obstacle>& obstacleList, std::
                     return true;
                 }
                 setX(PositionChange::increment); 
-                if(!obstacleBoundsCheck(obstacleList) || !perimeterBoundsCheck(windowPerimeter, windowArea))
+                if(!obstacleBoundsCheck(win) || !perimeterBoundsCheck(win))
                 {
                     setX(PositionChange::decrement);
                     return false;
@@ -173,6 +159,67 @@ bool Ghost::moveGhostInValidDirection(std::vector<Obstacle>& obstacleList, std::
         }
 
     return false;
+}
+
+void Ghost::setY(PositionChange direction) 
+{
+    if (direction == PositionChange::decrement) 
+        --m_ghostVec.y;
+    else
+        ++m_ghostVec.y;
+}
+
+void Ghost::setX(PositionChange direction)
+{
+    if (direction == PositionChange::decrement)
+        --m_ghostVec.x;
+    else
+        ++m_ghostVec.x;
+}
+
+bool Ghost::obstacleBoundsCheck(Window& win)
+{
+    if(win.getWindowArea()[m_ghostVec.y][m_ghostVec.x] == CellName::obstacleValue)
+        return false;
+
+    return true;
+}
+
+bool Ghost::perimeterBoundsCheck(Window& win)
+{
+    if(win.getWindowArea()[m_ghostVec.y][m_ghostVec.x] == CellName::perimeterValue)
+        return false;
+
+    return true;
+}
+
+/* _   _   _   _   _   _   _   _  
+  / \ / \ / \ / \ / \ / \ / \ / \  Functions related to erasing old positions, and printing new positions.
+ ( P | R | I | N | T | I | N | G ) Also deals with ghost overlaps which cause print overs which is where a ghost will overlap with another
+  \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/  and when it moves it will erase the other ghost causing the ghost to dissapear. Also deals with spawning 
+                                   pellets back after a ghost clears them
+*/
+
+void Ghost::eraseLastPosition(Window& win)
+{
+    mvwprintw(win.getWindow(), m_ghostVec.y, m_ghostVec.x, " "); 
+}
+
+void Ghost::CheckForAndPrintOverLaps(Window& win, Ghost& pinky, Ghost& inky, Ghost& blinky, Ghost& clyde)
+{
+    printPelletBackIfNotEaten(win);
+    printOverLap(win, checkGhostOverLap(pinky, inky, blinky, clyde));
+}
+
+void Ghost::printPelletBackIfNotEaten(Window& win)
+{
+    if(win.getWindowArea()[m_ghostVec.y][m_ghostVec.x] != CellName::pelletEaten)
+    {
+        wattron(win.getWindow(), COLOR_PAIR(Color::white_black));
+        mvwprintw(win.getWindow(), m_ghostVec.y, m_ghostVec.x, "•");
+        wattroff(win.getWindow(), COLOR_PAIR(Color::white_black));
+        wattron(win.getWindow(), COLOR_PAIR(Color::default_color));    
+    }
 }
 
 Color::ColorPair Ghost::checkGhostOverLap(Ghost& pinky, Ghost& inky, Ghost& blinky, Ghost& clyde)
@@ -204,49 +251,12 @@ void Ghost::printOverLap(Window& win, Color::ColorPair overLapColor)
     }
 }
 
-void Ghost::printPelletBack(Pellet& pellets, Window& win)
+void Ghost::printAndRefreshGhost(Window& win)
 {
-    const int garbage{10000};
+    wattron(win.getWindow(), COLOR_PAIR(m_ghostColor));
+    mvwprintw(win.getWindow(), m_ghostVec.y, m_ghostVec.x, "ᗣ");
+    wattroff(win.getWindow(), COLOR_PAIR(m_ghostColor));
+    wattroff(win.getWindow(), COLOR_PAIR(Color::default_color));
 
-    if(pellets.getPelletVec()[m_ghostVec.y][m_ghostVec.x] != garbage)
-    {
-        wattron(win.getWindow(), COLOR_PAIR(Color::white_black));
-        mvwprintw(win.getWindow(), m_ghostVec.y, m_ghostVec.x, "•");
-        wattroff(win.getWindow(), COLOR_PAIR(Color::white_black));
-        wattron(win.getWindow(), COLOR_PAIR(Color::default_color));    
-    }
+    wrefresh(win.getWindow());
 }
-
-// public members:
-
-Ghost::Ghost(std::chrono::milliseconds speed, Color::ColorPair ghostColor)
-    : m_direction {Direction::right}
-    , m_ghostVec {15, 12} // randomInput{},
-    , m_interval{speed}
-    , m_lastTime{std::chrono::high_resolution_clock::now()}
-    , m_rightPortalX{ 26 }, m_leftPortalX{ 1 }
-    , m_portalY{ 14 }, m_ghostColor{ ghostColor }
-    {
-    }
-
-// refactor this ****
-void Ghost::timeToMove(Window& win, std::vector<Obstacle>& obstacleList, std::vector<Vec>& windowPerimeter, std::vector<std::vector<int>>& windowArea, Ghost& pinky, Ghost& inky, Ghost& blinky, Ghost& clyde, Pellet& pellets)
-{
-    // define chrono duration and 2 system time instances to create pacman's timed movement
-    auto currentTime{std::chrono::high_resolution_clock::now()};
-
-    if (currentTime - m_lastTime >= m_interval)
-    {
-        erase(win);
-        printPelletBack(pellets, win);
-        printOverLap(win, checkGhostOverLap(pinky, inky, blinky, clyde));
-        setValidDirection(obstacleList, windowPerimeter, windowArea);
-        printAndRefreshGhost(win);
-
-        m_lastTime = currentTime;
-    }
-}
-
-Color::ColorPair Ghost::getGhostColor() { return m_ghostColor; }
-
-Vec Ghost::getGhostVec() { return m_ghostVec; }

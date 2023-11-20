@@ -1,9 +1,11 @@
+//user
+#include "z_aggregate.h"
+#include "z_obstacle.h"
+
+//std
 #include <vector>
 #include <ncurses.h>
 
-#include "z_aggregate.h"
-#include "z_obstacle.h"
-    
 // private
 
 void Obstacle::initObsVector(Vec& startPoint, Vec& obsDimensions)

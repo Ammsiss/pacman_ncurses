@@ -30,11 +30,11 @@ private:
     void erase(Window& win);
     void getUserInputAndSetDirection(Window& win);
     void movePacmanBasedOnDirection(Window& win, std::vector<Obstacle>& obstacleList);
-    void setGarbageValue(Pellet& pellets);
+    void setGarbageValue(Window& win);
     void printScore(Window& win);
 
 public:
     Pacman();
-    void timeToMove(Window& win, std::vector<Obstacle>& obstacleList, Pellet& pellets);
+    void timeToMove(Window& win, std::vector<Obstacle>& obstacleList);
 
 };
