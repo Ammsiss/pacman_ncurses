@@ -5,23 +5,9 @@
 //std
 #include <vector>
 
-// private:
+/********************************************************************** PUBLIC MEMBERS **********************************************************************/
 
-void Menu::clearOldSelection()
-{
-    mvwprintw(m_menuPerimeterWindow.getWindow(), 22, 9, " ");
-    mvwprintw(m_menuPerimeterWindow.getWindow(), 24, 9, " ");
-    mvwprintw(m_menuPerimeterWindow.getWindow(), 26, 9, " ");
-}
-
-// public:
-
-Window& Menu::getWelcomeDisplayWindow() { return m_welcomeDisplayWindow; }
-Window& Menu::getMenuPerimeterWindow() { return m_menuPerimeterWindow; }
-std::vector<std::string> Menu::getOptions() { return m_options; }
-std::size_t Menu::getSelection() { return m_selection; }
-MenuSelection Menu::getMenuSelection() { return m_userMenuSelection; }
-
+// public methods
 void Menu::printOptions()
 {
     for(std::size_t i{0}; i < m_options.size(); ++i)
@@ -31,7 +17,6 @@ void Menu::printOptions()
         mvwprintw(m_menuPerimeterWindow.getWindow(), 18, 26, "™");
         wattroff(m_menuPerimeterWindow.getWindow(), COLOR_PAIR(Color::red_black));
         wattron(m_menuPerimeterWindow.getWindow(), COLOR_PAIR(Color::default_color));
-        //
 
         if(m_selection == i)
         {
@@ -215,3 +200,18 @@ void Menu::printWelcomeDisplayAndRefresh()
     wrefresh(m_welcomeDisplayWindow.getWindow());
 }
 
+// getters
+Window& Menu::getWelcomeDisplayWindow() { return m_welcomeDisplayWindow; }
+Window& Menu::getMenuPerimeterWindow() { return m_menuPerimeterWindow; }
+std::vector<std::string> Menu::getOptions() { return m_options; }
+std::size_t Menu::getSelection() { return m_selection; }
+MenuSelection Menu::getMenuSelection() { return m_userMenuSelection; }
+
+/********************************************************************** PRIVATE MEMBERS **********************************************************************/
+
+void Menu::clearOldSelection()
+{
+    mvwprintw(m_menuPerimeterWindow.getWindow(), 22, 9, " ");
+    mvwprintw(m_menuPerimeterWindow.getWindow(), 24, 9, " ");
+    mvwprintw(m_menuPerimeterWindow.getWindow(), 26, 9, " ");
+}

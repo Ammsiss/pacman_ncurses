@@ -7,7 +7,6 @@
 #include "z_ghost.h"
 #include "z_obstacle.h"
 #include "z_random.h"
-#include "z_pellet.h"
 
 //std
 #include <chrono>
@@ -16,7 +15,7 @@
 
 using namespace std::chrono_literals;
 
-/********************************************************************** PRIVATE MEMBERS **********************************************************************/
+/********************************************************************** PUBLIC MEMBERS **********************************************************************/
 
 // constructor
 Ghost::Ghost(std::chrono::milliseconds speed, Color::ColorPair ghostColor)
@@ -30,7 +29,7 @@ Ghost::Ghost(std::chrono::milliseconds speed, Color::ColorPair ghostColor)
     }
 
 // public methods
-void Ghost::timeToMove(Window& win, std::vector<Obstacle>& obstacleList, Ghost& g1, Ghost& g2, Ghost& g3)
+void Ghost::timeToMove(Window& win, Ghost& g1, Ghost& g2, Ghost& g3)
 {
     // define chrono duration and 2 system time instances to create pacman's timed movement
     auto currentTime{std::chrono::high_resolution_clock::now()};
@@ -39,7 +38,7 @@ void Ghost::timeToMove(Window& win, std::vector<Obstacle>& obstacleList, Ghost& 
     {
         eraseLastPosition(win);
         CheckForAndPrintOverLaps(win, g1, g2, g3);
-        setValidDirection(obstacleList, win);
+        setValidDirection(win);
         printAndRefreshGhost(win);
 
         m_lastTime = currentTime;
@@ -59,7 +58,7 @@ Vec Ghost::getGhostVec() { return m_ghostVec; }
   \_/ \_/ \_/ \_/ \_/ \_/ \_/   \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/   
 */
 
-void Ghost::setValidDirection(std::vector<Obstacle>& obstacleList, Window& win)  
+void Ghost::setValidDirection(Window& win)  
 {
     // sets value to current direction to check if new random value is the direction ghost came from
     Direction directionCheck{ m_direction };
@@ -71,7 +70,7 @@ void Ghost::setValidDirection(std::vector<Obstacle>& obstacleList, Window& win)
             continue;
 
         // breaks from loop if valid direction to use in movement and printing
-        if(moveGhostInValidDirection(obstacleList, win))
+        if(moveGhostInValidDirection(win))
             break;
     }
 }
@@ -95,7 +94,7 @@ bool Ghost::oppositeDirectionCheck(Direction directionCheck)
     }
 }
 
-bool Ghost::moveGhostInValidDirection(std::vector<Obstacle>& obstacleList, Window& win)
+bool Ghost::moveGhostInValidDirection(Window& win)
 {
     // attempt a move, check if valid, and revert the move if its not
     // delegates checks to obstacle and perimeter bounds check

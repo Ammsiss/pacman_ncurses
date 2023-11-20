@@ -7,7 +7,7 @@
 #include "z_aggregate.h"
 #include "z_window.h"
 #include "z_obstacle.h"
-#include "z_pellet.h"
+#include "z_vectorspace.h"
 #include "z_ghost.h"
 #include "z_menu.h"
 
@@ -152,7 +152,7 @@ void gameLoop()
 
     // init game pellet stuff
     Pellet pellets{};
-    pellets.initAndPrintPellets(gameW, obstacleList);
+    pellets.init2DVectorSpace(gameW, obstacleList);
 
     // init characters
     Pacman pacman{};
@@ -161,14 +161,14 @@ void gameLoop()
     Ghost blinky{ 250ms, Color::red_black };
     Ghost clyde{ 275ms, Color::orange_black };
 
-    gameW.gameCountDown();
+    // gameW.gameCountDown();
     while(true)
     {
-        pacman.timeToMove(gameW, obstacleList);
-        pinky.timeToMove(gameW, obstacleList, inky, blinky, clyde);
-        inky.timeToMove(gameW, obstacleList, pinky, blinky, clyde);
-        blinky.timeToMove(gameW, obstacleList, pinky, inky, clyde);
-        clyde.timeToMove(gameW, obstacleList, pinky, inky, blinky);
+        pacman.timeToMove(gameW);
+        pinky.timeToMove(gameW, inky, blinky, clyde);
+        inky.timeToMove(gameW, pinky, blinky, clyde);
+        blinky.timeToMove(gameW, pinky, inky, clyde);
+        clyde.timeToMove(gameW, pinky, inky, blinky);
 
         // sleep to avoid redundant checks
         std::this_thread::sleep_for(5ms);

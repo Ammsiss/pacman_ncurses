@@ -3,7 +3,7 @@
 
 //user
 #include "z_aggregate.h"
-#include "z_pellet.h"
+#include "z_vectorspace.h"
 #include "z_obstacle.h"
 #include "z_window.h"
 
@@ -35,15 +35,15 @@ void Pellet::printAndRefreshPellet(Window& win)
 
 // public
 
-void Pellet::initAndPrintPellets(Window& win, std::vector<Obstacle>& obstacleList)
+void Pellet::init2DVectorSpace(Window& win, std::vector<Obstacle>& obstacleList)
 {
-    // ADD PERIMETER TO windowArea
+    // ADD PERIMETER TO windowArea vector space
     for(std::size_t perimeterIterator{0}; perimeterIterator < win.getWindowPerimeter().size(); ++perimeterIterator)
     {
         win.getWindowArea()[win.getWindowPerimeter()[perimeterIterator].y][win.getWindowPerimeter()[perimeterIterator].x] = CellName::perimeterValue;
     }
 
-    // ADD OBSTACLES TO windowArea
+    // ADD OBSTACLES TO windowArea vector space
     for(std::size_t listIterator{0}; listIterator < obstacleList.size(); ++listIterator)
     {
         for(std::size_t obstacleIterator{0}; obstacleIterator < obstacleList[listIterator].getObsVec().size(); ++obstacleIterator)

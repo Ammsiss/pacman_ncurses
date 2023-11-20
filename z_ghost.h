@@ -7,7 +7,6 @@
 #include "z_aggregate.h"
 #include "z_window.h"
 #include "z_obstacle.h"
-#include "z_pellet.h"
 
 //std
 #include <vector>
@@ -19,7 +18,7 @@ public:
     Ghost(std::chrono::milliseconds speed, Color::ColorPair ghostColor);
 
     //public methods
-    void timeToMove(Window& win, std::vector<Obstacle>& obstacleList, Ghost& g1, Ghost& g2, Ghost& g3); 
+    void timeToMove(Window& win, Ghost& g1, Ghost& g2, Ghost& g3); 
 
     // getters
     Color::ColorPair getGhostColor();
@@ -43,9 +42,9 @@ private:
     //private methods
 
     //setting valid directionss
-    void setValidDirection(std::vector<Obstacle>& obstacleList, Window& win);
+    void setValidDirection(Window& win);
     bool oppositeDirectionCheck(Direction directionCheck);
-    bool moveGhostInValidDirection(std::vector<Obstacle>& obstacleList, Window& win);
+    bool moveGhostInValidDirection(Window& win);
     void setY(PositionChange direction);
     void setX(PositionChange direction);
     bool obstacleBoundsCheck(Window& win);

@@ -6,8 +6,21 @@
 #include <vector>
 #include <ncurses.h>
 
-// private
+/********************************************************************** PUBLIC MEMBERS **********************************************************************/
 
+// Constructor
+Obstacle::Obstacle( Vec startPoint, Vec obsDimensions, Window& win)
+{
+    initObsVector(startPoint, obsDimensions);
+    printAndRefreshObstacle(win);
+}
+
+// getter
+const std::vector<Vec>& Obstacle::getObsVec() { return m_obsVec; }
+
+/********************************************************************** PRIVATE MEMBERS **********************************************************************/
+
+// private methods
 void Obstacle::initObsVector(Vec& startPoint, Vec& obsDimensions)
 {
     int totalVectors{obsDimensions.y * obsDimensions.x};
@@ -42,13 +55,3 @@ void Obstacle::printAndRefreshObstacle(Window& win)
     }
     wrefresh(win.getWindow());
 }
-
-// public
-
-Obstacle::Obstacle( Vec startPoint, Vec obsDimensions, Window& win)
-{
-    initObsVector(startPoint, obsDimensions);
-    printAndRefreshObstacle(win);
-}
-
-const std::vector<Vec>& Obstacle::getObsVec() { return m_obsVec; }
