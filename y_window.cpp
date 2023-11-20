@@ -105,7 +105,7 @@ void Window::gameCountDown()
     auto interval{1000ms};
     auto lastTime{std::chrono::high_resolution_clock::now()};
 
-    wattron(m_window, COLOR_PAIR(Color::cyan_black));  
+    wattron(m_window, COLOR_PAIR(Color::yellow_black));  
 
     while(true)
     {
@@ -144,7 +144,7 @@ void Window::gameCountDown()
             {
                 mvwprintw(m_window, 14, 11, "      ");
                 wrefresh(m_window);
-                wattroff(m_window, COLOR_PAIR(Color::blue_black));
+                wattroff(m_window, COLOR_PAIR(Color::yellow_black));
                 wattron(m_window, COLOR_PAIR(Color::default_color));
                 break;
             }

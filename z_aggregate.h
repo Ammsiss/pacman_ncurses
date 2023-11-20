@@ -34,6 +34,7 @@ namespace Color
         yellow_black,
         white_black,
         orange_black,
+        red_blue,
         null,
     };
 }

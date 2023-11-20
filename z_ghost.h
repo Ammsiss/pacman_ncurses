@@ -25,12 +25,12 @@ private:
 
     void setY(PositionChange direction);
     void setX(PositionChange direction);
-    void setValidDirection(std::vector<Obstacle>& obstacleList, std::vector<Vec>& windowPerimeter);
+    void setValidDirection(std::vector<Obstacle>& obstacleList, std::vector<Vec>& windowPerimeter, std::vector<std::vector<int>>& windowArea);
     bool obstacleBoundsCheck(std::vector<Obstacle>& obstacleList);
     void printAndRefreshGhost(Window& win);
     void erase(Window& win);
-    bool moveGhostInValidDirection(std::vector<Obstacle>& obstacleList, std::vector<Vec>& windowPerimeter);
-    bool perimeterBoundsCheck(std::vector<Vec>& windowPerimeter);
+    bool moveGhostInValidDirection(std::vector<Obstacle>& obstacleList, std::vector<Vec>& windowPerimeter, std::vector<std::vector<int>>& windowArea);
+    bool perimeterBoundsCheck(std::vector<Vec>& windowPerimeter, std::vector<std::vector<int>>& windowArea);
     Color::ColorPair checkGhostOverLap(Ghost& pinky, Ghost& inky, Ghost& blinky, Ghost& clyde);
     void printOverLap(Window& win, Color::ColorPair overLapColor);
     void printPelletBack(Pellet& pellets, Window& win);
@@ -38,7 +38,7 @@ private:
 
 public:
     Ghost(std::chrono::milliseconds speed, Color::ColorPair ghostColor);
-    void timeToMove(Window& win, std::vector<Obstacle>& obstacleList, std::vector<Vec>& windowPerimeter, Ghost& pinky, Ghost& inky, Ghost& blinky, Ghost& clyde, Pellet& pellets);
+    void timeToMove(Window& win, std::vector<Obstacle>& obstacleList, std::vector<Vec>& windowPerimeter, std::vector<std::vector<int>>& windowArea, Ghost& pinky, Ghost& inky, Ghost& blinky, Ghost& clyde, Pellet& pellets);
 
     // getters
     Color::ColorPair getGhostColor();

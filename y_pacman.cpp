@@ -168,16 +168,24 @@ void Pacman::setGarbageValue(Pellet& pellets)
 {
     const int garbage{10000};
 
-    for(int y{0}; y < pellets.getPelletVec().size(); ++y)
+    if(pellets.getPelletVec()[m_pacVec.y][m_pacVec.x] != garbage)
     {
-        for(int x{0}; x < pellets.getPelletVec()[y].size(); ++x)
-        {
-            if(m_pacVec.y == y && m_pacVec.x == x)
-            {
-                pellets.getPelletVec()[y][x] = garbage;
-            }
-        }
+        ++m_score;
+        pellets.getPelletVec()[m_pacVec.y][m_pacVec.x] = garbage;
     }
+}
+
+void Pacman::printScore(Window& win)
+{
+    mvwprintw(win.getWindow(), 11, 23, "    ");
+    mvwprintw(win.getWindow(), 10, 23, "    ");
+
+    wattron(win.getWindow(), COLOR_PAIR(Color::yellow_black));
+    mvwprintw(win.getWindow(), 10, 23, "SCR");
+    mvwprintw(win.getWindow(), 12, 23, "XXXX");
+    mvwprintw(win.getWindow(), 12, 23, "%d", m_score);
+    wattroff(win.getWindow(), COLOR_PAIR(Color::yellow_black));
+    wattron(win.getWindow(), COLOR_PAIR(Color::default_color));
 }
 
 // public members:
@@ -202,6 +210,7 @@ void Pacman::timeToMove(Window& win, std::vector<Obstacle>& obstacleList, Pellet
     {
         erase(win);
         setGarbageValue(pellets);
+        printScore(win);
         movePacmanBasedOnDirection(win, obstacleList);
         printPacmanBasedOnDirectionAndRefresh(win);
 

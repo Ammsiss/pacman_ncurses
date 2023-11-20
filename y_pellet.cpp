@@ -11,13 +11,13 @@
 
     // private
 
-    void Pellet::printAndRefreshPellet(Window& win)
+    void Pellet::printAndRefreshPellet(Window& win, const int perimeterValue)
     {
         for(std::size_t y{0}; y < m_pelletVec.size(); ++y)
         {
             for(std::size_t x{0}; x < m_pelletVec[y].size(); ++x)
             {
-                if(m_pelletVec[y][x] != m_garbage)
+                if(m_pelletVec[y][x] != m_garbage && m_pelletVec[y][x] != perimeterValue)
                 {
                     wattron(win.getWindow(), COLOR_PAIR(Color::white_black));
                     mvwprintw(win.getWindow(), y, x, "•");
@@ -35,7 +35,7 @@
     void Pellet::assignGarbageToGhostBox()
     {
         // HARDCODED CHANGE MAYBE
-
+        
         for(int y{13}; y < 16; ++y)
         {
             for(int x{11}; x < 17; ++x)
@@ -62,43 +62,45 @@
         wrefresh(win.getWindow());
     }
 
-    // public
-
-    Pellet::Pellet()
-        : m_pelletVec {}, m_garbage{10000}
+    // assigns pellet coordinates only not garbage to m_onlyPelletVec
+    void Pellet::initOnlyPelletVector()
     {
+        for(std::size_t y{0}; y < m_pelletVec.size(); ++y)
+        {
+            for(std::size_t x{0}; x < m_pelletVec[y].size(); ++x)
+            {
+                if(m_pelletVec[y][x] != m_garbage)
+                    m_onlyPelletVec.emplace_back(Vec{static_cast<int>(y), static_cast<int>(x)});
+            }
+        }
     }
 
-    void Pellet::initPelletVector(Window& win, std::vector<Obstacle>& obstacleList, std::vector<std::vector<int>>& windowArea, std::vector<Vec>& windowPerimeter)
+    // public
+    void Pellet::initAndPrintPelletVector(Window& win, std::vector<Obstacle>& obstacleList, std::vector<std::vector<int>>& windowArea, std::vector<Vec>& windowPerimeter)
     {
-        for(std::size_t y{0}; y < windowArea.size(); ++y)
-        {
-            for(std::size_t x{0}; x < windowArea[y].size(); ++x)
-            {
-                for(std::size_t perimeterIterator{0}; perimeterIterator < windowPerimeter.size(); ++perimeterIterator)
-                {
-                    if(windowPerimeter[perimeterIterator].x == x && windowPerimeter[perimeterIterator].y == y)
-                    {
-                       windowArea[y][x] = m_garbage;
-                    }
-                }
+        const int perimeterValue{10001};
 
-                for(std::size_t listIterator{0}; listIterator < obstacleList.size(); ++listIterator)
-                {
-                    for(std::size_t obstacleIterator{0}; obstacleIterator < obstacleList[listIterator].getObsVec().size(); ++obstacleIterator)
-                    {
-                        if(obstacleList[listIterator].getObsVec()[obstacleIterator].x == x && obstacleList[listIterator].getObsVec()[obstacleIterator].y == y)
-                        {
-                            windowArea[y][x] = m_garbage;
-                        }
-                    }
-                }
+        // set 2d array windowArea perimeter values to 10001
+        for(std::size_t perimeterIterator{0}; perimeterIterator < windowPerimeter.size(); ++perimeterIterator)
+        {
+            windowArea[windowPerimeter[perimeterIterator].y][windowPerimeter[perimeterIterator].x] = perimeterValue;
+        }
+
+        // set 2d array windowArea obstacle values to garbage
+        for(std::size_t listIterator{0}; listIterator < obstacleList.size(); ++listIterator)
+        {
+            for(std::size_t obstacleIterator{0}; obstacleIterator < obstacleList[listIterator].getObsVec().size(); ++obstacleIterator)
+            {
+                windowArea[obstacleList[listIterator].getObsVec()[obstacleIterator].y][obstacleList[listIterator].getObsVec()[obstacleIterator].x] = m_garbage;
             }
         }
 
         m_pelletVec = windowArea;
 
-        printAndRefreshPellet(win);
+        initOnlyPelletVector();
+        printAndRefreshPellet(win, perimeterValue);
     }
 
     std::vector<std::vector<int>>& Pellet::getPelletVec() { return m_pelletVec; }
+
+    std::vector<Vec>& Pellet::getOnlyPelletVec() { return m_onlyPelletVec; }

@@ -18,6 +18,7 @@ private:
     int m_rightPortalX;
     int m_leftPortalX;
     int m_portalY;
+    int m_score{0};
     std::chrono::milliseconds m_interval;
     std::chrono::time_point<std::chrono::high_resolution_clock> m_lastTime;
 
@@ -30,6 +31,7 @@ private:
     void getUserInputAndSetDirection(Window& win);
     void movePacmanBasedOnDirection(Window& win, std::vector<Obstacle>& obstacleList);
     void setGarbageValue(Pellet& pellets);
+    void printScore(Window& win);
 
 public:
     Pacman();

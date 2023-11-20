@@ -34,6 +34,7 @@ void ncursesInit()
     init_color(COLOR_MAGENTA, 1000, 550, 550); // pink
     init_color(COLOR_YELLOW, 1000, 1000, 0); // better yellow
     init_color(COLOR_GREEN, 1000, 550, 0); // orange
+    init_color(COLOR_BLUE, 0, 0, 500);
     init_pair(Color::default_color, -1, -1);
     init_pair(Color::red_black, COLOR_RED, COLOR_BLACK);
     init_pair(Color::cyan_black, COLOR_CYAN, COLOR_BLACK);
@@ -41,7 +42,8 @@ void ncursesInit()
     init_pair(Color::yellow_black, COLOR_YELLOW, COLOR_BLACK);
     init_pair(Color::white_black, COLOR_WHITE, COLOR_BLACK);
     init_pair(Color::blue_black, COLOR_BLUE, COLOR_BLACK);
-    init_pair(Color::orange_black, COLOR_GREEN, COLOR_BLACK);
+    init_pair(Color::orange_black, COLOR_GREEN, COLOR_BLACK); 
+    init_pair(Color::red_blue, COLOR_RED, COLOR_BLUE);
 
     // init refresh
     refresh();
@@ -149,7 +151,7 @@ void gameLoop()
 
     // init game pellet stuff
     Pellet pellets{};
-    pellets.initPelletVector(gameW, obstacleList, windowArea, windowPerimeter);
+    pellets.initAndPrintPelletVector(gameW, obstacleList, windowArea, windowPerimeter);
 
     // init ya boi
     Pacman pacman{};
@@ -192,10 +194,10 @@ void gameLoop()
     while(true)
     {
         pacman.timeToMove(gameW, obstacleList, pellets);
-        pinky.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde, pellets);
-        inky.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde, pellets);
-        blinky.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde, pellets);
-        clyde.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde, pellets);
+        pinky.timeToMove(gameW, obstacleList, windowPerimeter, windowArea, pinky, inky, blinky, clyde, pellets);
+        inky.timeToMove(gameW, obstacleList, windowPerimeter, windowArea, pinky, inky, blinky, clyde, pellets);
+        blinky.timeToMove(gameW, obstacleList, windowPerimeter, windowArea, pinky, inky, blinky, clyde, pellets);
+        clyde.timeToMove(gameW, obstacleList, windowPerimeter, windowArea, pinky, inky, blinky, clyde, pellets);
 
         /*
         g1.timeToMove(gameW, obstacleList, windowPerimeter, pinky, inky, blinky, clyde);
@@ -257,4 +259,13 @@ int main()
     return 0;
 }
 
-// IMPLEMENTATION IDEAS:: PACMAN MENU ANIMATION, PATHFINDING, OBSTACLE FLASHING ON COUNT DOWN
+// TO IMPLEMENT:: 
+
+//PACMAN MENU ANIMATION
+//PATHFINDING
+//OBSTACLE FLASHING ON COUNT DOWN
+// optimize score board calc and printing
+// animate pacman death animation
+// pacman lives
+// controls section
+// Improve movement responsivness

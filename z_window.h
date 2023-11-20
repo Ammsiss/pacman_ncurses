@@ -12,9 +12,11 @@ private:
     static const int defaultGameY;
     int m_screenY;
     int m_screenX;
+    int m_perimeterValue{10001};
     
     WINDOW* m_window;
     std::vector<Vec> m_windowPerimeter{};
+
     std::vector<std::vector<int>> m_windowArea{};
 
     void initWindowPerimeter();
