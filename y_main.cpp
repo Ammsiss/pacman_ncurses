@@ -165,10 +165,10 @@ void gameLoop()
     while(true)
     {
         pacman.timeToMove(gameW, obstacleList);
-        pinky.timeToMove(gameW, obstacleList, pinky, inky, blinky, clyde, pellets);
-        inky.timeToMove(gameW, obstacleList, pinky, inky, blinky, clyde, pellets);
-        blinky.timeToMove(gameW, obstacleList, pinky, inky, blinky, clyde, pellets);
-        clyde.timeToMove(gameW, obstacleList, pinky, inky, blinky, clyde, pellets);
+        pinky.timeToMove(gameW, obstacleList, inky, blinky, clyde);
+        inky.timeToMove(gameW, obstacleList, pinky, blinky, clyde);
+        blinky.timeToMove(gameW, obstacleList, pinky, inky, clyde);
+        clyde.timeToMove(gameW, obstacleList, pinky, inky, blinky);
 
         // sleep to avoid redundant checks
         std::this_thread::sleep_for(5ms);

@@ -30,7 +30,7 @@ Ghost::Ghost(std::chrono::milliseconds speed, Color::ColorPair ghostColor)
     }
 
 // public methods
-void Ghost::timeToMove(Window& win, std::vector<Obstacle>& obstacleList, Ghost& pinky, Ghost& inky, Ghost& blinky, Ghost& clyde, Pellet& pellets)
+void Ghost::timeToMove(Window& win, std::vector<Obstacle>& obstacleList, Ghost& g1, Ghost& g2, Ghost& g3)
 {
     // define chrono duration and 2 system time instances to create pacman's timed movement
     auto currentTime{std::chrono::high_resolution_clock::now()};
@@ -38,7 +38,7 @@ void Ghost::timeToMove(Window& win, std::vector<Obstacle>& obstacleList, Ghost& 
     if (currentTime - m_lastTime >= m_interval)
     {
         eraseLastPosition(win);
-        CheckForAndPrintOverLaps(win, pinky, inky, blinky, clyde);
+        CheckForAndPrintOverLaps(win, g1, g2, g3);
         setValidDirection(obstacleList, win);
         printAndRefreshGhost(win);
 
@@ -194,10 +194,9 @@ bool Ghost::perimeterBoundsCheck(Window& win)
 }
 
 /* _   _   _   _   _   _   _   _  
-  / \ / \ / \ / \ / \ / \ / \ / \  Functions related to erasing old positions, and printing new positions.
- ( P | R | I | N | T | I | N | G ) Also deals with ghost overlaps which cause print overs which is where a ghost will overlap with another
-  \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/  and when it moves it will erase the other ghost causing the ghost to dissapear. Also deals with spawning 
-                                   pellets back after a ghost clears them
+  / \ / \ / \ / \ / \ / \ / \ / \  Functions related to erasing old positions, and printing new positions. Also deals with ghost 
+ ( P | R | I | N | T | I | N | G ) overlaps which cause print overs which is where a ghost will overlap with another and when it moves it will 
+  \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/  erase the other ghost causing the ghost to dissapear. Also deals with spawning pellets back after a ghost clears them                              
 */
 
 void Ghost::eraseLastPosition(Window& win)
@@ -205,10 +204,11 @@ void Ghost::eraseLastPosition(Window& win)
     mvwprintw(win.getWindow(), m_ghostVec.y, m_ghostVec.x, " "); 
 }
 
-void Ghost::CheckForAndPrintOverLaps(Window& win, Ghost& pinky, Ghost& inky, Ghost& blinky, Ghost& clyde)
+// deals with overlaps (pellets && ghost)
+void Ghost::CheckForAndPrintOverLaps(Window& win, Ghost& g1, Ghost& g2, Ghost& g3)
 {
     printPelletBackIfNotEaten(win);
-    printOverLap(win, checkGhostOverLap(pinky, inky, blinky, clyde));
+    printOverLap(win, checkGhostOverLap(g1, g2, g3));
 }
 
 void Ghost::printPelletBackIfNotEaten(Window& win)
@@ -222,18 +222,15 @@ void Ghost::printPelletBackIfNotEaten(Window& win)
     }
 }
 
-Color::ColorPair Ghost::checkGhostOverLap(Ghost& pinky, Ghost& inky, Ghost& blinky, Ghost& clyde)
+Color::ColorPair Ghost::checkGhostOverLap(Ghost& g1, Ghost& g2, Ghost& g3)
 {
     // checks to see if implicit ghost is in the same coordinate as a explicit ghost
-    std::vector<Ghost> ghostList{pinky, inky, blinky, clyde};
+    std::vector<Ghost> ghostList{g1, g2, g3};
 
     for(std::size_t i{0}; i < ghostList.size(); ++i)
     {
-        if(m_ghostVec.y == ghostList[i].getGhostVec().y && m_ghostVec.x == ghostList[i].getGhostVec().x && 
-            m_ghostColor != ghostList[i].getGhostColor())
-            {
+        if(m_ghostVec.y == ghostList[i].getGhostVec().y && m_ghostVec.x == ghostList[i].getGhostVec().x)
                 return ghostList[i].getGhostColor();
-            }
     }
 
     return Color::null;

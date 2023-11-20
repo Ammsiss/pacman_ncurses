@@ -19,8 +19,7 @@ public:
     Ghost(std::chrono::milliseconds speed, Color::ColorPair ghostColor);
 
     //public methods
-
-    void timeToMove(Window& win, std::vector<Obstacle>& obstacleList, Ghost& pinky, Ghost& inky, Ghost& blinky, Ghost& clyde, Pellet& pellets); 
+    void timeToMove(Window& win, std::vector<Obstacle>& obstacleList, Ghost& g1, Ghost& g2, Ghost& g3); 
 
     // getters
     Color::ColorPair getGhostColor();
@@ -54,9 +53,9 @@ private:
 
     // printing
     void eraseLastPosition(Window& win);
-    void CheckForAndPrintOverLaps(Window& win, Ghost& pinky, Ghost& inky, Ghost& blinky, Ghost& clyde);
+    void CheckForAndPrintOverLaps(Window& win, Ghost& g1, Ghost& g2, Ghost& g3);
     void printPelletBackIfNotEaten(Window& win);
-    Color::ColorPair checkGhostOverLap(Ghost& pinky, Ghost& inky, Ghost& blinky, Ghost& clyde);
+    Color::ColorPair checkGhostOverLap(Ghost& g1, Ghost& g2, Ghost& g3);
     void printOverLap(Window& win, Color::ColorPair overLapColor);
     void printAndRefreshGhost(Window& win);
 };

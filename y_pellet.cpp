@@ -33,21 +33,6 @@ void Pellet::printAndRefreshPellet(Window& win)
     wrefresh(win.getWindow());
 }
 
-/*
-// assigns pellet coordinates only not garbage to m_onlyPelletVec
-void Pellet::initOnlyPelletVector()
-{
-    for(std::size_t y{0}; y < m_pelletVec.size(); ++y)
-    {
-        for(std::size_t x{0}; x < m_pelletVec[y].size(); ++x)y
-        {
-            if(m_pelletVec[y][x] != m_garbage)
-                m_onlyPelletVec.emplace_back(Vec{static_cast<int>(y), static_cast<int>(x)});
-        }
-    }
-}
-*/
-
 // public
 
 void Pellet::initAndPrintPellets(Window& win, std::vector<Obstacle>& obstacleList)
@@ -69,6 +54,3 @@ void Pellet::initAndPrintPellets(Window& win, std::vector<Obstacle>& obstacleLis
 
     printAndRefreshPellet(win);
 }
-
-// std::vector<std::vector<int>>& Pellet::getPelletVec() { return m_pelletVec; }
-// std::vector<Vec>& Pellet::getOnlyPelletVec() { return m_onlyPelletVec; }
