@@ -13,79 +13,7 @@
 
 using namespace std::chrono_literals;
 
-// private
-
-const int Window::defaultGameX{28};
-const int Window::defaultGameY{31};
-
-void Window::initWindowPerimeter()
-{
-    // X: 0 - 27
-    // Y: 0 - 30
-
-    for (int top{0}; top <= (m_screenX - 1); ++top)
-    {
-        m_windowPerimeter.emplace_back(Vec{0, top});
-    }
-
-    for (int bottom{0}; bottom <= (m_screenX - 1); ++bottom)
-    {
-        m_windowPerimeter.emplace_back(Vec{(m_screenY - 1), bottom});
-    }
-
-    for (int left{1}; left <= (m_screenY - 2); ++left)
-    {
-        m_windowPerimeter.emplace_back(Vec{left, 0});
-    }
-
-    for (int right{1}; right <= (m_screenY - 2); ++right)
-    {
-        m_windowPerimeter.emplace_back(Vec{right, m_screenX - 1});
-    }
-}
-
-void Window::initWindowArea()
-{
-    for(std::size_t rows{0}; rows < m_screenY; ++rows)
-    {
-        m_windowArea.emplace_back();
-
-        for(std::size_t columns{0}; columns < m_screenX; ++columns)
-        {
-            m_windowArea[rows].emplace_back();
-        }
-    }
-}
-
-void Window::assignPelletEatenToGhostBox()
-{
-    // HARDCODED CHANGE MAYBE
-    
-    for(int y{13}; y < 16; ++y)
-    {
-        for(int x{11}; x < 17; ++x)
-        {
-            m_windowArea[y][x] = CellName::pelletEaten;
-        }
-    }
-
-    m_windowArea[12][13] = CellName::pelletEaten;
-    m_windowArea[12][14] = CellName::pelletEaten;
-}
-
-// public
-
-void Window::removeGhostBoxPelletAndAssignEaten()
-{
-    mvwprintw(m_window, 13, 11, "      ");
-    mvwprintw(m_window, 14, 11, "      ");
-    mvwprintw(m_window, 15, 11, "      "); 
-    mvwprintw(m_window, 12, 13, "  ");
-
-    assignPelletEatenToGhostBox();
-
-    wrefresh(m_window);
-}
+/********************************************************************** PUBLIC MEMBERS **********************************************************************/
 
 // constructs centered window with optional dimensions
 Window::Window(int screenY, int screenX)
@@ -97,7 +25,7 @@ Window::Window(int screenY, int screenX)
     getmaxyx(stdscr, maxY, maxX);
     m_window = newwin(m_screenY, m_screenX, (maxY - m_screenY) / 2, (maxX - m_screenX) / 2);
     initWindowPerimeter();
-    initWindowArea();
+    initWindowAreaSize();
 }
 
 // Constructs custum window with custum start point and dimensions based on stdscr
@@ -107,20 +35,13 @@ Window::Window(int screenY, int screenX, int startY, int startX)
 {
     m_window = newwin(screenY, screenX, startY, startX);
     initWindowPerimeter();
-    initWindowArea();
+    initWindowAreaSize();
 }
 
 // deconstructor
 Window::~Window() { delwin(m_window); }
 
-
-// getters
-WINDOW* Window::getWindow() { return m_window; }
-int& Window::getScreenY() { return m_screenY; }
-int& Window::getScreenX() { return m_screenX; }
-std::vector<Vec>& Window::getWindowPerimeter() { return m_windowPerimeter; }
-std::vector<std::vector<int>>& Window::getWindowArea() { return m_windowArea; }
-
+// -------------v
 void Window::drawBoxAndRefresh()
 {
     wattron(m_window, COLOR_PAIR(Color::blue_black));   
@@ -130,6 +51,7 @@ void Window::drawBoxAndRefresh()
     wrefresh(m_window);
 }
 
+// Count down for main game window
 void Window::gameCountDown()
 {
     int count{3};
@@ -184,4 +106,88 @@ void Window::gameCountDown()
 
         std::this_thread::sleep_for(5ms);
     }
+}
+
+// hardcoded pellet removal + assignment
+void Window::removeGhostBoxPelletAndAssignEaten()
+{
+    mvwprintw(m_window, 13, 11, "      ");
+    mvwprintw(m_window, 14, 11, "      ");
+    mvwprintw(m_window, 15, 11, "      "); 
+    mvwprintw(m_window, 12, 13, "  ");
+
+    assignPelletEatenToGhostBox();
+
+    wrefresh(m_window);
+}
+
+// getters
+WINDOW* Window::getWindow() { return m_window; }
+int& Window::getScreenY() { return m_screenY; }
+int& Window::getScreenX() { return m_screenX; }
+std::vector<Vec>& Window::getWindowPerimeter() { return m_windowPerimeter; }
+std::vector<std::vector<int>>& Window::getWindowArea() { return m_windowArea; }
+
+/********************************************************************** PRIVATE MEMBERS **********************************************************************/
+
+// constant default window dimensions
+const int Window::defaultGameX{28};
+const int Window::defaultGameY{31};
+
+// ------------------v
+void Window::initWindowPerimeter()
+{
+    // X: 0 - 27
+    // Y: 0 - 30
+
+    for (int top{0}; top <= (m_screenX - 1); ++top)
+    {
+        m_windowPerimeter.emplace_back(Vec{0, top});
+    }
+
+    for (int bottom{0}; bottom <= (m_screenX - 1); ++bottom)
+    {
+        m_windowPerimeter.emplace_back(Vec{(m_screenY - 1), bottom});
+    }
+
+    for (int left{1}; left <= (m_screenY - 2); ++left)
+    {
+        m_windowPerimeter.emplace_back(Vec{left, 0});
+    }
+
+    for (int right{1}; right <= (m_screenY - 2); ++right)
+    {
+        m_windowPerimeter.emplace_back(Vec{right, m_screenX - 1});
+    }
+}
+
+// -----------------v
+void Window::initWindowAreaSize()
+{
+    for(std::size_t rows{0}; rows < m_screenY; ++rows)
+    {
+        m_windowArea.emplace_back();
+
+        for(std::size_t columns{0}; columns < m_screenX; ++columns)
+        {
+            m_windowArea[rows].emplace_back();
+        }
+    }
+}
+
+// hardcoded assignment
+void Window::assignPelletEatenToGhostBox()
+{
+    // HARDCODED CHANGE MAYBE
+    
+    for(int y{13}; y < 16; ++y)
+    {
+        for(int x{11}; x < 17; ++x)
+        {
+            m_windowArea[y][x] = CellName::pelletEaten;
+        }
+    }
+
+    m_windowArea[12][13] = CellName::pelletEaten;
+    m_windowArea[12][14] = CellName::pelletEaten;
 }

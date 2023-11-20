@@ -150,10 +150,6 @@ void gameLoop()
     // init game obstacles stuff
     std::vector<Obstacle> obstacleList{obstacleInitAndRefresh(gameW)};
 
-    // init game pellet stuff
-    Pellet pellets{};
-    pellets.init2DVectorSpace(gameW, obstacleList);
-
     // init characters
     Pacman pacman{};
     Ghost pinky{ 350ms, Color::pink_black };
@@ -161,7 +157,10 @@ void gameLoop()
     Ghost blinky{ 250ms, Color::red_black };
     Ghost clyde{ 275ms, Color::orange_black };
 
-    // gameW.gameCountDown();
+    // restart vector space | new round
+    VectorSpace vectorSpace{gameW, obstacleList};
+
+    gameW.gameCountDown();
     while(true)
     {
         pacman.timeToMove(gameW);

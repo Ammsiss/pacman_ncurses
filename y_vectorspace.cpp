@@ -11,10 +11,17 @@
 #include <vector>
 #include <algorithm>
 
+/********************************************************************** PUBLIC MEMBERS **********************************************************************/
 
-// private
+VectorSpace::VectorSpace(Window& win, std::vector<Obstacle>& obstacleList)
+{
+    init2DVectorSpace(win, obstacleList);
+    printAndRefreshPellet(win);
+}
 
-void Pellet::printAndRefreshPellet(Window& win)
+/********************************************************************** PRIVATE MEMBERS **********************************************************************/
+
+void VectorSpace::printAndRefreshPellet(Window& win)
 {
     for(std::size_t y{0}; y < win.getWindowArea().size(); ++y)
     {
@@ -33,9 +40,7 @@ void Pellet::printAndRefreshPellet(Window& win)
     wrefresh(win.getWindow());
 }
 
-// public
-
-void Pellet::init2DVectorSpace(Window& win, std::vector<Obstacle>& obstacleList)
+void VectorSpace::init2DVectorSpace(Window& win, std::vector<Obstacle>& obstacleList)
 {
     // ADD PERIMETER TO windowArea vector space
     for(std::size_t perimeterIterator{0}; perimeterIterator < win.getWindowPerimeter().size(); ++perimeterIterator)
@@ -51,6 +56,4 @@ void Pellet::init2DVectorSpace(Window& win, std::vector<Obstacle>& obstacleList)
             win.getWindowArea()[obstacleList[listIterator].getObsVec()[obstacleIterator].y][obstacleList[listIterator].getObsVec()[obstacleIterator].x] = CellName::obstacleValue;
         }
     }
-
-    printAndRefreshPellet(win);
 }

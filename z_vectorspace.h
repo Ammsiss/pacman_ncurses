@@ -8,11 +8,12 @@
 #include "z_obstacle.h"
 
 
-class Pellet
+class VectorSpace
 {
+public:
+    VectorSpace(Window& win, std::vector<Obstacle>& obstacleList);
+
 private:
     void printAndRefreshPellet(Window& win);
-
-public:
     void init2DVectorSpace(Window& win, std::vector<Obstacle>& obstacleList);
 };

@@ -1,32 +1,26 @@
 #pragma once
 
+// external
+#include <ncurses.h>
+
+// user
 #include "z_aggregate.h"
 
+// std
 #include <vector>
-#include <ncurses.h>
 
 class Window
 {
-private:
-    static const int defaultGameX;
-    static const int defaultGameY;
-    int m_screenY;
-    int m_screenX;
-    int m_perimeterValue{10001};
-    
-    WINDOW* m_window;
-
-    std::vector<Vec> m_windowPerimeter{};
-    std::vector<std::vector<int>> m_windowArea{};
-
-    void initWindowPerimeter();
-    void initWindowArea();
-    void assignPelletEatenToGhostBox();
-
 public:
+    // constructors
     Window(int screenY = defaultGameY, int screenX = defaultGameX);
     Window(int screenY, int screenX, int startY, int startX);
     ~Window();
+
+    // public methods
+    void drawBoxAndRefresh();
+    void gameCountDown();
+    void removeGhostBoxPelletAndAssignEaten();
 
     // getters
     WINDOW* getWindow();
@@ -35,7 +29,22 @@ public:
     std::vector<Vec>& getWindowPerimeter();
     std::vector<std::vector<int>>& getWindowArea();
 
-    void drawBoxAndRefresh();
-    void gameCountDown();
-    void removeGhostBoxPelletAndAssignEaten();
+private:
+
+    // private variables
+    static const int defaultGameX;
+    static const int defaultGameY;
+    int m_screenY;
+    int m_screenX;
+    int m_perimeterValue{10001};
+    WINDOW* m_window;
+    // to assign for vector space
+    std::vector<Vec> m_windowPerimeter{};
+    // main vector space
+    std::vector<std::vector<int>> m_windowArea{};
+
+    // private methods
+    void initWindowPerimeter();
+    void initWindowAreaSize();
+    void assignPelletEatenToGhostBox();
 };
