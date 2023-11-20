@@ -60,7 +60,7 @@ void Window::initWindowArea()
 void Window::assignPelletEatenToGhostBox()
 {
     // HARDCODED CHANGE MAYBE
-        
+    
     for(int y{13}; y < 16; ++y)
     {
         for(int x{11}; x < 17; ++x)
@@ -73,19 +73,19 @@ void Window::assignPelletEatenToGhostBox()
     m_windowArea[12][14] = CellName::pelletEaten;
 }
 
+// public
+
 void Window::removeGhostBoxPelletAndAssignEaten()
 {
     mvwprintw(m_window, 13, 11, "      ");
     mvwprintw(m_window, 14, 11, "      ");
-    mvwprintw(m_window, 15, 11, "      ");
+    mvwprintw(m_window, 15, 11, "      "); 
     mvwprintw(m_window, 12, 13, "  ");
 
     assignPelletEatenToGhostBox();
 
     wrefresh(m_window);
 }
-
-// public
 
 // constructs centered window with optional dimensions
 Window::Window(int screenY, int screenX)
@@ -98,7 +98,6 @@ Window::Window(int screenY, int screenX)
     m_window = newwin(m_screenY, m_screenX, (maxY - m_screenY) / 2, (maxX - m_screenX) / 2);
     initWindowPerimeter();
     initWindowArea();
-    removeGhostBoxPelletAndAssignEaten();
 }
 
 // Constructs custum window with custum start point and dimensions based on stdscr

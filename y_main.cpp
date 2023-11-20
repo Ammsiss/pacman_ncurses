@@ -145,6 +145,7 @@ void gameLoop()
     std::vector<Vec>& windowPerimeter{ gameW.getWindowPerimeter() };
     std::vector<std::vector<int>>& windowArea{ gameW.getWindowArea() };
     nodelay(gameW.getWindow(), true);
+    gameW.removeGhostBoxPelletAndAssignEaten();
 
     // init game obstacles stuff
     std::vector<Obstacle> obstacleList{obstacleInitAndRefresh(gameW)};

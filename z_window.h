@@ -22,7 +22,6 @@ private:
     void initWindowPerimeter();
     void initWindowArea();
     void assignPelletEatenToGhostBox();
-    void removeGhostBoxPelletAndAssignEaten();
 
 public:
     Window(int screenY = defaultGameY, int screenX = defaultGameX);
@@ -38,4 +37,5 @@ public:
 
     void drawBoxAndRefresh();
     void gameCountDown();
+    void removeGhostBoxPelletAndAssignEaten();
 };
