@@ -47,7 +47,11 @@ LevelState Pacman::timeToMove(Window& win, Ghost& g1, Ghost& g2, Ghost& g3, Ghos
 
         // if pacman moved into ghost return true
         if(movePacmanBasedOnDirection(win, g1, g2, g3, g4))
+        {
+            printPacmanBasedOnDirection(win);
+            wrefresh(win.getWindow());
             return LevelState::pacmanDead;
+        }
 
         printPacmanBasedOnDirection(win);
 

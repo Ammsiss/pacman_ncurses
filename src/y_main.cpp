@@ -252,21 +252,29 @@ int main()
     return 0;
 }
 
-//324
+// *************************EASY********************************
 
-// TO IMPLEMENT:: 
+/*
+    1) Controls section
+    2) Ghost box door 1 way
+    3) Game over display when all lives gone
+*/
 
-//PACMAN MENU ANIMATION
-//PATHFINDING
-//OBSTACLE FLASHING ON COUNT DOWN
-// controls section
-// Improve movement responsivness
-// fix unfrequent ghost flicker (HARD)
-// External high score
-// power ups
-// pacman dying to ghosts
-// source and header files in folders
-// pacman delay 1 tick when picking up last pellet
-// ghost box door 1 way
+// ************************MEDIUM*******************************
+
+/*
+    1) Obstacle flashing on picking up all pellets
+    2) External high score
+*/
+
+// **************************HARD*******************************
+
+/*
+    1) Pacman menu animation
+    2) Pathfinding
+    3) Improve movement responsivness
+    4) Fix unfrequent ghost flicker
+    5) Power ups
+*/
 
 
