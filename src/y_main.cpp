@@ -230,7 +230,7 @@ void gameLoop()
 
 int main()
 {
-    ncursesInit(); 
+    ncursesInit();
 
     bool closeGame{false};
     while(true)

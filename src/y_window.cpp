@@ -181,7 +181,15 @@ void Window::printGameOverMessage()
     wattron(m_window, COLOR_PAIR(Color::default_color));
 
     wrefresh(m_window);
-    getch();
+
+    char clickPastMessage{};
+    while(true)
+    {
+        clickPastMessage = getch();
+
+        if(clickPastMessage == '\n')
+            break;
+    }
 }
 
 void Window::flashingObstacles()
