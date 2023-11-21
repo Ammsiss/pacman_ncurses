@@ -249,14 +249,11 @@ int main()
 
 // TO IMPLEMENT:: 
 
+// print pacman lives
+
 //PACMAN MENU ANIMATION
 //PATHFINDING
 //OBSTACLE FLASHING ON COUNT DOWN
-
-// animate pacman death animation
-// V — ꓥ | *
-
-// pacman lives
 // controls section
 // Improve movement responsivness
 // fix unfrequent ghost flicker (HARD)

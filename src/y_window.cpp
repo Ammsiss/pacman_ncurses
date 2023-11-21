@@ -2,14 +2,14 @@
 #include <ncurses.h>
 
 //user
-#include <vector>
-#include <chrono>
-#include <thread>
-
-//std
 #include "z_window.h"
 #include "z_aggregate.h"
 #include "z_obstacle.h"
+
+//std
+#include <vector>
+#include <chrono>
+#include <thread>
 
 using namespace std::chrono_literals;
 
