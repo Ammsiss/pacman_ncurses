@@ -20,7 +20,9 @@ public:
     // public methods
     void drawBoxAndRefresh();
     void gameCountDown();
-    void assignGhostBox(Window& win);
+    void assignGhostBox();
+    void printLives(int lives);
+    void printScoreOutline(int score);
 
     // getters
     WINDOW* getWindow();

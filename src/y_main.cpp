@@ -44,6 +44,10 @@ void ncursesInit()
     init_pair(Color::blue_black, COLOR_BLUE, COLOR_BLACK);
     init_pair(Color::orange_black, COLOR_GREEN, COLOR_BLACK); 
     init_pair(Color::red_blue, COLOR_RED, COLOR_BLUE);
+    init_pair(Color::yellow_blue, COLOR_YELLOW, COLOR_BLUE);
+    init_pair(Color::pink_blue, COLOR_MAGENTA, COLOR_BLUE);
+    init_pair(Color::orange_blue, COLOR_GREEN, COLOR_BLUE);
+    init_pair(Color::cyan_blue, COLOR_CYAN, COLOR_BLUE);
 
     // init refresh
     refresh();
@@ -153,14 +157,17 @@ void gameLoop()
 
     // init vector space
     VectorSpace vectorSpace{gameW, obstacleList};
-    gameW.assignGhostBox(gameW);
+    gameW.assignGhostBox();
 
     // restart vector space | new round
     vectorSpace.assignPelletNotEaten(gameW);
     vectorSpace.printAndRefreshPellet(gameW);
 
-    for(int lives{3}; lives > 0; --lives)
+    for(int lives{4}; lives > 0; --lives)
     {
+        gameW.printLives(lives);
+        gameW.printScoreOutline(score);
+
         vectorSpace.printAndRefreshPellet(gameW);
 
         // init characters
@@ -248,8 +255,6 @@ int main()
 //324
 
 // TO IMPLEMENT:: 
-
-// print pacman lives
 
 //PACMAN MENU ANIMATION
 //PATHFINDING

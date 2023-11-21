@@ -61,7 +61,7 @@ LevelState Pacman::timeToMove(Window& win, Ghost& g1, Ghost& g2, Ghost& g3, Ghos
 
 void Pacman::printDeathAnimation(Window& win)
 {    
-    std::vector<std::string> animationFrames{"V", "—", "ꓥ", "|", "*", " "};
+    std::vector<std::string> animationFrames{"v", "—", "ʌ", "|", "*", " "};
     int subscript{-1};
 
     auto interval{600ms};

@@ -10,6 +10,7 @@
 #include <vector>
 #include <chrono>
 #include <thread>
+#include <string>
 
 using namespace std::chrono_literals;
 
@@ -107,9 +108,73 @@ void Window::gameCountDown()
         std::this_thread::sleep_for(5ms);
     }
 }
+
+void Window::printLives(int lives)
+{
+    std::vector<std::string> livesList{};
+
+    for(int i{0}; i < lives; ++i)
+        livesList.emplace_back("<");
+
+    wattron(m_window, COLOR_PAIR(Color::red_black));
+    mvwprintw(m_window, 10, 1, "♥♥♥♥");
+    mvwprintw(m_window, 11, 1, "    ");
+    mvwprintw(m_window, 12, 1, "♥♥♥♥");
+    wattroff(m_window, COLOR_PAIR(Color::red_black));
+
+    wattron(m_window, COLOR_PAIR(Color::yellow_black));
+    
+    for(std::size_t i{0}; i < livesList.size(); ++i)
+        mvwprintw(m_window, 11, (i + 1), "%s", livesList[i].c_str());
+
+    wattroff(m_window, COLOR_PAIR(Color::yellow_black));
+
+    wattron(m_window, COLOR_PAIR(Color::default_color));
+
+
+
+    wrefresh(m_window);
+}
+
+void Window::printScoreOutline(int score)
+{
+    mvwprintw(m_window, 11, 23, "    ");
+    mvwprintw(m_window, 10, 23, "    ");
+    mvwprintw(m_window, 12, 23, "    ");
+
+    wattron(m_window, COLOR_PAIR(Color::yellow_black));
+    mvwprintw(m_window, 10, 23, "SCRE");
+    mvwprintw(m_window, 12, 23, "%d", score);
+    wattroff(m_window, COLOR_PAIR(Color::yellow_black));
+    wattron(m_window, COLOR_PAIR(Color::default_color));
+
+    // cyan
+    wattron(m_window, COLOR_PAIR(Color::cyan_black));
+    mvwprintw(m_window, 11, 23, "ᗣ");
+    wattroff(m_window, COLOR_PAIR(Color::cyan_black));
+    wattron(m_window, COLOR_PAIR(Color::default_color));
+
+    // orange
+    wattron(m_window, COLOR_PAIR(Color::orange_black));
+    mvwprintw(m_window, 11, 24, "ᗣ");
+    wattroff(m_window, COLOR_PAIR(Color::orange_black));
+    wattron(m_window, COLOR_PAIR(Color::default_color));
+
+    // red
+    wattron(m_window, COLOR_PAIR(Color::red_black));
+    mvwprintw(m_window, 11, 25, "ᗣ");
+    wattroff(m_window, COLOR_PAIR(Color::red_black));
+    wattron(m_window, COLOR_PAIR(Color::default_color));
+
+    // pink
+    wattron(m_window, COLOR_PAIR(Color::pink_black));
+    mvwprintw(m_window, 11, 26, "ᗣ");
+    wattroff(m_window, COLOR_PAIR(Color::pink_black));
+    wattron(m_window, COLOR_PAIR(Color::default_color));
+}
                                                                                                                                                                  
 // hardcoded assignment
-void Window::assignGhostBox(Window& win)
+void Window::assignGhostBox()
 {
     // HARDCODED CHANGE MAYBE
     
