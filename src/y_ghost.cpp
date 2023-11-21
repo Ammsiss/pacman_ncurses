@@ -127,12 +127,17 @@ GhostState Ghost::moveGhostInValidDirection(Window& win, Pacman& pacman)
             }
             case Direction::down: 
             {
-
                 setY(PositionChange::increment);
+
                 if(!obstacleBoundsCheck(win) || !perimeterBoundsCheck(win))
                 {
                    setY(PositionChange::decrement);
                    return GhostState::invalidDirection;
+                }
+                else if(m_ghostVec.y == 12 && (m_ghostVec.x == 13 || m_ghostVec.x == 14))
+                {
+                    setY(PositionChange::decrement);
+                    return GhostState::invalidDirection;
                 }
                 else if(!pacmanCollisionCheck(pacman))
                     return GhostState::insidePacman;

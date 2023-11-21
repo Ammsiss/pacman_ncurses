@@ -150,6 +150,10 @@ bool Pacman::movePacmanBasedOnDirection(Window& win, Ghost& g1, Ghost& g2, Ghost
                 if(m_pacVec.y != (win.getScreenY() - 2))
                 {
                     setY(PositionChange::increment);
+
+                    if(m_pacVec.y == 12 && (m_pacVec.x == 13 || m_pacVec.x == 14))
+                        setY(PositionChange::decrement);
+
                     if(obstacleBoundsCheck(win))
                         setY(PositionChange::decrement);
 
