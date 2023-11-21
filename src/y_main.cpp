@@ -190,6 +190,7 @@ void gameLoop()
                     break;
                 case LevelState::levelClear:
                     vectorSpace.assignPelletNotEaten(gameW);
+                    gameW.flashingObstacles();
                     ++lives;
                     leaveLoop = true;
                     break;
@@ -258,15 +259,13 @@ int main()
 
 /*
     1) Controls section
-    2) Ghost box door 1 way
-    3) Game over display when all lives gone
 */
 
 // ************************MEDIUM*******************************
 
 /*
-    1) Obstacle flashing on picking up all pellets
-    2) External high score
+    1) External high score
+    2) Implement random (1-4) fruits spawning in each level
 */
 
 // **************************HARD*******************************

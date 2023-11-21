@@ -183,6 +183,56 @@ void Window::printGameOverMessage()
     wrefresh(m_window);
     getch();
 }
+
+void Window::flashingObstacles()
+{
+    auto interval{ 300ms };
+    auto lastTime{ std::chrono::high_resolution_clock::now() };
+
+    int colorChange{0};
+
+    while(true)
+    {
+        auto currentTime{ std::chrono::high_resolution_clock::now() };
+
+        if(currentTime - lastTime >= interval)
+        {
+            for(std::size_t y{0}; y < m_windowArea.size(); ++y)
+            {
+                for(std::size_t x{0}; x < m_windowArea[y].size(); ++x)
+                {
+                    if(colorChange % 2 == 0 && (m_windowArea[y][x] == CellName::obstacleValue || m_windowArea[y][x] == CellName::perimeterValue))
+                    {
+                        wattron(m_window, COLOR_PAIR(Color::white_black));
+                        mvwaddch(m_window, y, x, ACS_CKBOARD);
+                        wattroff(m_window, COLOR_PAIR(Color::white_black));
+                        wattron(m_window, COLOR_PAIR(Color::default_color));
+
+                        wrefresh(m_window);
+                    }
+                    else if(colorChange % 2 != 0 && (m_windowArea[y][x] == CellName::obstacleValue || m_windowArea[y][x] == CellName::perimeterValue))
+                    {
+                        wattron(m_window, COLOR_PAIR(Color::blue_black));
+                        mvwaddch(m_window, y, x, ACS_CKBOARD);
+                        wattroff(m_window, COLOR_PAIR(Color::blue_black));
+                        wattron(m_window, COLOR_PAIR(Color::default_color));
+
+                        wrefresh(m_window);
+                    }
+                }
+            }
+
+            if(colorChange == 5)
+                break;
+
+            ++colorChange;
+
+            lastTime = currentTime;
+        }
+
+        std::this_thread::sleep_for(5ms);
+    }
+}
                                                                                                                                                                  
 // hardcoded assignment
 void Window::assignGhostBox()

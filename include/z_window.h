@@ -24,6 +24,7 @@ public:
     void printLives(int lives);
     void printScoreOutline(int score);
     void printGameOverMessage();
+    void flashingObstacles();
 
     // getters
     WINDOW* getWindow();
