@@ -223,6 +223,8 @@ void gameLoop()
             std::this_thread::sleep_for(5ms);
         }
     }
+
+    gameW.printGameOverMessage();
 }
 
 int main()

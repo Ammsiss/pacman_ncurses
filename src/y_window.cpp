@@ -172,6 +172,17 @@ void Window::printScoreOutline(int score)
     wattroff(m_window, COLOR_PAIR(Color::pink_black));
     wattron(m_window, COLOR_PAIR(Color::default_color));
 }
+
+void Window::printGameOverMessage()
+{
+    wattron(m_window, COLOR_PAIR(Color::yellow_black));
+    mvwprintw(m_window, 14, 11, "LOSER!");
+    wattroff(m_window, COLOR_PAIR(Color::yellow_black));
+    wattron(m_window, COLOR_PAIR(Color::default_color));
+
+    wrefresh(m_window);
+    getch();
+}
                                                                                                                                                                  
 // hardcoded assignment
 void Window::assignGhostBox()

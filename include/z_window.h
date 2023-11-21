@@ -23,6 +23,7 @@ public:
     void assignGhostBox();
     void printLives(int lives);
     void printScoreOutline(int score);
+    void printGameOverMessage();
 
     // getters
     WINDOW* getWindow();
