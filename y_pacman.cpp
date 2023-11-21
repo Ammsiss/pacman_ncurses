@@ -7,6 +7,7 @@
 #include "z_window.h"
 #include "z_pacman.h"
 #include "z_obstacle.h"
+#include "z_ghost.h"
 
 //std
 #include <vector>
@@ -30,7 +31,7 @@ Pacman::Pacman()
     }
 
 // public methods
-void Pacman::timeToMove(Window& win)
+bool Pacman::timeToMove(Window& win, Ghost& g1, Ghost& g2, Ghost& g3, Ghost& g4)
 {
     // define chrono duration and 2 system time instances to create pacman's timed movement
     auto currentTime{std::chrono::high_resolution_clock::now()};
@@ -41,13 +42,19 @@ void Pacman::timeToMove(Window& win)
         erase(win);
         updateEatenPellets(win);
         printScore(win);
-        movePacmanBasedOnDirection(win);
+
+        // if pacman moved into ghost return true
+        if(movePacmanBasedOnDirection(win, g1, g2, g3, g4))
+            return true;
+
         printPacmanBasedOnDirection(win);
 
         // refresh pacman and update timer
         wrefresh(win.getWindow());
         m_lastTime = currentTime;
     }
+
+    return false;
 }
 
 /********************************************************************** PRIVATE MEMBERS **********************************************************************/
@@ -81,7 +88,7 @@ void Pacman::setDirection()
     }
 }
 
-void Pacman::movePacmanBasedOnDirection(Window& win)
+bool Pacman::movePacmanBasedOnDirection(Window& win, Ghost& g1, Ghost& g2, Ghost& g3, Ghost& g4)
 {
     switch(m_direction)
         {
@@ -92,6 +99,9 @@ void Pacman::movePacmanBasedOnDirection(Window& win)
                     setY(PositionChange::decrement);
                     if(obstacleBoundsCheck(win))
                         setY(PositionChange::increment);
+
+                    if(ghostCollisionCheck(g1, g2, g3, g4))
+                        return true;
                 }
                 break;
             }
@@ -102,6 +112,9 @@ void Pacman::movePacmanBasedOnDirection(Window& win)
                     setY(PositionChange::increment);
                     if(obstacleBoundsCheck(win))
                         setY(PositionChange::decrement);
+
+                    if(ghostCollisionCheck(g1, g2, g3, g4))
+                        return true;
                 }
                 break;
             }
@@ -117,6 +130,9 @@ void Pacman::movePacmanBasedOnDirection(Window& win)
                     setX(PositionChange::decrement); 
                     if(obstacleBoundsCheck(win))
                         setX(PositionChange::increment);
+
+                    if(ghostCollisionCheck(g1, g2, g3, g4))
+                        return true;
                 }
                 break;
             }
@@ -132,12 +148,17 @@ void Pacman::movePacmanBasedOnDirection(Window& win)
                     setX(PositionChange::increment); 
                     if(obstacleBoundsCheck(win))
                         setX(PositionChange::decrement);
+
+                    if(ghostCollisionCheck(g1, g2, g3, g4))
+                        return true;
                 }
                 break;
             }
             default: 
                 break;
         }
+
+    return false;
 }
 
 void Pacman::setY(PositionChange direction) 
@@ -164,6 +185,19 @@ bool Pacman::obstacleBoundsCheck(Window& win)
     return false;
 }
 
+bool Pacman::ghostCollisionCheck(Ghost& g1, Ghost& g2, Ghost& g3, Ghost& g4)
+{
+    std::vector<Ghost> ghostList{g1, g2, g3, g4};
+
+    for(std::size_t i{0}; i < ghostList.size(); ++i)
+    {
+        if(m_pacVec.y == ghostList[i].getGhostVec().y && m_pacVec.x == ghostList[i].getGhostVec().x)
+            return true;
+    }
+
+    return false;
+}
+
 /* _   _   _   _   _   _   _   _  
   / \ / \ / \ / \ / \ / \ / \ / \   Functions related to printing pacman's new position as well as incrementing and 
  ( P | R | I | N | T | I | N | G )  printing the score
@@ -173,15 +207,6 @@ bool Pacman::obstacleBoundsCheck(Window& win)
 void Pacman::erase(Window& win)
 {
     mvwprintw(win.getWindow(), m_pacVec.y, m_pacVec.x, " ");
-}
-
-void Pacman::updateEatenPellets(Window& win)
-{
-    if(win.getWindowArea()[m_pacVec.y][m_pacVec.x] != CellName::pelletEaten)
-    {
-        ++m_score;
-        win.getWindowArea()[m_pacVec.y][m_pacVec.x] = CellName::pelletEaten;
-    }
 }
 
 void Pacman::printPacmanBasedOnDirection(Window& win)
@@ -210,6 +235,15 @@ void Pacman::printPacmanBasedOnDirection(Window& win)
     mvwprintw(win.getWindow(), m_pacVec.y, m_pacVec.x, "%s", setString.c_str());
     wattroff(win.getWindow(), COLOR_PAIR(Color::yellow_black));
     wattron(win.getWindow(), COLOR_PAIR(Color::default_color));
+}
+
+void Pacman::updateEatenPellets(Window& win)
+{
+    if(win.getWindowArea()[m_pacVec.y][m_pacVec.x] != CellName::pelletEaten)
+    {
+        ++m_score;
+        win.getWindowArea()[m_pacVec.y][m_pacVec.x] = CellName::pelletEaten;
+    }
 }
 
 void Pacman::printScore(Window& win)

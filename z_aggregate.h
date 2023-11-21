@@ -46,6 +46,7 @@ namespace CellName
         pelletEaten = 10000,
         perimeterValue,
         obstacleValue,
+        notEaten,
     };
 }
 struct Vec

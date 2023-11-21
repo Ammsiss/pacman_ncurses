@@ -8,6 +8,7 @@
 #include "z_window.h"
 #include "z_obstacle.h"
 #include "z_vectorspace.h"
+#include "z_ghost.h"
 
 // std
 #include <vector>
@@ -18,7 +19,7 @@ public:
     // constructor
     Pacman();
     // public method
-    void timeToMove(Window& win);
+    bool timeToMove(Window& win, Ghost& g1, Ghost& g2, Ghost& g3, Ghost& g4);
 
 private:
     // private variables
@@ -41,12 +42,13 @@ private:
     // printing
     void erase(Window& win);
     void printScore(Window& win);
+    void printPacmanBasedOnDirection(Window& win);
 
     // setting direction
-    bool obstacleBoundsCheck(Window& win);
-    void printPacmanBasedOnDirection(Window& win);
-    void movePacmanBasedOnDirection(Window& win);
     void setDirection();
+    bool movePacmanBasedOnDirection(Window& win, Ghost& g1, Ghost& g2, Ghost& g3, Ghost& g4);
+    bool obstacleBoundsCheck(Window& win);
+    bool ghostCollisionCheck(Ghost& g1, Ghost& g2, Ghost& g3, Ghost& g4);
 
     // getters
     void getUserInputAndSetDirection(Window& win);

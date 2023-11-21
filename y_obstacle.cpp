@@ -1,6 +1,7 @@
 //user
 #include "z_aggregate.h"
 #include "z_obstacle.h"
+#include "z_window.h"
 
 //std
 #include <vector>

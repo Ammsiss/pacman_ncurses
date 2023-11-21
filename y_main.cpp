@@ -49,15 +49,15 @@ void ncursesInit()
     refresh();
 }
 
-std::vector<Obstacle> obstacleInitAndRefresh(Window& gameW)
+std::vector<Obstacle> obstacleInit(Window& gameW)
 {
 
     // Initialize obstacle use format: 
-    // { {yoffset, xoffset}, {ydimension, xdimension}, gameW}
+    // {yoffset, xoffset}, {ydimension, xdimension}
     std::vector<Obstacle> obstacleList
     {
-        { {2, 2}, {3, 4}, gameW},
-        { {2, 7}, {3, 5}, gameW},
+        { {2, 2}, {3, 4}, gameW },
+        { {2, 7}, {3, 5}, gameW },
         { {1, 13}, {4, 2}, gameW },
         { {2, 16}, {3, 5}, gameW },
         { {2, 22}, {3, 4}, gameW },
@@ -108,7 +108,7 @@ std::vector<Obstacle> obstacleInitAndRefresh(Window& gameW)
         { {27, 16}, {2, 10}, gameW },
 
         // ghost box
-        { {12, 10}, {1, 3}, gameW},
+        { {12, 10}, {1, 3}, gameW },
         { {12, 15}, {1, 3}, gameW },
         { {13, 10}, {4, 1}, gameW },
         { {16, 11}, {1, 7}, gameW },
@@ -141,36 +141,42 @@ void gameLoop()
 {
     // init game window stuff
     Window gameW{};
-    gameW.drawBoxAndRefresh();
-    std::vector<Vec>& windowPerimeter{ gameW.getWindowPerimeter() };
-    std::vector<std::vector<int>>& windowArea{ gameW.getWindowArea() };
     nodelay(gameW.getWindow(), true);
-    gameW.removeGhostBoxPelletAndAssignEaten();
+    gameW.drawBoxAndRefresh();
 
-    // init game obstacles stuff
-    std::vector<Obstacle> obstacleList{obstacleInitAndRefresh(gameW)};
+    // init game obstacles stuff + print it 
+    std::vector<Obstacle> obstacleList{obstacleInit(gameW)};
 
-    // init characters
-    Pacman pacman{};
-    Ghost pinky{ 350ms, Color::pink_black };
-    Ghost inky{ 325ms, Color::cyan_black };
-    Ghost blinky{ 250ms, Color::red_black };
-    Ghost clyde{ 275ms, Color::orange_black };
-
-    // restart vector space | new round
-    VectorSpace vectorSpace{gameW, obstacleList};
-
-    gameW.gameCountDown();
-    while(true)
+    for(int lives{3}; lives > 0; --lives)
     {
-        pacman.timeToMove(gameW);
-        pinky.timeToMove(gameW, inky, blinky, clyde);
-        inky.timeToMove(gameW, pinky, blinky, clyde);
-        blinky.timeToMove(gameW, pinky, inky, clyde);
-        clyde.timeToMove(gameW, pinky, inky, blinky);
+        // init characters
+        Pacman pacman{};
+        Ghost pinky{ 300ms, Color::pink_black };
+        Ghost inky{ 325ms, Color::cyan_black };
+        Ghost blinky{ 250ms, Color::red_black };
+        Ghost clyde{ 275ms, Color::orange_black };
 
-        // sleep to avoid redundant checks
-        std::this_thread::sleep_for(5ms);
+        // restart vector space | new round
+        VectorSpace vectorSpace{gameW, obstacleList};
+    
+        // Hardcoded removal
+        gameW.removeGhostBoxPelletAndAssignEaten();
+
+        gameW.gameCountDown();
+        while(true)
+        {
+            // if pacman died break from loop
+            if(pacman.timeToMove(gameW, inky, blinky, pinky, clyde))
+                break;
+
+            pinky.timeToMove(gameW, inky, blinky, clyde);
+            inky.timeToMove(gameW, pinky, blinky, clyde);
+            blinky.timeToMove(gameW, pinky, inky, clyde);
+            clyde.timeToMove(gameW, pinky, inky, blinky);
+
+            // sleep to avoid redundant checks
+            std::this_thread::sleep_for(5ms);
+        }
     }
 }
 
@@ -206,10 +212,13 @@ int main()
 //PACMAN MENU ANIMATION
 //PATHFINDING
 //OBSTACLE FLASHING ON COUNT DOWN
-// optimize score board printing
 // animate pacman death animation
 // pacman lives
 // controls section
 // Improve movement responsivness
 // fix unfrequent ghost flicker (HARD)
-// CHANGE WINDOW AREA 2d VECTOR TO STORE PROPER VALUES NOT JUST "GARBAGE"
+// External high score
+// power ups
+// pacman dying to ghosts
+// source and header files in folders
+//
