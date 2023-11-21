@@ -107,18 +107,22 @@ void Window::gameCountDown()
         std::this_thread::sleep_for(5ms);
     }
 }
-
-// hardcoded pellet removal + assignment
-void Window::removeGhostBoxPelletAndAssignEaten()
+                                                                                                                                                                 
+// hardcoded assignment
+void Window::assignGhostBox(Window& win)
 {
-    mvwprintw(m_window, 13, 11, "      ");
-    mvwprintw(m_window, 14, 11, "      ");
-    mvwprintw(m_window, 15, 11, "      "); 
-    mvwprintw(m_window, 12, 13, "  ");
+    // HARDCODED CHANGE MAYBE
+    
+    for(int y{13}; y < 16; ++y)
+    {
+        for(int x{11}; x < 17; ++x)
+        {
+            m_windowArea[y][x] = CellName::ghostBox;
+        }
+    }
 
-    assignPelletEatenToGhostBox();
-
-    wrefresh(m_window);
+    m_windowArea[12][13] = CellName::ghostBox;
+    m_windowArea[12][14] = CellName::ghostBox;
 }
 
 // getters
@@ -173,21 +177,4 @@ void Window::initWindowAreaSize()
             m_windowArea[rows].emplace_back();
         }
     }
-}
-
-// hardcoded assignment
-void Window::assignPelletEatenToGhostBox()
-{
-    // HARDCODED CHANGE MAYBE
-    
-    for(int y{13}; y < 16; ++y)
-    {
-        for(int x{11}; x < 17; ++x)
-        {
-            m_windowArea[y][x] = CellName::pelletEaten;
-        }
-    }
-
-    m_windowArea[12][13] = CellName::pelletEaten;
-    m_windowArea[12][14] = CellName::pelletEaten;
 }

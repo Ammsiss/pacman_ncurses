@@ -31,7 +31,7 @@ Pacman::Pacman()
     }
 
 // public methods
-bool Pacman::timeToMove(Window& win, Ghost& g1, Ghost& g2, Ghost& g3, Ghost& g4)
+LevelState Pacman::timeToMove(Window& win, Ghost& g1, Ghost& g2, Ghost& g3, Ghost& g4, int& score)
 {
     // define chrono duration and 2 system time instances to create pacman's timed movement
     auto currentTime{std::chrono::high_resolution_clock::now()};
@@ -40,12 +40,14 @@ bool Pacman::timeToMove(Window& win, Ghost& g1, Ghost& g2, Ghost& g3, Ghost& g4)
     if (currentTime - m_lastTime >= m_interval)
     {
         erase(win);
-        updateEatenPellets(win);
-        printScore(win);
+        updateEatenPelletsAndPrintScore(win, score);
+
+        if(score % 298 == 0)
+            return LevelState::levelClear;
 
         // if pacman moved into ghost return true
         if(movePacmanBasedOnDirection(win, g1, g2, g3, g4))
-            return true;
+            return LevelState::pacmanDead;
 
         printPacmanBasedOnDirection(win);
 
@@ -54,7 +56,37 @@ bool Pacman::timeToMove(Window& win, Ghost& g1, Ghost& g2, Ghost& g3, Ghost& g4)
         m_lastTime = currentTime;
     }
 
-    return false;
+    return LevelState::normalMovement;
+}
+
+void Pacman::printDeathAnimation(Window& win)
+{    
+    std::vector<std::string> animationFrames{"V", "—", "ꓥ", "|", "*", " "};
+    int subscript{-1};
+
+    auto interval{600ms};
+    auto lastTime{ std::chrono::high_resolution_clock::now() };
+    while(true)
+    {
+        auto currentTime{ std::chrono::high_resolution_clock::now() };
+
+        if(currentTime - lastTime >= interval)
+        {
+            ++subscript;
+
+            wattron(win.getWindow(), COLOR_PAIR(Color::yellow_black));
+            mvwprintw(win.getWindow(), m_pacVec.y, m_pacVec.x, "%s", animationFrames[subscript].c_str());
+            wattroff(win.getWindow(), COLOR_PAIR(Color::yellow_black));
+            wattron(win.getWindow(), COLOR_PAIR(Color::default_color));
+
+            wrefresh(win.getWindow());
+
+            lastTime = currentTime;
+        }
+
+        if(subscript == 5)
+            break;
+    }
 }
 
 // getters
@@ -241,16 +273,18 @@ void Pacman::printPacmanBasedOnDirection(Window& win)
     wattron(win.getWindow(), COLOR_PAIR(Color::default_color));
 }
 
-void Pacman::updateEatenPellets(Window& win)
+void Pacman::updateEatenPelletsAndPrintScore(Window& win, int& score)
 {
     if(win.getWindowArea()[m_pacVec.y][m_pacVec.x] != CellName::pelletEaten)
     {
-        ++m_score;
+        ++score;
         win.getWindowArea()[m_pacVec.y][m_pacVec.x] = CellName::pelletEaten;
     }
+
+    printScore(win, score);
 }
 
-void Pacman::printScore(Window& win)
+void Pacman::printScore(Window& win, int score)
 {
     mvwprintw(win.getWindow(), 11, 23, "    ");
     mvwprintw(win.getWindow(), 10, 23, "    ");
@@ -287,7 +321,7 @@ void Pacman::printScore(Window& win)
     wattron(win.getWindow(), COLOR_PAIR(Color::default_color));
 
     wattron(win.getWindow(), COLOR_PAIR(Color::yellow_black));
-    mvwprintw(win.getWindow(), 12, 23, "%d", m_score);
+    mvwprintw(win.getWindow(), 12, 23, "%d", score);
     wattroff(win.getWindow(), COLOR_PAIR(Color::yellow_black));
     wattron(win.getWindow(), COLOR_PAIR(Color::default_color));
 }

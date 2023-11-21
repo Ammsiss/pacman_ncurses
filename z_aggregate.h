@@ -47,6 +47,7 @@ namespace CellName
         perimeterValue,
         obstacleValue,
         notEaten,
+        ghostBox,
     };
 }
 
@@ -55,6 +56,13 @@ enum class GhostState
     validDirection,
     invalidDirection,
     insidePacman,
+};
+
+enum class LevelState
+{
+    levelClear,
+    pacmanDead,
+    normalMovement,
 };
 struct Vec
 {

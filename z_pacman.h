@@ -22,7 +22,8 @@ public:
     // constructor
     Pacman();
     // public method
-    bool timeToMove(Window& win, Ghost& g1, Ghost& g2, Ghost& g3, Ghost& g4);
+    LevelState timeToMove(Window& win, Ghost& g1, Ghost& g2, Ghost& g3, Ghost& g4, int& score);
+    void printDeathAnimation(Window& win);
     // getter
     Vec getPacVec();
 
@@ -33,7 +34,6 @@ private:
     Direction m_direction;
     Vec m_pacVec;
     char m_userInput;
-    int m_score{0};
 
     // portal coordinates
     int m_rightPortalX;
@@ -46,8 +46,9 @@ private:
 
     // printing
     void erase(Window& win);
-    void printScore(Window& win);
+    void updateEatenPelletsAndPrintScore(Window& win, int& score);
     void printPacmanBasedOnDirection(Window& win);
+    void printScore(Window& win, int score);
 
     // setting direction
     void setDirection();
@@ -61,5 +62,4 @@ private:
     // setters
     void setY(PositionChange direction);
     void setX(PositionChange direction);
-    void updateEatenPellets(Window& win);
 };

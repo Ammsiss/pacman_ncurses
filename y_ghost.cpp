@@ -244,7 +244,7 @@ void Ghost::CheckForAndPrintOverLaps(Window& win, Ghost& g1, Ghost& g2, Ghost& g
 
 void Ghost::printPelletBackIfNotEaten(Window& win)
 {
-    if(win.getWindowArea()[m_ghostVec.y][m_ghostVec.x] != CellName::pelletEaten)
+    if(win.getWindowArea()[m_ghostVec.y][m_ghostVec.x] != CellName::pelletEaten && win.getWindowArea()[m_ghostVec.y][m_ghostVec.x] != CellName::ghostBox)
     {
         wattron(win.getWindow(), COLOR_PAIR(Color::white_black));
         mvwprintw(win.getWindow(), m_ghostVec.y, m_ghostVec.x, "•");

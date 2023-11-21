@@ -11,9 +11,14 @@
 class VectorSpace
 {
 public:
+    // constructor
     VectorSpace(Window& win, std::vector<Obstacle>& obstacleList);
 
-private:
+    // public methods
+    void assignPelletNotEaten(Window& win);
     void printAndRefreshPellet(Window& win);
+
+private:
+    // private methods
     void init2DVectorSpace(Window& win, std::vector<Obstacle>& obstacleList);
 };

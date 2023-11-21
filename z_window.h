@@ -20,7 +20,7 @@ public:
     // public methods
     void drawBoxAndRefresh();
     void gameCountDown();
-    void removeGhostBoxPelletAndAssignEaten();
+    void assignGhostBox(Window& win);
 
     // getters
     WINDOW* getWindow();
@@ -46,5 +46,4 @@ private:
     // private methods
     void initWindowPerimeter();
     void initWindowAreaSize();
-    void assignPelletEatenToGhostBox();
 };

@@ -139,6 +139,10 @@ MenuSelection menuLoop()
 
 void gameLoop()
 {
+    // pacman's score
+    static int score{};
+    score = 0;
+
     // init game window stuff
     Window gameW{};
     nodelay(gameW.getWindow(), true);
@@ -147,8 +151,18 @@ void gameLoop()
     // init game obstacles stuff + print it 
     std::vector<Obstacle> obstacleList{obstacleInit(gameW)};
 
+    // init vector space
+    VectorSpace vectorSpace{gameW, obstacleList};
+    gameW.assignGhostBox(gameW);
+
+    // restart vector space | new round
+    vectorSpace.assignPelletNotEaten(gameW);
+    vectorSpace.printAndRefreshPellet(gameW);
+
     for(int lives{3}; lives > 0; --lives)
     {
+        vectorSpace.printAndRefreshPellet(gameW);
+
         // init characters
         Pacman pacman{};
         Ghost pinky{ 300ms, Color::pink_black };
@@ -156,32 +170,48 @@ void gameLoop()
         Ghost blinky{ 250ms, Color::red_black };
         Ghost clyde{ 275ms, Color::orange_black };
 
-        // restart vector space | new round
-        VectorSpace vectorSpace{gameW, obstacleList};
-    
-        // Hardcoded removal
-        gameW.removeGhostBoxPelletAndAssignEaten();
-
         gameW.gameCountDown();
+
+        bool leaveLoop{ false };
         while(true)
         {
-            // if pacman died break from loop
-            if(pacman.timeToMove(gameW, inky, blinky, pinky, clyde))
+            switch(pacman.timeToMove(gameW, inky, blinky, pinky, clyde, score))
+            {
+                case LevelState::pacmanDead:
+                    leaveLoop = true;
+                    pacman.printDeathAnimation(gameW);
+                    break;
+                case LevelState::levelClear:
+                    vectorSpace.assignPelletNotEaten(gameW);
+                    ++lives;
+                    leaveLoop = true;
+                    break;
+            }
+
+            if(leaveLoop)
                 break;
 
             // if ghosts killed pacman break from loop
             if(!pinky.timeToMove(gameW, inky, blinky, clyde, pacman))
+            {
+                pacman.printDeathAnimation(gameW);
                 break;
-            
+            }
             if(!inky.timeToMove(gameW, pinky, blinky, clyde, pacman))
+            {
+                pacman.printDeathAnimation(gameW);
                 break;
-
+            }
             if(!blinky.timeToMove(gameW, pinky, inky, clyde, pacman))
+            {
+                pacman.printDeathAnimation(gameW);
                 break;
-
+            }
             if(!clyde.timeToMove(gameW, pinky, inky, blinky, pacman))
+            {
+                pacman.printDeathAnimation(gameW);
                 break;
-
+            }
             // sleep to avoid redundant checks
             std::this_thread::sleep_for(5ms);
         }
@@ -215,12 +245,17 @@ int main()
     return 0;
 }
 
+//324
+
 // TO IMPLEMENT:: 
 
 //PACMAN MENU ANIMATION
 //PATHFINDING
 //OBSTACLE FLASHING ON COUNT DOWN
+
 // animate pacman death animation
+// V — ꓥ | *
+
 // pacman lives
 // controls section
 // Improve movement responsivness
@@ -229,4 +264,7 @@ int main()
 // power ups
 // pacman dying to ghosts
 // source and header files in folders
-//
+// pacman delay 1 tick when picking up last pellet
+// ghost box door 1 way
+
+
