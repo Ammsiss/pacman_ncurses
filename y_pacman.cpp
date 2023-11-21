@@ -57,6 +57,10 @@ bool Pacman::timeToMove(Window& win, Ghost& g1, Ghost& g2, Ghost& g3, Ghost& g4)
     return false;
 }
 
+// getters
+Vec Pacman::getPacVec() { return m_pacVec; }
+
+
 /********************************************************************** PRIVATE MEMBERS **********************************************************************/
 
 /* _   _   _   _   _   _   _     _   _   _   _   _   _   _   _   _  

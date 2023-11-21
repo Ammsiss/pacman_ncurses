@@ -7,10 +7,13 @@
 #include "z_aggregate.h"
 #include "z_window.h"
 #include "z_obstacle.h"
+#include "z_pacman.h"
 
 //std
 #include <vector>
 #include <chrono>
+
+class Pacman;
 class Ghost
 {
 public:
@@ -18,7 +21,7 @@ public:
     Ghost(std::chrono::milliseconds speed, Color::ColorPair ghostColor);
 
     //public methods
-    void timeToMove(Window& win, Ghost& g1, Ghost& g2, Ghost& g3); 
+    bool timeToMove(Window& win, Ghost& g1, Ghost& g2, Ghost& g3, Pacman& pacman); 
 
     // getters
     Color::ColorPair getGhostColor();
@@ -42,13 +45,14 @@ private:
     //private methods
 
     //setting valid directionss
-    void setValidDirection(Window& win);
+    bool setValidDirection(Window& win, Pacman& pacman);
     bool oppositeDirectionCheck(Direction directionCheck);
-    bool moveGhostInValidDirection(Window& win);
+    GhostState moveGhostInValidDirection(Window& win, Pacman& pacman);
     void setY(PositionChange direction);
     void setX(PositionChange direction);
     bool obstacleBoundsCheck(Window& win);
     bool perimeterBoundsCheck(Window& win);
+    bool pacmanCollisionCheck(Pacman& pacman);
 
     // printing
     void eraseLastPosition(Window& win);

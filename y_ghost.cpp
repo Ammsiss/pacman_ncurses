@@ -7,6 +7,7 @@
 #include "z_ghost.h"
 #include "z_obstacle.h"
 #include "z_random.h"
+#include "z_pacman.h"
 
 //std
 #include <chrono>
@@ -29,7 +30,7 @@ Ghost::Ghost(std::chrono::milliseconds speed, Color::ColorPair ghostColor)
     }
 
 // public methods
-void Ghost::timeToMove(Window& win, Ghost& g1, Ghost& g2, Ghost& g3)
+bool Ghost::timeToMove(Window& win, Ghost& g1, Ghost& g2, Ghost& g3, Pacman& pacman)
 {
     // define chrono duration and 2 system time instances to create pacman's timed movement
     auto currentTime{std::chrono::high_resolution_clock::now()};
@@ -38,11 +39,16 @@ void Ghost::timeToMove(Window& win, Ghost& g1, Ghost& g2, Ghost& g3)
     {
         eraseLastPosition(win);
         CheckForAndPrintOverLaps(win, g1, g2, g3);
-        setValidDirection(win);
+
+        if(!setValidDirection(win, pacman))
+            return false;
+
         printAndRefreshGhost(win);
 
         m_lastTime = currentTime;
     }
+
+    return true;
 }
 
 // getters
@@ -58,7 +64,7 @@ Vec Ghost::getGhostVec() { return m_ghostVec; }
   \_/ \_/ \_/ \_/ \_/ \_/ \_/   \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/   
 */
 
-void Ghost::setValidDirection(Window& win)  
+bool Ghost::setValidDirection(Window& win, Pacman& pacman)  
 {
     // sets value to current direction to check if new random value is the direction ghost came from
     Direction directionCheck{ m_direction };
@@ -69,9 +75,14 @@ void Ghost::setValidDirection(Window& win)
         if(oppositeDirectionCheck(directionCheck))
             continue;
 
-        // breaks from loop if valid direction to use in movement and printing
-        if(moveGhostInValidDirection(win))
-            break;
+        // continues loop if invalid direction
+        switch(moveGhostInValidDirection(win, pacman))
+        {
+            case GhostState::validDirection:
+                return true;
+            case GhostState::insidePacman:
+                return false;
+        }
     }
 }
 
@@ -94,7 +105,8 @@ bool Ghost::oppositeDirectionCheck(Direction directionCheck)
     }
 }
 
-bool Ghost::moveGhostInValidDirection(Window& win)
+
+GhostState Ghost::moveGhostInValidDirection(Window& win, Pacman& pacman)
 {
     // attempt a move, check if valid, and revert the move if its not
     // delegates checks to obstacle and perimeter bounds check
@@ -106,9 +118,12 @@ bool Ghost::moveGhostInValidDirection(Window& win)
                 if(!obstacleBoundsCheck(win) || !perimeterBoundsCheck(win))
                 {
                     setY(PositionChange::increment);
-                    return false;
+                    return GhostState::invalidDirection;
                 }
-                return true;
+                else if(!pacmanCollisionCheck(pacman))
+                    return GhostState::insidePacman;
+                else
+                    return GhostState::validDirection;
             }
             case Direction::down: 
             {
@@ -117,9 +132,12 @@ bool Ghost::moveGhostInValidDirection(Window& win)
                 if(!obstacleBoundsCheck(win) || !perimeterBoundsCheck(win))
                 {
                    setY(PositionChange::decrement);
-                   return false;
+                   return GhostState::invalidDirection;
                 }
-                return true;
+                else if(!pacmanCollisionCheck(pacman))
+                    return GhostState::insidePacman;
+                else
+                    return GhostState::validDirection;
             }
             case Direction::left: 
             {
@@ -127,15 +145,18 @@ bool Ghost::moveGhostInValidDirection(Window& win)
                 {
                     // L -> R
                     m_ghostVec.x = m_rightPortalX;
-                    return true;
+                    return GhostState::validDirection;
                 }
                 setX(PositionChange::decrement); 
                 if(!obstacleBoundsCheck(win) || !perimeterBoundsCheck(win))
                 {
                     setX(PositionChange::increment);
-                    return false;
+                    return GhostState::invalidDirection;
                 }
-                return true;
+                else if(!pacmanCollisionCheck(pacman))
+                    return GhostState::insidePacman;
+                else
+                    return GhostState::validDirection;
             }
             case Direction::right: 
             {
@@ -143,21 +164,24 @@ bool Ghost::moveGhostInValidDirection(Window& win)
                 {
                     // R -> L 
                     m_ghostVec.x = m_leftPortalX;
-                    return true;
+                    return GhostState::validDirection;
                 }
                 setX(PositionChange::increment); 
                 if(!obstacleBoundsCheck(win) || !perimeterBoundsCheck(win))
                 {
                     setX(PositionChange::decrement);
-                    return false;
+                    return GhostState::invalidDirection;
                 }
-                return true;
+                else if(!pacmanCollisionCheck(pacman))
+                    return GhostState::insidePacman;
+                else
+                    return GhostState::validDirection;
             }
             default: 
                 break;
         }
 
-    return false;
+    return GhostState::invalidDirection;
 }
 
 void Ghost::setY(PositionChange direction) 
@@ -187,6 +211,14 @@ bool Ghost::obstacleBoundsCheck(Window& win)
 bool Ghost::perimeterBoundsCheck(Window& win)
 {
     if(win.getWindowArea()[m_ghostVec.y][m_ghostVec.x] == CellName::perimeterValue)
+        return false;
+
+    return true;
+}
+
+bool Ghost::pacmanCollisionCheck(Pacman& pacman)
+{
+    if(m_ghostVec.y == pacman.getPacVec().y && m_ghostVec.x == pacman.getPacVec().x)
         return false;
 
     return true;

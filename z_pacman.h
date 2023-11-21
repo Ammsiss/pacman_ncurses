@@ -9,10 +9,13 @@
 #include "z_obstacle.h"
 #include "z_vectorspace.h"
 #include "z_ghost.h"
+#include "z_random.h"
 
 // std
 #include <vector>
 #include <chrono>
+
+class Ghost;
 class Pacman
 {
 public:
@@ -20,6 +23,8 @@ public:
     Pacman();
     // public method
     bool timeToMove(Window& win, Ghost& g1, Ghost& g2, Ghost& g3, Ghost& g4);
+    // getter
+    Vec getPacVec();
 
 private:
     // private variables

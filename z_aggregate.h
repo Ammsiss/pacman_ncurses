@@ -49,6 +49,13 @@ namespace CellName
         notEaten,
     };
 }
+
+enum class GhostState
+{
+    validDirection,
+    invalidDirection,
+    insidePacman,
+};
 struct Vec
 {
     int y{};

@@ -169,10 +169,18 @@ void gameLoop()
             if(pacman.timeToMove(gameW, inky, blinky, pinky, clyde))
                 break;
 
-            pinky.timeToMove(gameW, inky, blinky, clyde);
-            inky.timeToMove(gameW, pinky, blinky, clyde);
-            blinky.timeToMove(gameW, pinky, inky, clyde);
-            clyde.timeToMove(gameW, pinky, inky, blinky);
+            // if ghosts killed pacman break from loop
+            if(!pinky.timeToMove(gameW, inky, blinky, clyde, pacman))
+                break;
+            
+            if(!inky.timeToMove(gameW, pinky, blinky, clyde, pacman))
+                break;
+
+            if(!blinky.timeToMove(gameW, pinky, inky, clyde, pacman))
+                break;
+
+            if(!clyde.timeToMove(gameW, pinky, inky, blinky, pacman))
+                break;
 
             // sleep to avoid redundant checks
             std::this_thread::sleep_for(5ms);
