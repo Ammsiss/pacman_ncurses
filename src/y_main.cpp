@@ -198,6 +198,11 @@ void gameLoop()
                     leaveLoop = true;
                     break;
             }
+            if((score % 1000 == 0) && lives != 4)
+            {
+                ++lives;
+                gameW.printLives(lives);
+            }
             if(leaveLoop)
                 break;
 

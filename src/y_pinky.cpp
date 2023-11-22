@@ -54,10 +54,14 @@ Color::ColorPair Pinky::getPinkyColor() { return m_pinkyColor; }
 
 bool Pinky::setDirection(Window& win, Pacman& pacman, Blinky& blinky)  
 {
-    std::vector<Vec> ghostPath{ createGhostPath(Vec{m_pinkyVec.y, m_pinkyVec.x}, win, Vec{blinky.getBlinkyVec().y, blinky.getBlinkyVec().x}) };
+    std::vector<Vec> ghostPath{};
 
-    m_pinkyVec.y = ghostPath[1].y;
-    m_pinkyVec.x = ghostPath[1].x;
+    if(m_pinkyVec.y != blinky.getBlinkyVec().y || m_pinkyVec.x != blinky.getBlinkyVec().x)
+    {
+        ghostPath = createGhostPath(Vec{m_pinkyVec.y, m_pinkyVec.x}, win, Vec{blinky.getBlinkyVec().y, blinky.getBlinkyVec().x});
+        m_pinkyVec.y = ghostPath[1].y;
+        m_pinkyVec.x = ghostPath[1].x;
+    }
 
     if(m_pinkyVec.y == pacman.getPacVec().y && m_pinkyVec.x == pacman.getPacVec().x)
         return false;
@@ -90,7 +94,7 @@ std::vector<Vec> Pinky::createGhostPath(Vec start, Window& win, Vec target)
             Vec next{current.y + dir.y, current.x + dir.x};
 
             //if(next.y >= 0 && next.y < rows && next.x >= 0 && next.x < cols && !visited[next.y][next.x]) 
-            if(next.y >= 0 && next.y < rows && next.x >= 0 && next.x < cols && win.getWindowArea()[next.y][next.x] != CellName::obstacleValue && 
+            if(next.y > 0 && next.y < (rows - 1) && next.x > 0 && next.x < (cols - 1) && win.getWindowArea()[next.y][next.x] != CellName::obstacleValue && 
                 win.getWindowArea()[next.y][next.x] != CellName::perimeterValue && !visited[next.y][next.x])
             {
                 q.push(next);

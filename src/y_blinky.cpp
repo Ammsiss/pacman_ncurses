@@ -90,8 +90,7 @@ std::vector<Vec> Blinky::createGhostPath(Vec start, Window& win, Vec target)
         {
             Vec next{current.y + dir.y, current.x + dir.x};
 
-            //if(next.y >= 0 && next.y < rows && next.x >= 0 && next.x < cols && !visited[next.y][next.x]) 
-            if(next.y >= 0 && next.y < rows && next.x >= 0 && next.x < cols && win.getWindowArea()[next.y][next.x] != CellName::obstacleValue && 
+            if(next.y > 0 && next.y < (rows - 1) && next.x > 0 && next.x < (cols - 1) && win.getWindowArea()[next.y][next.x] != CellName::obstacleValue && 
                 win.getWindowArea()[next.y][next.x] != CellName::perimeterValue && !visited[next.y][next.x])
             {
                 q.push(next);
