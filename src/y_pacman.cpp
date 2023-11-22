@@ -20,7 +20,7 @@ using namespace std::chrono_literals;
 /********************************************************************** PUBLIC MEMBERS **********************************************************************/
 
 // constructor
-Pacman::Pacman()
+Pacman::Pacman(Window& win)
     : m_direction {Direction::right}
     , m_pacVec {1, 1}, m_userInput{}
     , m_interval{175ms}
@@ -28,6 +28,7 @@ Pacman::Pacman()
     , m_rightPortalX{ 26 }, m_leftPortalX{ 1 }
     , m_portalY{ 14 }
     {
+        printInitialPacman(win);
     }
 
 // public methods
@@ -290,6 +291,16 @@ void Pacman::updateEatenPelletsAndPrintScore(Window& win, int& score)
     }
 
     printScore(win, score);
+}
+
+void Pacman::printInitialPacman(Window& win)
+{
+    wattron(win.getWindow(), COLOR_PAIR(Color::yellow_black));
+    mvwprintw(win.getWindow(), m_pacVec.y, m_pacVec.x, "<");
+    wattroff(win.getWindow(), COLOR_PAIR(Color::yellow_black));
+    wattron(win.getWindow(), COLOR_PAIR(Color::default_color));
+
+    wrefresh(win.getWindow());
 }
 
 void Pacman::printScore(Window& win, int score)

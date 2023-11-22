@@ -171,7 +171,7 @@ void gameLoop()
         vectorSpace.printAndRefreshPellet(gameW);
 
         // init characters
-        Pacman pacman{};
+        Pacman pacman{gameW};
         Ghost pinky{ 300ms, Color::pink_black };
         Ghost inky{ 325ms, Color::cyan_black };
         Ghost blinky{ 250ms, Color::red_black };

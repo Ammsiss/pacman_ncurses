@@ -20,7 +20,7 @@ class Pacman
 {
 public:
     // constructor
-    Pacman();
+    Pacman(Window& win);
     // public method
     LevelState timeToMove(Window& win, Ghost& g1, Ghost& g2, Ghost& g3, Ghost& g4, int& score);
     void printDeathAnimation(Window& win);
@@ -49,6 +49,7 @@ private:
     void updateEatenPelletsAndPrintScore(Window& win, int& score);
     void printPacmanBasedOnDirection(Window& win);
     void printScore(Window& win, int score);
+    void printInitialPacman(Window& win);
 
     // setting direction
     void setDirection();
