@@ -9,6 +9,8 @@
 #include "z_obstacle.h"
 #include "z_pacman.h"
 #include "z_blinky.h"
+#include "z_ghost.h"
+#include "z_inky.h"
 
 //std
 #include <vector>
@@ -17,11 +19,16 @@
 using namespace std::chrono_literals;
 
 class Pacman;
+class Inky;
+class Blinky;
+class Ghost;
 
 class Pinky
 {
 public:
-    bool timeToMove(Window& win, Pacman& pacman, Ghost& g1, Ghost& g2, Ghost& g3, Ghost& g4, Blinky& blinky);
+    bool timeToMove(Window& win, Pacman& pacman, Inky& inky, Blinky& blinky, Ghost& clyde);
+    Vec getPinkyVec();
+    Color::ColorPair getPinkyColor();
 
 private:
     //private variables
@@ -45,9 +52,9 @@ private:
 
     // printing
     void eraseLastPosition(Window& win);
-    void checkForAndPrintOverLaps(Window& win, Ghost& g1, Ghost& g2, Ghost& g3, Ghost& g4);
+    void checkForAndPrintOverLaps(Window& win, Inky& inky, Blinky& blinky, Ghost& clyde);
     void printPelletBackIfNotEaten(Window& win);
-    Color::ColorPair checkGhostOverLap(Ghost& g1, Ghost& g2, Ghost& g3, Ghost& g4);
+    Color::ColorPair checkGhostOverLap(Inky& inky, Blinky& blinky, Ghost& clyde);
     void printOverLap(Window& win, Color::ColorPair overLapColor);
     void printAndRefreshGhost(Window& win);
 };

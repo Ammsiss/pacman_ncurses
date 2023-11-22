@@ -16,13 +16,16 @@
 #include <chrono>
 
 class Ghost;
+class Inky;
+class Blinky;
+class Pinky;
 class Pacman
 {
 public:
     // constructor
     Pacman(Window& win);
     // public method
-    LevelState timeToMove(Window& win, Ghost& g1, Ghost& g2, Ghost& g3, Ghost& g4, int& score);
+    LevelState timeToMove(Window& win, Ghost& clyde, Inky& inky, Blinky& blinky, Pinky& pinky, int& score);
     void printDeathAnimation(Window& win);
     // getter
     Vec getPacVec();
@@ -53,9 +56,9 @@ private:
 
     // setting direction
     void setDirection();
-    bool movePacmanBasedOnDirection(Window& win, Ghost& g1, Ghost& g2, Ghost& g3, Ghost& g4);
+    bool movePacmanBasedOnDirection(Window& win, Ghost& clyde, Inky& inky, Blinky& blinky, Pinky& pinky);
     bool obstacleBoundsCheck(Window& win);
-    bool ghostCollisionCheck(Ghost& g1, Ghost& g2, Ghost& g3, Ghost& g4);
+    bool ghostCollisionCheck(Ghost& clyde, Inky& inky, Blinky& blinky, Pinky& pinky);
 
     // getters
     void getUserInputAndSetDirection(Window& win);

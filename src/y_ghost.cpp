@@ -8,6 +8,9 @@
 #include "z_obstacle.h"
 #include "z_random.h"
 #include "z_pacman.h"
+#include "z_pinky.h"
+#include "z_inky.h"
+#include "z_blinky.h"
 
 //std
 #include <chrono>
@@ -19,18 +22,18 @@ using namespace std::chrono_literals;
 /********************************************************************** PUBLIC MEMBERS **********************************************************************/
 
 // constructor
-Ghost::Ghost(std::chrono::milliseconds speed, Color::ColorPair ghostColor)
+Ghost::Ghost()
     : m_direction {Direction::right}
     , m_ghostVec {15, 12} // randomInput{},
-    , m_interval{speed}
+    , m_interval{275ms}
     , m_lastTime{std::chrono::high_resolution_clock::now()}
     , m_rightPortalX{ 26 }, m_leftPortalX{ 1 }
-    , m_portalY{ 14 }, m_ghostColor{ ghostColor }
+    , m_portalY{ 14 }, m_ghostColor{ Color::orange_black }
     {
     }
 
 // public methods
-bool Ghost::timeToMove(Window& win, Ghost& g1, Ghost& g2, Ghost& g3, Pacman& pacman)
+bool Ghost::timeToMove(Window& win, Pinky& pinky, Inky& inky, Blinky& blinky, Pacman& pacman)
 {
     // define chrono duration and 2 system time instances to create pacman's timed movement
     auto currentTime{std::chrono::high_resolution_clock::now()};
@@ -38,7 +41,7 @@ bool Ghost::timeToMove(Window& win, Ghost& g1, Ghost& g2, Ghost& g3, Pacman& pac
     if (currentTime - m_lastTime >= m_interval)
     {
         eraseLastPosition(win);
-        CheckForAndPrintOverLaps(win, g1, g2, g3);
+        CheckForAndPrintOverLaps(win, pinky, inky, blinky);
 
         if(!setValidDirection(win, pacman))
             return false;
@@ -241,10 +244,10 @@ void Ghost::eraseLastPosition(Window& win)
 }
 
 // deals with overlaps (pellets && ghost)
-void Ghost::CheckForAndPrintOverLaps(Window& win, Ghost& g1, Ghost& g2, Ghost& g3)
+void Ghost::CheckForAndPrintOverLaps(Window& win, Pinky& pinky, Inky& inky, Blinky& blinky)
 {
     printPelletBackIfNotEaten(win);
-    printOverLap(win, checkGhostOverLap(g1, g2, g3));
+    printOverLap(win, checkGhostOverLap(pinky, inky, blinky));
 }
 
 void Ghost::printPelletBackIfNotEaten(Window& win)
@@ -258,16 +261,16 @@ void Ghost::printPelletBackIfNotEaten(Window& win)
     }
 }
 
-Color::ColorPair Ghost::checkGhostOverLap(Ghost& g1, Ghost& g2, Ghost& g3)
+Color::ColorPair Ghost::checkGhostOverLap(Pinky& pinky, Inky& inky, Blinky& blinky)
 {
-    // checks to see if implicit ghost is in the same coordinate as a explicit ghost
-    std::vector<Ghost> ghostList{g1, g2, g3};
+    if(m_ghostVec.y == pinky.getPinkyVec().y && m_ghostVec.x == pinky.getPinkyVec().x)
+        return pinky.getPinkyColor();
 
-    for(std::size_t i{0}; i < ghostList.size(); ++i)
-    {
-        if(m_ghostVec.y == ghostList[i].getGhostVec().y && m_ghostVec.x == ghostList[i].getGhostVec().x)
-                return ghostList[i].getGhostColor();
-    }
+    if(m_ghostVec.y == inky.getInkyVec().y && m_ghostVec.x == inky.getInkyVec().x)
+        return inky.getInkyColor();        
+
+    if(m_ghostVec.y == blinky.getBlinkyVec().y && m_ghostVec.x == blinky.getBlinkyVec().x)
+        return blinky.getBlinkyColor();  
 
     return Color::null;
 }

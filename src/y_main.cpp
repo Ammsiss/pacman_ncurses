@@ -12,6 +12,7 @@
 #include "z_menu.h"
 #include "z_blinky.h"
 #include "z_pinky.h"
+#include "z_inky.h"
 
 //std
 #include <chrono>
@@ -174,21 +175,17 @@ void gameLoop()
 
         // init characters
         Pacman pacman{gameW};
-        Ghost pinky{ 300ms, Color::pink_black };
-        Ghost inky{ 325ms, Color::cyan_black };
-        Ghost blinky{ 250ms, Color::red_black };
-        Ghost clyde{ 275ms, Color::orange_black };
-
-        Blinky blinkyOmega{};
-
-        Pinky pinkyOmega{};
+        Ghost clyde{};
+        Blinky blinky{};
+        Pinky pinky{};
+        Inky inky{};
 
         gameW.gameCountDown();
 
         bool leaveLoop{ false };
         while(true)
         {
-            switch(pacman.timeToMove(gameW, inky, blinky, pinky, clyde, score))
+            switch(pacman.timeToMove(gameW, clyde, inky, blinky, pinky, score))
             {
                 case LevelState::pacmanDead:
                     leaveLoop = true;
@@ -201,44 +198,34 @@ void gameLoop()
                     leaveLoop = true;
                     break;
             }
-
             if(leaveLoop)
                 break;
 
-            
-            if(!blinkyOmega.timeToMove(gameW, pacman, inky, blinky, clyde, pinky))
-            {
-                pacman.printDeathAnimation(gameW);
-                break;
-            }
-            
-            if(!pinkyOmega.timeToMove(gameW, pacman, inky, blinky, clyde, pinky, blinkyOmega))
-            {
-                pacman.printDeathAnimation(gameW);
-                break;
-            }
-
             // if ghosts killed pacman break from loop
-            if(!pinky.timeToMove(gameW, inky, blinky, clyde, pacman))
-            {
-                pacman.printDeathAnimation(gameW);
-                break;
-            }
-            if(!inky.timeToMove(gameW, pinky, blinky, clyde, pacman))
-            {
-                pacman.printDeathAnimation(gameW);
-                break;
-            }
-            if(!blinky.timeToMove(gameW, pinky, inky, clyde, pacman))
-            {
-                pacman.printDeathAnimation(gameW);
-                break;
-            }
             if(!clyde.timeToMove(gameW, pinky, inky, blinky, pacman))
             {
                 pacman.printDeathAnimation(gameW);
                 break;
             }
+        
+            if(!inky.timeToMove(gameW, pacman, pinky, blinky, clyde))
+            {
+                pacman.printDeathAnimation(gameW);
+                break;
+            }
+            
+            if(!blinky.timeToMove(gameW, pacman, pinky, inky, clyde))
+            {
+                pacman.printDeathAnimation(gameW);
+                break;
+            }
+            
+            if(!pinky.timeToMove(gameW, pacman, inky, blinky, clyde))
+            {
+                pacman.printDeathAnimation(gameW);
+                break;
+            }
+
             // sleep to avoid redundant checks
             std::this_thread::sleep_for(5ms);
         }

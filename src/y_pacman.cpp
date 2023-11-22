@@ -8,6 +8,9 @@
 #include "z_pacman.h"
 #include "z_obstacle.h"
 #include "z_ghost.h"
+#include "z_inky.h"
+#include "z_pinky.h"
+#include "z_blinky.h"
 
 //std
 #include <vector>
@@ -32,7 +35,7 @@ Pacman::Pacman(Window& win)
     }
 
 // public methods
-LevelState Pacman::timeToMove(Window& win, Ghost& g1, Ghost& g2, Ghost& g3, Ghost& g4, int& score)
+LevelState Pacman::timeToMove(Window& win, Ghost& clyde, Inky& inky, Blinky& blinky, Pinky& pinky, int& score)
 {
     // define chrono duration and 2 system time instances to create pacman's timed movement
     auto currentTime{std::chrono::high_resolution_clock::now()};
@@ -47,7 +50,7 @@ LevelState Pacman::timeToMove(Window& win, Ghost& g1, Ghost& g2, Ghost& g3, Ghos
             return LevelState::levelClear;
 
         // if pacman moved into ghost return true
-        if(movePacmanBasedOnDirection(win, g1, g2, g3, g4))
+        if(movePacmanBasedOnDirection(win, clyde, inky, blinky, pinky))
         {
             printPacmanBasedOnDirection(win);
             wrefresh(win.getWindow());
@@ -129,7 +132,7 @@ void Pacman::setDirection()
     }
 }
 
-bool Pacman::movePacmanBasedOnDirection(Window& win, Ghost& g1, Ghost& g2, Ghost& g3, Ghost& g4)
+bool Pacman::movePacmanBasedOnDirection(Window& win, Ghost& clyde, Inky& inky, Blinky& blinky, Pinky& pinky)
 {
     switch(m_direction)
         {
@@ -141,7 +144,7 @@ bool Pacman::movePacmanBasedOnDirection(Window& win, Ghost& g1, Ghost& g2, Ghost
                     if(obstacleBoundsCheck(win))
                         setY(PositionChange::increment);
 
-                    if(ghostCollisionCheck(g1, g2, g3, g4))
+                    if(ghostCollisionCheck(clyde, inky, blinky, pinky))
                         return true;
                 }
                 break;
@@ -158,7 +161,7 @@ bool Pacman::movePacmanBasedOnDirection(Window& win, Ghost& g1, Ghost& g2, Ghost
                     if(obstacleBoundsCheck(win))
                         setY(PositionChange::decrement);
 
-                    if(ghostCollisionCheck(g1, g2, g3, g4))
+                    if(ghostCollisionCheck(clyde, inky, blinky, pinky))
                         return true;
                 }
                 break;
@@ -176,7 +179,7 @@ bool Pacman::movePacmanBasedOnDirection(Window& win, Ghost& g1, Ghost& g2, Ghost
                     if(obstacleBoundsCheck(win))
                         setX(PositionChange::increment);
 
-                    if(ghostCollisionCheck(g1, g2, g3, g4))
+                    if(ghostCollisionCheck(clyde, inky, blinky, pinky))
                         return true;
                 }
                 break;
@@ -194,7 +197,7 @@ bool Pacman::movePacmanBasedOnDirection(Window& win, Ghost& g1, Ghost& g2, Ghost
                     if(obstacleBoundsCheck(win))
                         setX(PositionChange::decrement);
 
-                    if(ghostCollisionCheck(g1, g2, g3, g4))
+                    if(ghostCollisionCheck(clyde, inky, blinky, pinky))
                         return true;
                 }
                 break;
@@ -230,15 +233,19 @@ bool Pacman::obstacleBoundsCheck(Window& win)
     return false;
 }
 
-bool Pacman::ghostCollisionCheck(Ghost& g1, Ghost& g2, Ghost& g3, Ghost& g4)
+bool Pacman::ghostCollisionCheck(Ghost& clyde, Inky& inky, Blinky& blinky, Pinky& pinky)
 {
-    std::vector<Ghost> ghostList{g1, g2, g3, g4};
+    if(m_pacVec.y == clyde.getGhostVec().y && m_pacVec.x == clyde.getGhostVec().x)
+        return true;
 
-    for(std::size_t i{0}; i < ghostList.size(); ++i)
-    {
-        if(m_pacVec.y == ghostList[i].getGhostVec().y && m_pacVec.x == ghostList[i].getGhostVec().x)
-            return true;
-    }
+    if(m_pacVec.y == inky.getInkyVec().y && m_pacVec.x == inky.getInkyVec().x)
+        return true;
+
+    if(m_pacVec.y == blinky.getBlinkyVec().y && m_pacVec.x == blinky.getBlinkyVec().x)
+        return true;
+
+    if(m_pacVec.y == pinky.getPinkyVec().y && m_pacVec.x == pinky.getPinkyVec().x)
+        return true;
 
     return false;
 }

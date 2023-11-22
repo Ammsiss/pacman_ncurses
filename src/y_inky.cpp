@@ -2,12 +2,14 @@
 #include <ncurses.h>
 
 //user
-#include "z_pinky.h"
+#include "z_inky.h"
 #include "z_window.h"
 #include "z_aggregate.h"
 #include "z_obstacle.h"
 #include "z_random.h"
 #include "z_pacman.h"
+#include "z_random.h"
+#include "z_pinky.h"
 #include "z_blinky.h"
 
 //std
@@ -19,17 +21,17 @@
 
 // public method
 
-bool Pinky::timeToMove(Window& win, Pacman& pacman, Inky& inky, Blinky& blinky, Ghost& clyde)
+bool Inky::timeToMove(Window& win, Pacman& pacman, Pinky& pinky, Blinky& blinky, Ghost& clyde)
 {
     // define chrono duration and 2 system time instances to create pacman's timed movement
     auto currentTime{std::chrono::high_resolution_clock::now()};
 
-    if (currentTime - m_lastTime >= m_pinkyInterval)
+    if (currentTime - m_lastTime >= m_inkyInterval)
     {
         eraseLastPosition(win);
-        checkForAndPrintOverLaps(win, inky, blinky, clyde);
+        checkForAndPrintOverLaps(win, pinky, blinky, clyde);
 
-        if(!setDirection(win, pacman, blinky))
+        if(!setDirection(win, pacman))
             return false;
 
         printAndRefreshGhost(win);
@@ -40,9 +42,9 @@ bool Pinky::timeToMove(Window& win, Pacman& pacman, Inky& inky, Blinky& blinky, 
     return true;
 }
 
-Vec Pinky::getPinkyVec() { return m_pinkyVec; }
+Vec Inky::getInkyVec() { return m_inkyVec; }
 
-Color::ColorPair Pinky::getPinkyColor() { return m_pinkyColor; }
+Color::ColorPair Inky::getInkyColor() { return m_inkyColor; }
 
 /********************************************************************** PRIVATE MEMBERS **********************************************************************/
 
@@ -52,20 +54,35 @@ Color::ColorPair Pinky::getPinkyColor() { return m_pinkyColor; }
   \_/ \_/ \_/ \_/ \_/ \_/ \_/   \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/   
 */
 
-bool Pinky::setDirection(Window& win, Pacman& pacman, Blinky& blinky)  
+bool Inky::setDirection(Window& win, Pacman& pacman)  
 {
-    std::vector<Vec> ghostPath{ createGhostPath(Vec{m_pinkyVec.y, m_pinkyVec.x}, win, Vec{blinky.getBlinkyVec().y, blinky.getBlinkyVec().x}) };
+    static int targetY{1};
+    static int targetX{1};
 
-    m_pinkyVec.y = ghostPath[1].y;
-    m_pinkyVec.x = ghostPath[1].x;
+    if(m_inkyVec.y == targetY && m_inkyVec.x == targetX)
+    {
+        while(true)
+        {
+            targetY = Random::randomGhostTargetY(Random::mt);
+            targetX = Random::randomGhostTargetX(Random::mt);
 
-    if(m_pinkyVec.y == pacman.getPacVec().y && m_pinkyVec.x == pacman.getPacVec().x)
+            if(win.getWindowArea()[targetY][targetX] != CellName::ghostBox && win.getWindowArea()[targetY][targetX] != CellName::perimeterValue && win.getWindowArea()[targetY][targetX] != CellName::obstacleValue)
+                break;
+        }
+    }
+
+    std::vector<Vec> ghostPath{ createGhostPath(Vec{m_inkyVec.y, m_inkyVec.x}, win, Vec{targetY, targetX}) };
+
+    m_inkyVec.y = ghostPath[1].y;
+    m_inkyVec.x = ghostPath[1].x;
+
+    if(m_inkyVec.y == pacman.getPacVec().y && m_inkyVec.x == pacman.getPacVec().x)
         return false;
 
     return true;
 }
 
-std::vector<Vec> Pinky::createGhostPath(Vec start, Window& win, Vec target)
+std::vector<Vec> Inky::createGhostPath(Vec start, Window& win, Vec target)
 {
     auto rows{win.getWindowArea().size()};
     auto cols{win.getWindowArea()[0].size()};
@@ -119,60 +136,60 @@ std::vector<Vec> Pinky::createGhostPath(Vec start, Window& win, Vec target)
   \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/  erase the other ghost causing the ghost to dissapear. Also deals with spawning pellets back after a ghost clears them                              
 */
 
-void Pinky::eraseLastPosition(Window& win)
+void Inky::eraseLastPosition(Window& win)
 {
-    mvwprintw(win.getWindow(), m_pinkyVec.y, m_pinkyVec.x, " ");
+    mvwprintw(win.getWindow(), m_inkyVec.y, m_inkyVec.x, " ");
 }
 
 // deals with overlaps (pellets && ghost)
-void Pinky::checkForAndPrintOverLaps(Window& win, Inky& inky, Blinky& blinky, Ghost& clyde)
+void Inky::checkForAndPrintOverLaps(Window& win, Pinky& pinky, Blinky& blinky, Ghost& clyde)
 {
     printPelletBackIfNotEaten(win);
-    printOverLap(win, checkGhostOverLap(inky, blinky, clyde));
+    printOverLap(win, checkGhostOverLap(pinky, blinky, clyde));
 }
 
-void Pinky::printPelletBackIfNotEaten(Window& win)
+void Inky::printPelletBackIfNotEaten(Window& win)
 {
-    if(win.getWindowArea()[m_pinkyVec.y][m_pinkyVec.x] != CellName::pelletEaten && win.getWindowArea()[m_pinkyVec.y][m_pinkyVec.x] != CellName::ghostBox)
+    if(win.getWindowArea()[m_inkyVec.y][m_inkyVec.x] != CellName::pelletEaten && win.getWindowArea()[m_inkyVec.y][m_inkyVec.x] != CellName::ghostBox)
     {
         wattron(win.getWindow(), COLOR_PAIR(Color::white_black));
-        mvwprintw(win.getWindow(), m_pinkyVec.y, m_pinkyVec.x, "•");
+        mvwprintw(win.getWindow(), m_inkyVec.y, m_inkyVec.x, "•");
         wattroff(win.getWindow(), COLOR_PAIR(Color::white_black));
         wattron(win.getWindow(), COLOR_PAIR(Color::default_color));    
     }
 }
 
-Color::ColorPair Pinky::checkGhostOverLap(Inky& inky, Blinky& blinky, Ghost& clyde)
+Color::ColorPair Inky::checkGhostOverLap(Pinky& pinky, Blinky& blinky, Ghost& clyde)
 {
-    if(m_pinkyVec.y == inky.getInkyVec().y && m_pinkyVec.x == inky.getInkyVec().x)
-        return inky.getInkyColor();
+    if(m_inkyVec.y == pinky.getPinkyVec().y && m_inkyVec.x == pinky.getPinkyVec().x)
+        return pinky.getPinkyColor();
 
-    if(m_pinkyVec.y == blinky.getBlinkyVec().y && m_pinkyVec.x == blinky.getBlinkyVec().x)
+    if(m_inkyVec.y == blinky.getBlinkyVec().y && m_inkyVec.x == blinky.getBlinkyVec().x)
         return blinky.getBlinkyColor();
 
-    if(m_pinkyVec.y == clyde.getGhostVec().y && m_pinkyVec.x == clyde.getGhostVec().x)
+    if(m_inkyVec.y == clyde.getGhostVec().y && m_inkyVec.x == clyde.getGhostVec().x)
         return clyde.getGhostColor();
 
     return Color::null;
 }
 
-void Pinky::printOverLap(Window& win, Color::ColorPair overLapColor)
+void Inky::printOverLap(Window& win, Color::ColorPair overLapColor)
 {
     // prints ghost back if overlapped
     if(overLapColor != Color::null)
     {
         wattron(win.getWindow(), COLOR_PAIR(overLapColor));
-        mvwprintw(win.getWindow(), m_pinkyVec.y, m_pinkyVec.x, "ᗣ");
+        mvwprintw(win.getWindow(), m_inkyVec.y, m_inkyVec.x, "ᗣ");
         wattroff(win.getWindow(), COLOR_PAIR(overLapColor));
         wattron(win.getWindow(), COLOR_PAIR(Color::default_color));
     }
 }
 
-void Pinky::printAndRefreshGhost(Window& win)
+void Inky::printAndRefreshGhost(Window& win)
 {
-    wattron(win.getWindow(), COLOR_PAIR(m_pinkyColor));
-    mvwprintw(win.getWindow(), m_pinkyVec.y, m_pinkyVec.x, "ᗣ");
-    wattroff(win.getWindow(), COLOR_PAIR(m_pinkyColor));
+    wattron(win.getWindow(), COLOR_PAIR(m_inkyColor));
+    mvwprintw(win.getWindow(), m_inkyVec.y, m_inkyVec.x, "ᗣ");
+    wattroff(win.getWindow(), COLOR_PAIR(m_inkyColor));
     wattroff(win.getWindow(), COLOR_PAIR(Color::default_color));
 
     wrefresh(win.getWindow());

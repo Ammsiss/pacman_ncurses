@@ -8,6 +8,8 @@
 #include "z_obstacle.h"
 #include "z_random.h"
 #include "z_pacman.h"
+#include "z_pinky.h"
+#include "z_inky.h"
 
 //std
 #include <vector>
@@ -18,7 +20,7 @@
 
 // public method
 
-bool Blinky::timeToMove(Window& win, Pacman& pacman, Ghost& g1, Ghost& g2, Ghost& g3, Ghost& g4)
+bool Blinky::timeToMove(Window& win, Pacman& pacman, Pinky& pinky, Inky& inky, Ghost& clyde)
 {
     // define chrono duration and 2 system time instances to create pacman's timed movement
     auto currentTime{std::chrono::high_resolution_clock::now()};
@@ -26,7 +28,7 @@ bool Blinky::timeToMove(Window& win, Pacman& pacman, Ghost& g1, Ghost& g2, Ghost
     if (currentTime - m_lastTime >= m_blinkyInterval)
     {
         eraseLastPosition(win);
-        checkForAndPrintOverLaps(win, g1, g2, g3, g4);
+        checkForAndPrintOverLaps(win, pinky, inky, clyde);
 
         if(!setDirection(win, pacman))
             return false;
@@ -40,6 +42,8 @@ bool Blinky::timeToMove(Window& win, Pacman& pacman, Ghost& g1, Ghost& g2, Ghost
 }
 
 Vec Blinky::getBlinkyVec() { return m_blinkyVec; }
+
+Color::ColorPair Blinky::getBlinkyColor() { return m_blinkyColor; }
 
 /********************************************************************** PRIVATE MEMBERS **********************************************************************/
 
@@ -122,10 +126,10 @@ void Blinky::eraseLastPosition(Window& win)
 }
 
 // deals with overlaps (pellets && ghost)
-void Blinky::checkForAndPrintOverLaps(Window& win, Ghost& g1, Ghost& g2, Ghost& g3, Ghost& g4)
+void Blinky::checkForAndPrintOverLaps(Window& win, Pinky& pinky, Inky& inky, Ghost& clyde)
 {
     printPelletBackIfNotEaten(win);
-    printOverLap(win, checkGhostOverLap(g1, g2, g3, g4));
+    printOverLap(win, checkGhostOverLap(pinky, inky, clyde));
 }
 
 void Blinky::printPelletBackIfNotEaten(Window& win)
@@ -139,16 +143,16 @@ void Blinky::printPelletBackIfNotEaten(Window& win)
     }
 }
 
-Color::ColorPair Blinky::checkGhostOverLap(Ghost& g1, Ghost& g2, Ghost& g3, Ghost& g4)
+Color::ColorPair Blinky::checkGhostOverLap(Pinky& pinky, Inky& inky, Ghost& clyde)
 {
-    // checks to see if implicit ghost is in the same coordinate as a explicit ghost
-        std::vector<Ghost> ghostList{g1, g2, g3, g4};
+    if(m_blinkyVec.y == pinky.getPinkyVec().y && m_blinkyVec.x == pinky.getPinkyVec().x)
+        return pinky.getPinkyColor();
 
-    for(std::size_t i{0}; i < ghostList.size(); ++i)
-    {
-        if(m_blinkyVec.y == ghostList[i].getGhostVec().y && m_blinkyVec.x == ghostList[i].getGhostVec().x)
-                return ghostList[i].getGhostColor();
-    }
+    if(m_blinkyVec.y == inky.getInkyVec().y && m_blinkyVec.x == inky.getInkyVec().x)
+        return inky.getInkyColor();
+    
+    if(m_blinkyVec.y == clyde.getGhostVec().y && m_blinkyVec.x == clyde.getGhostVec().x)
+        return clyde.getGhostColor();
 
     return Color::null;
 }
