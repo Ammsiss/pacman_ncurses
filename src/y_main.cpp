@@ -11,6 +11,7 @@
 #include "z_ghost.h"
 #include "z_menu.h"
 #include "z_blinky.h"
+#include "z_pinky.h"
 
 //std
 #include <chrono>
@@ -180,6 +181,8 @@ void gameLoop()
 
         Blinky blinkyOmega{};
 
+        Pinky pinkyOmega{};
+
         gameW.gameCountDown();
 
         bool leaveLoop{ false };
@@ -209,6 +212,11 @@ void gameLoop()
                 break;
             }
             
+            if(!pinkyOmega.timeToMove(gameW, pacman, inky, blinky, clyde, pinky, blinkyOmega))
+            {
+                pacman.printDeathAnimation(gameW);
+                break;
+            }
 
             // if ghosts killed pacman break from loop
             if(!pinky.timeToMove(gameW, inky, blinky, clyde, pacman))

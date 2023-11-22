@@ -2,12 +2,13 @@
 #include <ncurses.h>
 
 //user
-#include "z_blinky.h"
+#include "z_pinky.h"
 #include "z_window.h"
 #include "z_aggregate.h"
 #include "z_obstacle.h"
 #include "z_random.h"
 #include "z_pacman.h"
+#include "z_blinky.h"
 
 //std
 #include <vector>
@@ -18,17 +19,17 @@
 
 // public method
 
-bool Blinky::timeToMove(Window& win, Pacman& pacman, Ghost& g1, Ghost& g2, Ghost& g3, Ghost& g4)
+bool Pinky::timeToMove(Window& win, Pacman& pacman, Ghost& g1, Ghost& g2, Ghost& g3, Ghost& g4, Blinky& blinky)
 {
     // define chrono duration and 2 system time instances to create pacman's timed movement
     auto currentTime{std::chrono::high_resolution_clock::now()};
 
-    if (currentTime - m_lastTime >= m_blinkyInterval)
+    if (currentTime - m_lastTime >= m_pinkyInterval)
     {
         eraseLastPosition(win);
         checkForAndPrintOverLaps(win, g1, g2, g3, g4);
 
-        if(!setDirection(win, pacman))
+        if(!setDirection(win, pacman, blinky))
             return false;
 
         printAndRefreshGhost(win);
@@ -39,8 +40,6 @@ bool Blinky::timeToMove(Window& win, Pacman& pacman, Ghost& g1, Ghost& g2, Ghost
     return true;
 }
 
-Vec Blinky::getBlinkyVec() { return m_blinkyVec; }
-
 /********************************************************************** PRIVATE MEMBERS **********************************************************************/
 
 /* _   _   _   _   _   _   _     _   _   _   _   _   _   _   _   _  
@@ -49,20 +48,20 @@ Vec Blinky::getBlinkyVec() { return m_blinkyVec; }
   \_/ \_/ \_/ \_/ \_/ \_/ \_/   \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/   
 */
 
-bool Blinky::setDirection(Window& win, Pacman& pacman)  
+bool Pinky::setDirection(Window& win, Pacman& pacman, Blinky& blinky)  
 {
-    std::vector<Vec> ghostPath{ createGhostPath(Vec{m_blinkyVec.y, m_blinkyVec.x}, win, Vec{pacman.getPacVec().y, pacman.getPacVec().x}) };
+    std::vector<Vec> ghostPath{ createGhostPath(Vec{m_pinkyVec.y, m_pinkyVec.x}, win, Vec{blinky.getBlinkyVec().y, blinky.getBlinkyVec().x}) };
 
-    m_blinkyVec.y = ghostPath[1].y;
-    m_blinkyVec.x = ghostPath[1].x;
+    m_pinkyVec.y = ghostPath[1].y;
+    m_pinkyVec.x = ghostPath[1].x;
 
-    if(m_blinkyVec.y == pacman.getPacVec().y && m_blinkyVec.x == pacman.getPacVec().x)
+    if(m_pinkyVec.y == pacman.getPacVec().y && m_pinkyVec.x == pacman.getPacVec().x)
         return false;
 
     return true;
 }
 
-std::vector<Vec> Blinky::createGhostPath(Vec start, Window& win, Vec target)
+std::vector<Vec> Pinky::createGhostPath(Vec start, Window& win, Vec target)
 {
     auto rows{win.getWindowArea().size()};
     auto cols{win.getWindowArea()[0].size()};
@@ -116,60 +115,60 @@ std::vector<Vec> Blinky::createGhostPath(Vec start, Window& win, Vec target)
   \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/  erase the other ghost causing the ghost to dissapear. Also deals with spawning pellets back after a ghost clears them                              
 */
 
-void Blinky::eraseLastPosition(Window& win)
+void Pinky::eraseLastPosition(Window& win)
 {
-    mvwprintw(win.getWindow(), m_blinkyVec.y, m_blinkyVec.x, " ");
+    mvwprintw(win.getWindow(), m_pinkyVec.y, m_pinkyVec.x, " ");
 }
 
 // deals with overlaps (pellets && ghost)
-void Blinky::checkForAndPrintOverLaps(Window& win, Ghost& g1, Ghost& g2, Ghost& g3, Ghost& g4)
+void Pinky::checkForAndPrintOverLaps(Window& win, Ghost& g1, Ghost& g2, Ghost& g3, Ghost& g4)
 {
     printPelletBackIfNotEaten(win);
     printOverLap(win, checkGhostOverLap(g1, g2, g3, g4));
 }
 
-void Blinky::printPelletBackIfNotEaten(Window& win)
+void Pinky::printPelletBackIfNotEaten(Window& win)
 {
-    if(win.getWindowArea()[m_blinkyVec.y][m_blinkyVec.x] != CellName::pelletEaten && win.getWindowArea()[m_blinkyVec.y][m_blinkyVec.x] != CellName::ghostBox)
+    if(win.getWindowArea()[m_pinkyVec.y][m_pinkyVec.x] != CellName::pelletEaten && win.getWindowArea()[m_pinkyVec.y][m_pinkyVec.x] != CellName::ghostBox)
     {
         wattron(win.getWindow(), COLOR_PAIR(Color::white_black));
-        mvwprintw(win.getWindow(), m_blinkyVec.y, m_blinkyVec.x, "•");
+        mvwprintw(win.getWindow(), m_pinkyVec.y, m_pinkyVec.x, "•");
         wattroff(win.getWindow(), COLOR_PAIR(Color::white_black));
         wattron(win.getWindow(), COLOR_PAIR(Color::default_color));    
     }
 }
 
-Color::ColorPair Blinky::checkGhostOverLap(Ghost& g1, Ghost& g2, Ghost& g3, Ghost& g4)
+Color::ColorPair Pinky::checkGhostOverLap(Ghost& g1, Ghost& g2, Ghost& g3, Ghost& g4)
 {
     // checks to see if implicit ghost is in the same coordinate as a explicit ghost
         std::vector<Ghost> ghostList{g1, g2, g3, g4};
 
     for(std::size_t i{0}; i < ghostList.size(); ++i)
     {
-        if(m_blinkyVec.y == ghostList[i].getGhostVec().y && m_blinkyVec.x == ghostList[i].getGhostVec().x)
+        if(m_pinkyVec.y == ghostList[i].getGhostVec().y && m_pinkyVec.x == ghostList[i].getGhostVec().x)
                 return ghostList[i].getGhostColor();
     }
 
     return Color::null;
 }
 
-void Blinky::printOverLap(Window& win, Color::ColorPair overLapColor)
+void Pinky::printOverLap(Window& win, Color::ColorPair overLapColor)
 {
     // prints ghost back if overlapped
     if(overLapColor != Color::null)
     {
         wattron(win.getWindow(), COLOR_PAIR(overLapColor));
-        mvwprintw(win.getWindow(), m_blinkyVec.y, m_blinkyVec.x, "ᗣ");
+        mvwprintw(win.getWindow(), m_pinkyVec.y, m_pinkyVec.x, "ᗣ");
         wattroff(win.getWindow(), COLOR_PAIR(overLapColor));
         wattron(win.getWindow(), COLOR_PAIR(Color::default_color));
     }
 }
 
-void Blinky::printAndRefreshGhost(Window& win)
+void Pinky::printAndRefreshGhost(Window& win)
 {
-    wattron(win.getWindow(), COLOR_PAIR(m_blinkyColor));
-    mvwprintw(win.getWindow(), m_blinkyVec.y, m_blinkyVec.x, "ᗣ");
-    wattroff(win.getWindow(), COLOR_PAIR(m_blinkyColor));
+    wattron(win.getWindow(), COLOR_PAIR(m_pinkyColor));
+    mvwprintw(win.getWindow(), m_pinkyVec.y, m_pinkyVec.x, "ᗣ");
+    wattroff(win.getWindow(), COLOR_PAIR(m_pinkyColor));
     wattroff(win.getWindow(), COLOR_PAIR(Color::default_color));
 
     wrefresh(win.getWindow());

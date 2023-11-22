@@ -8,6 +8,7 @@
 #include "z_window.h"
 #include "z_obstacle.h"
 #include "z_pacman.h"
+#include "z_blinky.h"
 
 //std
 #include <vector>
@@ -17,31 +18,29 @@ using namespace std::chrono_literals;
 
 class Pacman;
 
-class Blinky
+class Pinky
 {
 public:
-    bool timeToMove(Window& win, Pacman& pacman, Ghost& g1, Ghost& g2, Ghost& g3, Ghost& g4);
-
-    Vec getBlinkyVec();
+    bool timeToMove(Window& win, Pacman& pacman, Ghost& g1, Ghost& g2, Ghost& g3, Ghost& g4, Blinky& blinky);
 
 private:
     //private variables
 
     //ghost attributes
-    Vec m_blinkyVec{15, 12};
-    Color::ColorPair m_blinkyColor{Color::red_black};
+    Vec m_pinkyVec{15, 12};
+    Color::ColorPair m_pinkyColor{Color::pink_black};
     //portal coorinates
     int m_rightPortalX{26};
     int m_leftPortalX{1};
     int m_portalY{14};
     //timer variables
-    std::chrono::milliseconds m_blinkyInterval{200ms};
+    std::chrono::milliseconds m_pinkyInterval{300ms};
     std::chrono::time_point<std::chrono::high_resolution_clock> m_lastTime;
 
     //private methods
 
     //setting valid directionss
-    bool setDirection(Window& win, Pacman& pacman);
+    bool setDirection(Window& win, Pacman& pacman, Blinky& blinky);
     std::vector<Vec> createGhostPath(Vec start, Window& win, Vec target);
 
     // printing
