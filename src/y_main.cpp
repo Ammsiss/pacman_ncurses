@@ -10,6 +10,7 @@
 #include "z_vectorspace.h"
 #include "z_ghost.h"
 #include "z_menu.h"
+#include "z_blinky.h"
 
 //std
 #include <chrono>
@@ -177,6 +178,8 @@ void gameLoop()
         Ghost blinky{ 250ms, Color::red_black };
         Ghost clyde{ 275ms, Color::orange_black };
 
+        Blinky blinkyOmega{};
+
         gameW.gameCountDown();
 
         bool leaveLoop{ false };
@@ -198,6 +201,14 @@ void gameLoop()
 
             if(leaveLoop)
                 break;
+
+            
+            if(!blinkyOmega.timeToMove(gameW, pacman, inky, blinky, clyde, pinky))
+            {
+                pacman.printDeathAnimation(gameW);
+                break;
+            }
+            
 
             // if ghosts killed pacman break from loop
             if(!pinky.timeToMove(gameW, inky, blinky, clyde, pacman))
@@ -266,13 +277,13 @@ int main()
 /*
     1) External high score
     2) Implement random (1-4) fruits spawning in each level
+    3) Implement pathfinding through portals
 */
 
 // **************************HARD*******************************
 
 /*
     1) Pacman menu animation
-    2) Pathfinding
     3) Improve movement responsivness
     4) Fix unfrequent ghost flicker
     5) Power ups
