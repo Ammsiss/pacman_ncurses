@@ -25,7 +25,7 @@ using namespace std::chrono_literals;
 // constructor
 Pacman::Pacman(Window& win)
     : m_direction {Direction::right}
-    , m_pacVec {1, 1}, m_userInput{}
+    , m_pacVec {5, 13}, m_userInput{}
     , m_interval{175ms}
     , m_lastTime{std::chrono::high_resolution_clock::now()}
     , m_rightPortalX{ 26 }, m_leftPortalX{ 1 }

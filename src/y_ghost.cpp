@@ -25,7 +25,7 @@ using namespace std::chrono_literals;
 Ghost::Ghost()
     : m_direction {Direction::right}
     , m_ghostVec {15, 12} // randomInput{},
-    , m_interval{275ms}
+    , m_interval{150ms}
     , m_lastTime{std::chrono::high_resolution_clock::now()}
     , m_rightPortalX{ 26 }, m_leftPortalX{ 1 }
     , m_portalY{ 14 }, m_ghostColor{ Color::orange_black }
@@ -252,7 +252,8 @@ void Ghost::CheckForAndPrintOverLaps(Window& win, Pinky& pinky, Inky& inky, Blin
 
 void Ghost::printPelletBackIfNotEaten(Window& win)
 {
-    if(win.getWindowArea()[m_ghostVec.y][m_ghostVec.x] != CellName::pelletEaten && win.getWindowArea()[m_ghostVec.y][m_ghostVec.x] != CellName::ghostBox)
+    if(win.getWindowArea()[m_ghostVec.y][m_ghostVec.x] != CellName::pelletEaten && win.getWindowArea()[m_ghostVec.y][m_ghostVec.x] != CellName::ghostBox &&
+        win.getWindowArea()[m_ghostVec.y][m_ghostVec.x] != CellName::perimeterValue)
     {
         wattron(win.getWindow(), COLOR_PAIR(Color::white_black));
         mvwprintw(win.getWindow(), m_ghostVec.y, m_ghostVec.x, "•");

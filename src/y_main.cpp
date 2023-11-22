@@ -261,10 +261,14 @@ int main()
     return 0;
 }
 
+// BUGS:: PELLET SPAWNING IN TOP LEFT CORNER
+
 // *************************EASY********************************
 
 /*
     1) Controls section
+    2) timed release
+    3) variable speed
 */
 
 // ************************MEDIUM*******************************

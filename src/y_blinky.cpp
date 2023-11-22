@@ -134,7 +134,8 @@ void Blinky::checkForAndPrintOverLaps(Window& win, Pinky& pinky, Inky& inky, Gho
 
 void Blinky::printPelletBackIfNotEaten(Window& win)
 {
-    if(win.getWindowArea()[m_blinkyVec.y][m_blinkyVec.x] != CellName::pelletEaten && win.getWindowArea()[m_blinkyVec.y][m_blinkyVec.x] != CellName::ghostBox)
+    if(win.getWindowArea()[m_blinkyVec.y][m_blinkyVec.x] != CellName::pelletEaten && win.getWindowArea()[m_blinkyVec.y][m_blinkyVec.x] != CellName::ghostBox &&
+        win.getWindowArea()[m_blinkyVec.y][m_blinkyVec.x] != CellName::perimeterValue)
     {
         wattron(win.getWindow(), COLOR_PAIR(Color::white_black));
         mvwprintw(win.getWindow(), m_blinkyVec.y, m_blinkyVec.x, "•");
