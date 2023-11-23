@@ -25,7 +25,7 @@ class Pinky;
 class Blinky
 {
 public:
-    bool timeToMove(Window& win, Pacman& pacman, Pinky& pinky, Inky& inky, Ghost& clyde);
+    bool timeToMove(Window& win, Pacman& pacman, Pinky& pinky, Inky& inky, Ghost& clyde, bool powerPelletTimer, LevelState ateWhichGhost, int& score);
     Vec getBlinkyVec();
     Color::ColorPair getBlinkyColor();
     void printGhost(Window& win);
@@ -45,12 +45,13 @@ private:
     int m_portalY{14};
     //timer variables
     std::chrono::milliseconds m_blinkyInterval{200ms};
+    std::chrono::milliseconds m_blinkyIntervalStorage{};
     std::chrono::time_point<std::chrono::high_resolution_clock> m_lastTime;
 
     //private methods
 
     //setting valid directionss
-    bool setDirection(Window& win, Pacman& pacman);
+    bool setDirection(Window& win, Pacman& pacman, bool powerPelletActive);
     std::vector<Vec> createGhostPath(Vec start, Window& win, Vec target);
 
     // printing
@@ -59,5 +60,5 @@ private:
     void printPelletBackIfNotEaten(Window& win);
     Color::ColorPair checkGhostOverLap(Pinky& pinky, Inky& inky, Ghost& clyde);
     void printOverLap(Window& win, Color::ColorPair overLapColor);
-    void printAndRefreshGhost(Window& win);
+    void printAndRefreshGhost(Window& win, bool powerPelletActive);
 };

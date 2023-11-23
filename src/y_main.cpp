@@ -211,11 +211,29 @@ MenuSelection menuLoop()
     }
 }
 
+bool powerPelletTimer(std::chrono::time_point<std::chrono::high_resolution_clock> lastTime, bool& powerPelletActive)
+{
+    auto interval{ std::chrono::duration(5s) };
+    auto currentTime{ std::chrono::high_resolution_clock::now() };
+
+    if(currentTime - lastTime <= interval && powerPelletActive)
+    {
+        return true;
+    }
+    else
+    {
+        powerPelletActive = false;
+        return false;
+    }
+
+   return true;
+
+}
+
 void gameLoop(Window& gameW)
 {
     // pacman's score
-    static int score{};
-    score = 0;
+    int score{0};
 
     // init game window stuff
     nodelay(gameW.getWindow(), true);
@@ -237,6 +255,9 @@ void gameLoop(Window& gameW)
     // restart vector space | new round
     vectorSpace.assignPelletNotEaten(gameW);
 
+    auto lastTime{ std::chrono::high_resolution_clock::now() }; 
+    bool powerPelletActive{ false };
+
     for(int lives{4}; lives > 0; --lives)
     {
         // print lives and score
@@ -245,6 +266,7 @@ void gameLoop(Window& gameW)
 
         // print pellets based on what has been eaten
         vectorSpace.printPellet(gameW);
+        vectorSpace.printPowerPellet(gameW);
 
         // set pac back to start + print
         pacman.setPacVec();
@@ -271,7 +293,9 @@ void gameLoop(Window& gameW)
         bool leaveLoop{ false };
         while(true)
         {
-            switch(pacman.timeToMove(gameW, clyde, inky, blinky, pinky, score))
+            LevelState ateWhichGhost{LevelState::normalMovement};
+            
+            switch(pacman.timeToMove(gameW, clyde, inky, blinky, pinky, score, powerPelletActive))
             {
                 case LevelState::pacmanDead:
                     leaveLoop = true;
@@ -287,6 +311,22 @@ void gameLoop(Window& gameW)
                     blinky.setSpeed();
                     pinky.setSpeed();
                     leaveLoop = true;
+                    break;
+                case LevelState::powerUp:
+                    lastTime = std::chrono::high_resolution_clock::now();
+                    powerPelletActive = true;
+                    break;
+                case LevelState::ateBlinky:
+                    ateWhichGhost = LevelState::ateBlinky;
+                    break;
+                case LevelState::ateInky:
+                    ateWhichGhost = LevelState::ateInky;
+                    break;
+                case LevelState::atePinky:
+                    ateWhichGhost = LevelState::atePinky;
+                    break;
+                case LevelState::ateClyde:
+                    ateWhichGhost = LevelState::ateClyde;
                     break;
             }
 
@@ -313,7 +353,7 @@ void gameLoop(Window& gameW)
                 break;
             }
             
-            if(!blinky.timeToMove(gameW, pacman, pinky, inky, clyde))
+            if(!blinky.timeToMove(gameW, pacman, pinky, inky, clyde, powerPelletTimer(lastTime, powerPelletActive), ateWhichGhost, score))
             {
                 pacman.printDeathAnimation(gameW);
                 break;
@@ -363,6 +403,10 @@ int main()
     endwin();
     return 0;
 }
+
+// BUGS PACMAN SPED UP MOVEMENT
+
+// PACMAN MOVING INTO GHOST DOESNT KILL GHOST
 
 // *************************EASY********************************
 

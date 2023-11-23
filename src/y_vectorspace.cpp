@@ -25,7 +25,7 @@ void VectorSpace::assignPelletNotEaten(Window& win)
     {
         for(std::size_t x{0}; x < win.getWindowArea()[y].size(); ++x)
         {
-            if(win.getWindowArea()[y][x] != CellName::obstacleValue && win.getWindowArea()[y][x] != CellName::perimeterValue && win.getWindowArea()[y][x] != CellName::ghostBox)
+            if(win.getWindowArea()[y][x] != CellName::obstacleValue && win.getWindowArea()[y][x] != CellName::perimeterValue && win.getWindowArea()[y][x] != CellName::ghostBox && win.getWindowArea()[y][x] != CellName::powerPellet && win.getWindowArea()[y][x] != CellName::powerPelletEaten)
                 win.getWindowArea()[y][x] = CellName::notEaten;
         }
     }
@@ -35,7 +35,7 @@ void VectorSpace::printPellet(Window& win)
 {
     for(std::size_t y{0}; y < win.getWindowArea().size(); ++y)
     {
-        for(std::size_t x{0}; x < win.getWindowArea()[y].size(); ++x)
+        for(std::size_t x{0}; x < win.getWindowArea()[y].size(); ++x) 
         {
             // clears maze
             if(win.getWindowArea()[y][x] != CellName::perimeterValue && win.getWindowArea()[y][x] != CellName::obstacleValue)
@@ -54,6 +54,28 @@ void VectorSpace::printPellet(Window& win)
             }
         }
     }
+}
+
+void VectorSpace::printPowerPellet(Window& win)
+{
+    wattron(win.getWindow(), COLOR_PAIR(Color::yellow_black));
+    wattron(win.getWindow(), A_BLINK);
+
+    if(win.getWindowArea()[23][1] == CellName::powerPellet)
+        mvwprintw(win.getWindow(), 23, 1, "⬤");
+    
+    if(win.getWindowArea()[23][26] == CellName::powerPellet)
+        mvwprintw(win.getWindow(), 23, 26, "⬤");
+
+    if(win.getWindowArea()[3][1] == CellName::powerPellet)
+        mvwprintw(win.getWindow(), 3, 1, "⬤");
+
+    if(win.getWindowArea()[3][26] == CellName::powerPellet)
+        mvwprintw(win.getWindow(), 3, 26, "⬤");   
+
+    wattroff(win.getWindow(), COLOR_PAIR(Color::yellow_black));
+    wattroff(win.getWindow(), A_BLINK);
+    wattron(win.getWindow(), COLOR_PAIR(Color::default_color));
 }
 
 /********************************************************************** PRIVATE MEMBERS **********************************************************************/
@@ -77,4 +99,9 @@ void VectorSpace::init2DVectorSpace(Window& win, std::vector<Obstacle>& obstacle
 
     win.getWindowArea()[14][1] = CellName::portalLeft;
     win.getWindowArea()[14][26] = CellName::portalRight;
+
+    win.getWindowArea()[23][1] = CellName::powerPellet;
+    win.getWindowArea()[23][26] = CellName::powerPellet;
+    win.getWindowArea()[3][1] = CellName::powerPellet;
+    win.getWindowArea()[3][26] = CellName::powerPellet;
 }

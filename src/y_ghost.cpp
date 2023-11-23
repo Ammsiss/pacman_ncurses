@@ -25,7 +25,7 @@ using namespace std::chrono_literals;
 Ghost::Ghost()
     : m_direction {Direction::right}
     , m_ghostVec {15, 13} // randomInput{},
-    , m_interval{150ms}
+    , m_interval{165ms}
     , m_lastTime{std::chrono::high_resolution_clock::now()}
     , m_rightPortalX{ 26 }, m_leftPortalX{ 1 }
     , m_portalY{ 14 }, m_ghostColor{ Color::orange_black }
@@ -66,7 +66,7 @@ void Ghost::printGhost(Window& win)
 Color::ColorPair Ghost::getGhostColor() { return m_ghostColor; }
 Vec Ghost::getGhostVec() { return m_ghostVec; }
 
-void Ghost::setSpeed() { m_interval -= 5ms; }
+void Ghost::setSpeed() { m_interval -= 15ms; }
 
 void Ghost::setGhostVec() { m_ghostVec = Vec{15, 13}; }
 

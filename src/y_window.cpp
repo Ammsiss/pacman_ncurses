@@ -143,7 +143,7 @@ void Window::printScoreOutline(int score)
     mvwprintw(m_window, 12, 23, "    ");
 
     wattron(m_window, COLOR_PAIR(Color::yellow_black));
-    mvwprintw(m_window, 10, 23, "SCRE");
+    mvwprintw(m_window, 10, 23, "PNTS");
     mvwprintw(m_window, 12, 23, "%d", score);
     wattroff(m_window, COLOR_PAIR(Color::yellow_black));
     wattron(m_window, COLOR_PAIR(Color::default_color));

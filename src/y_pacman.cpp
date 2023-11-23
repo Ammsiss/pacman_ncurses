@@ -34,7 +34,7 @@ Pacman::Pacman(Window& win)
     }
 
 // public methods
-LevelState Pacman::timeToMove(Window& win, Ghost& clyde, Inky& inky, Blinky& blinky, Pinky& pinky, int& score)
+LevelState Pacman::timeToMove(Window& win, Ghost& clyde, Inky& inky, Blinky& blinky, Pinky& pinky, int& score, bool powerPelletActive)
 {
     // define chrono duration and 2 system time instances to create pacman's timed movement
     auto currentTime{std::chrono::high_resolution_clock::now()};
@@ -48,17 +48,40 @@ LevelState Pacman::timeToMove(Window& win, Ghost& clyde, Inky& inky, Blinky& bli
         if(score % 298 == 0)
             return LevelState::levelClear;
 
-        // if pacman moved into ghost return true
-        if(movePacmanBasedOnDirection(win, clyde, inky, blinky, pinky))
+        GhostCollision collision{ movePacmanBasedOnDirection(win, clyde, inky, blinky, pinky, powerPelletActive) };
+
+        // if pacman moved into ghost with power pellet
+        if((collision == GhostCollision::blinky || collision == GhostCollision::clyde || collision == GhostCollision::inky || collision == GhostCollision::pinky) && powerPelletActive)
+        {
+            printPacmanBasedOnDirection(win);
+            wrefresh(win.getWindow());
+
+            if(collision == GhostCollision::blinky)         
+                return LevelState::ateBlinky;
+            else if(collision == GhostCollision::clyde)
+                return LevelState::ateClyde;
+            else if(collision == GhostCollision::inky)         
+                return LevelState::ateInky;
+            else if(collision == GhostCollision::pinky)
+                return LevelState::atePinky;
+        }
+        else if((collision == GhostCollision::blinky || collision == GhostCollision::clyde || collision == GhostCollision::inky || collision == GhostCollision::pinky))
         {
             printPacmanBasedOnDirection(win);
             wrefresh(win.getWindow());
             return LevelState::pacmanDead;
         }
+        
 
-        printPacmanBasedOnDirection(win);
+        if(powerPelletCheck(win))
+        {
+            printPacmanBasedOnDirection(win);
+            wrefresh(win.getWindow());
+            return LevelState::powerUp;
+        }
 
         // refresh pacman and update timer
+        printPacmanBasedOnDirection(win);
         wrefresh(win.getWindow());
         m_lastTime = currentTime;
     }
@@ -142,7 +165,7 @@ void Pacman::setDirection()
     }
 }
 
-bool Pacman::movePacmanBasedOnDirection(Window& win, Ghost& clyde, Inky& inky, Blinky& blinky, Pinky& pinky)
+GhostCollision Pacman::movePacmanBasedOnDirection(Window& win, Ghost& clyde, Inky& inky, Blinky& blinky, Pinky& pinky, bool powerPelletActive)
 {
     switch(m_direction)
         {
@@ -151,11 +174,11 @@ bool Pacman::movePacmanBasedOnDirection(Window& win, Ghost& clyde, Inky& inky, B
                 if(m_pacVec.y != 1)
                 {
                     setY(PositionChange::decrement);
+                    
                     if(obstacleBoundsCheck(win))
                         setY(PositionChange::increment);
 
-                    if(ghostCollisionCheck(clyde, inky, blinky, pinky))
-                        return true;
+                    return ghostCollisionCheck(clyde, inky, blinky, pinky);
                 }
                 break;
             }
@@ -171,8 +194,7 @@ bool Pacman::movePacmanBasedOnDirection(Window& win, Ghost& clyde, Inky& inky, B
                     if(obstacleBoundsCheck(win))
                         setY(PositionChange::decrement);
 
-                    if(ghostCollisionCheck(clyde, inky, blinky, pinky))
-                        return true;
+                    return ghostCollisionCheck(clyde, inky, blinky, pinky);
                 }
                 break;
             }
@@ -189,8 +211,7 @@ bool Pacman::movePacmanBasedOnDirection(Window& win, Ghost& clyde, Inky& inky, B
                     if(obstacleBoundsCheck(win))
                         setX(PositionChange::increment);
 
-                    if(ghostCollisionCheck(clyde, inky, blinky, pinky))
-                        return true;
+                    return ghostCollisionCheck(clyde, inky, blinky, pinky);
                 }
                 break;
             }
@@ -207,8 +228,7 @@ bool Pacman::movePacmanBasedOnDirection(Window& win, Ghost& clyde, Inky& inky, B
                     if(obstacleBoundsCheck(win))
                         setX(PositionChange::decrement);
 
-                    if(ghostCollisionCheck(clyde, inky, blinky, pinky))
-                        return true;
+                    return ghostCollisionCheck(clyde, inky, blinky, pinky);
                 }
                 break;
             }
@@ -216,7 +236,7 @@ bool Pacman::movePacmanBasedOnDirection(Window& win, Ghost& clyde, Inky& inky, B
                 break;
         }
 
-    return false;
+    return GhostCollision::null;
 }
 
 void Pacman::setY(PositionChange direction) 
@@ -243,21 +263,32 @@ bool Pacman::obstacleBoundsCheck(Window& win)
     return false;
 }
 
-bool Pacman::ghostCollisionCheck(Ghost& clyde, Inky& inky, Blinky& blinky, Pinky& pinky)
+GhostCollision Pacman::ghostCollisionCheck(Ghost& clyde, Inky& inky, Blinky& blinky, Pinky& pinky)
 {
     if(m_pacVec.y == clyde.getGhostVec().y && m_pacVec.x == clyde.getGhostVec().x)
-        return true;
+        return GhostCollision::clyde;
 
     if(m_pacVec.y == inky.getInkyVec().y && m_pacVec.x == inky.getInkyVec().x)
-        return true;
+        return GhostCollision::inky;
 
     if(m_pacVec.y == blinky.getBlinkyVec().y && m_pacVec.x == blinky.getBlinkyVec().x)
-        return true;
+        return GhostCollision::blinky;
 
     if(m_pacVec.y == pinky.getPinkyVec().y && m_pacVec.x == pinky.getPinkyVec().x)
-        return true;
+        return GhostCollision::pinky;
 
-    return false;
+    return GhostCollision::null;
+}
+
+bool Pacman::powerPelletCheck(Window& win)
+{
+    if(win.getWindowArea()[m_pacVec.y][m_pacVec.x] == CellName::powerPellet)
+    {
+        win.getWindowArea()[m_pacVec.y][m_pacVec.x] = CellName::powerPelletEaten;
+        return true;
+    }
+    else
+        return false;
 }
 
 /* _   _   _   _   _   _   _   _  
@@ -316,7 +347,7 @@ void Pacman::printScore(Window& win, int score)
     mvwprintw(win.getWindow(), 10, 23, "    ");
 
     wattron(win.getWindow(), COLOR_PAIR(Color::yellow_black));
-    mvwprintw(win.getWindow(), 10, 23, "SCRE");
+    mvwprintw(win.getWindow(), 10, 23, "PNTS");
     wattroff(win.getWindow(), COLOR_PAIR(Color::yellow_black));
     wattron(win.getWindow(), COLOR_PAIR(Color::default_color));
 

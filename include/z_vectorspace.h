@@ -17,6 +17,7 @@ public:
     // public methods
     void assignPelletNotEaten(Window& win);
     void printPellet(Window& win);
+    void printPowerPellet(Window& win);
 
 private:
     // private methods

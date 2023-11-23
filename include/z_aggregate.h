@@ -6,6 +6,15 @@ enum class PositionChange
     decrement,
 };
 
+enum class GhostCollision
+{
+    pinky,
+    inky,
+    blinky,
+    clyde,
+    null,
+};
+
 enum class Direction
 {
     up,
@@ -54,6 +63,8 @@ namespace CellName
         ghostBox,
         portalLeft,
         portalRight,
+        powerPellet,
+        powerPelletEaten,
     };
 }
 
@@ -69,6 +80,11 @@ enum class LevelState
     levelClear,
     pacmanDead,
     normalMovement,
+    powerUp,
+    atePinky,
+    ateBlinky,
+    ateInky,
+    ateClyde,
 };
 struct Vec
 {

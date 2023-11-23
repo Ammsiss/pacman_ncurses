@@ -22,25 +22,55 @@ using namespace std::chrono_literals;
 
 // public method
 
-bool Blinky::timeToMove(Window& win, Pacman& pacman, Pinky& pinky, Inky& inky, Ghost& clyde)
+bool Blinky::timeToMove(Window& win, Pacman& pacman, Pinky& pinky, Inky& inky, Ghost& clyde, bool powerPelletTimer, LevelState ateWhichGhost, int& score)
 {
     // define chrono duration and 2 system time instances to create pacman's timed movement
     auto currentTime{std::chrono::high_resolution_clock::now()};
 
-    if (currentTime - m_lastTime >= m_blinkyInterval)
+    // if power pellet not active
+    if(!powerPelletTimer)
     {
-        eraseLastPosition(win);
-        checkForAndPrintOverLaps(win, pinky, inky, clyde);
+        if (currentTime - m_lastTime >= m_blinkyInterval)
+        {
+            eraseLastPosition(win);
+            checkForAndPrintOverLaps(win, pinky, inky, clyde);
 
-        if(!setDirection(win, pacman))
-            return false;
+            if(!setDirection(win, pacman, false))
+                return false;
 
-        printAndRefreshGhost(win);
+            printAndRefreshGhost(win, false);
 
-        m_lastTime = currentTime;
+            m_lastTime = currentTime;
+        }
+
+        return true;
     }
+    else // if power pellet is active
+    {
+        m_blinkyIntervalStorage = m_blinkyInterval;
+        m_blinkyInterval = 300ms;
 
-    return true;
+        if(currentTime - m_lastTime >= m_blinkyInterval)
+        {
+            eraseLastPosition(win);
+            checkForAndPrintOverLaps(win, pinky, inky, clyde);
+            
+            if(!setDirection(win, pacman, true) || ateWhichGhost == LevelState::ateBlinky)
+            {
+                score += 200;
+                m_blinkyVec.y = 15;
+                m_blinkyVec.x = 14;
+            }
+
+            printAndRefreshGhost(win, true);
+
+            m_lastTime = currentTime;
+        }
+
+        m_blinkyInterval = m_blinkyIntervalStorage;
+
+        return true;
+    }
 }
 
 void Blinky::printGhost(Window& win)
@@ -67,17 +97,37 @@ void Blinky::setGhostVec() { m_blinkyVec = Vec{15, 14}; }
   \_/ \_/ \_/ \_/ \_/ \_/ \_/   \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/   
 */
 
-bool Blinky::setDirection(Window& win, Pacman& pacman)  
+bool Blinky::setDirection(Window& win, Pacman& pacman, bool powerPelletActive)  
 {
-    std::vector<Vec> ghostPath{ createGhostPath(Vec{m_blinkyVec.y, m_blinkyVec.x}, win, Vec{pacman.getPacVec().y, pacman.getPacVec().x}) };
+    std::vector<Vec> ghostPath{};
 
-    m_blinkyVec.y = ghostPath[1].y;
-    m_blinkyVec.x = ghostPath[1].x;
+    if(!powerPelletActive)
+    {
+        ghostPath = createGhostPath(Vec{m_blinkyVec.y, m_blinkyVec.x}, win, Vec{pacman.getPacVec().y, pacman.getPacVec().x});
+        m_blinkyVec.y = ghostPath[1].y;
+        m_blinkyVec.x = ghostPath[1].x;
+    }
+    else
+    {
+        if(m_blinkyVec.y != 22 || m_blinkyVec.x != 1)
+        {
+            ghostPath = createGhostPath(Vec{m_blinkyVec.y, m_blinkyVec.x}, win, Vec{22, 1});
+            m_blinkyVec.y = ghostPath[1].y;
+            m_blinkyVec.x = ghostPath[1].x;
+        }
+        else
+        {
+            ghostPath = createGhostPath(Vec{m_blinkyVec.y, m_blinkyVec.x}, win, Vec{20, 1});
+            m_blinkyVec.y = ghostPath[1].y;
+            m_blinkyVec.x = ghostPath[1].x;
+        }
+    }
+
 
     if(m_blinkyVec.y == pacman.getPacVec().y && m_blinkyVec.x == pacman.getPacVec().x)
         return false;
-
-    return true;
+    else
+        return true;
 }
 
 std::vector<Vec> Blinky::createGhostPath(Vec start, Window& win, Vec target)
@@ -126,95 +176,6 @@ std::vector<Vec> Blinky::createGhostPath(Vec start, Window& win, Vec target)
     std::reverse(path.begin(), path.end());
     
     return path;
-
-    // working expanded
-    /*
-    auto rows{win.getWindowArea().size()};
-    auto cols{win.getWindowArea()[0].size()};
-
-    std::vector<std::vector<int>> visited(rows, std::vector<int>(cols, 0));
-    std::vector<std::vector<Vec>> parentCell(rows, std::vector<Vec>(cols));
-
-    std::vector<std::vector<int>> pathCost(rows, std::vector<int>(cols, 0));
-
-    //                               up      down    left     right
-    std::vector<Vec> directions = {{0, 1}, {0, -1}, {-1, 0}, {1, 0}};
-
-    std::queue<Vec> q{};
-    q.push(start);                  // push in start point to q
-    visited[start.y][start.x] = 1;  // assign start point visited
-
-    Vec portalRight{14, 26};
-    Vec portalLeft{14, 1};
-    bool whichPortal{};
-    bool wentThroughPortal{};
-
-    while(!q.empty())
-    {
-        wentThroughPortal = false;
-
-        Vec current{ q.front() };  // assigns current to element in front of q
-        q.pop();                          // then removes it from the q
-
-        for(const auto& dir : directions)
-        {
-            Vec next{current.y + dir.y, current.x + dir.x};   // assigns next to a neighbor node of current
-
-            if(win.getWindowArea()[next.y][next.x] == CellName::portalLeft)
-            {
-                q.push(next);
-                visited[next.y][next.x] = 1;
-                parentCell[next.y][next.x] = current;
-                next = portalRight;
-                whichPortal = true;
-                wentThroughPortal = true;
-            }
-            else if(win.getWindowArea()[next.y][next.x] == CellName::portalRight)
-            {
-                q.push(next);
-                visited[next.y][next.x] = 1;
-                parentCell[next.y][next.x] = current;
-                next = portalLeft;
-                whichPortal = false;
-                wentThroughPortal = true;
-            }
-
-            // if the neighbor node is in the playable area put it in the q, mark it visited, and set parentCell to the predessesor of next which is current
-            if(next.y >= 0 && next.y < rows && next.x >= 0 && next.x < cols && win.getWindowArea()[next.y][next.x] != CellName::obstacleValue && 
-                win.getWindowArea()[next.y][next.x] != CellName::perimeterValue && !visited[next.y][next.x])
-            {
-                q.push(next);
-                visited[next.y][next.x] = 1;
-                if(wentThroughPortal)
-                    parentCell[next.y][next.x] = whichPortal ? portalLeft : portalRight;
-                else   
-                    parentCell[next.y][next.x] = current;
-            }
-        }
-    }
-
-    // to store the path the ghost will take
-    std::vector<Vec> path{};
-
-    // set current to the target so you can back track to the root 
-    Vec current{target};
-
-    // while not at start node add the current node then set current to its predessesor until you get to start
-    while(current.y != start.y || current.x != start.x)
-    {
-        path.push_back(current);
-        current = parentCell[current.y][current.x];
-    }
-
-    // add the root node
-    path.push_back(start);
-
-    // reverse to get path to target
-    std::reverse(path.begin(), path.end());
-    
-    // done! return constructed path
-    return path;
-    */
 }
 
 /* _   _   _   _   _   _   _   _  
@@ -238,12 +199,24 @@ void Blinky::checkForAndPrintOverLaps(Window& win, Pinky& pinky, Inky& inky, Gho
 void Blinky::printPelletBackIfNotEaten(Window& win)
 {
     if(win.getWindowArea()[m_blinkyVec.y][m_blinkyVec.x] != CellName::pelletEaten && win.getWindowArea()[m_blinkyVec.y][m_blinkyVec.x] != CellName::ghostBox &&
-        win.getWindowArea()[m_blinkyVec.y][m_blinkyVec.x] != CellName::perimeterValue)
+        win.getWindowArea()[m_blinkyVec.y][m_blinkyVec.x] != CellName::perimeterValue && win.getWindowArea()[m_blinkyVec.y][m_blinkyVec.x] != CellName::powerPelletEaten)
     {
+        if(win.getWindowArea()[m_blinkyVec.y][m_blinkyVec.x] == CellName::powerPellet)
+        {
+            wattron(win.getWindow(), COLOR_PAIR(Color::yellow_black));
+            wattron(win.getWindow(), A_BLINK);
+            mvwprintw(win.getWindow(), m_blinkyVec.y, m_blinkyVec.x, "⬤");
+            wattroff(win.getWindow(), COLOR_PAIR(Color::yellow_black));
+            wattroff(win.getWindow(), A_BLINK);
+            wattron(win.getWindow(), COLOR_PAIR(Color::default_color));  
+        }
+        else
+        {
         wattron(win.getWindow(), COLOR_PAIR(Color::white_black));
         mvwprintw(win.getWindow(), m_blinkyVec.y, m_blinkyVec.x, "•");
         wattroff(win.getWindow(), COLOR_PAIR(Color::white_black));
         wattron(win.getWindow(), COLOR_PAIR(Color::default_color));    
+        }
     }
 }
 
@@ -273,12 +246,22 @@ void Blinky::printOverLap(Window& win, Color::ColorPair overLapColor)
     }
 }
 
-void Blinky::printAndRefreshGhost(Window& win)
+void Blinky::printAndRefreshGhost(Window& win, bool powerPelletActive)
 {
-    wattron(win.getWindow(), COLOR_PAIR(m_blinkyColor));
-    mvwprintw(win.getWindow(), m_blinkyVec.y, m_blinkyVec.x, "ᗣ");
-    wattroff(win.getWindow(), COLOR_PAIR(m_blinkyColor));
-    wattroff(win.getWindow(), COLOR_PAIR(Color::default_color));
+    if(!powerPelletActive)
+    {
+        wattron(win.getWindow(), COLOR_PAIR(m_blinkyColor));
+        mvwprintw(win.getWindow(), m_blinkyVec.y, m_blinkyVec.x, "ᗣ");
+        wattroff(win.getWindow(), COLOR_PAIR(m_blinkyColor));
+        wattroff(win.getWindow(), COLOR_PAIR(Color::default_color));
+    }
+    else
+    {
+        wattron(win.getWindow(), COLOR_PAIR(Color::blue_black));
+        mvwprintw(win.getWindow(), m_blinkyVec.y, m_blinkyVec.x, "ᗣ");
+        wattroff(win.getWindow(), COLOR_PAIR(Color::blue_black));
+        wattroff(win.getWindow(), COLOR_PAIR(Color::default_color));
+    }
 
     wrefresh(win.getWindow());
 }

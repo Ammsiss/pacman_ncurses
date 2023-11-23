@@ -25,7 +25,7 @@ public:
     // constructor
     Pacman(Window& win);
     // public method
-    LevelState timeToMove(Window& win, Ghost& clyde, Inky& inky, Blinky& blinky, Pinky& pinky, int& score);
+    LevelState timeToMove(Window& win, Ghost& clyde, Inky& inky, Blinky& blinky, Pinky& pinky, int& score, bool powerPelletActive);
     void printDeathAnimation(Window& win);
     void printInitialPacman(Window& win);
 
@@ -58,9 +58,10 @@ private:
 
     // setting direction
     void setDirection();
-    bool movePacmanBasedOnDirection(Window& win, Ghost& clyde, Inky& inky, Blinky& blinky, Pinky& pinky);
+    GhostCollision movePacmanBasedOnDirection(Window& win, Ghost& clyde, Inky& inky, Blinky& blinky, Pinky& pinky, bool powerPelletActive);
     bool obstacleBoundsCheck(Window& win);
-    bool ghostCollisionCheck(Ghost& clyde, Inky& inky, Blinky& blinky, Pinky& pinky);
+    GhostCollision ghostCollisionCheck(Ghost& clyde, Inky& inky, Blinky& blinky, Pinky& pinky);
+    bool powerPelletCheck(Window& win);
 
     // getters
     void getUserInputAndSetDirection(Window& win);
