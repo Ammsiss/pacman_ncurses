@@ -42,9 +42,21 @@ bool Inky::timeToMove(Window& win, Pacman& pacman, Pinky& pinky, Blinky& blinky,
     return true;
 }
 
+void Inky::printGhost(Window& win)
+{
+    wattron(win.getWindow(), COLOR_PAIR(Color::cyan_black));
+    mvwprintw(win.getWindow(), 15, 12, "ᗣ");
+    wattron(win.getWindow(), COLOR_PAIR(Color::cyan_black));
+    wattron(win.getWindow(), COLOR_PAIR(Color::default_color));
+}
+
 Vec Inky::getInkyVec() { return m_inkyVec; }
 
 Color::ColorPair Inky::getInkyColor() { return m_inkyColor; }
+
+void Inky::setSpeed() { m_inkyInterval -= 5ms; } 
+
+void Inky::setGhostVec() { m_inkyVec = Vec{15, 12}; }
 
 /********************************************************************** PRIVATE MEMBERS **********************************************************************/
 
@@ -66,7 +78,7 @@ bool Inky::setDirection(Window& win, Pacman& pacman)
             targetY = Random::randomGhostTargetY(Random::mt);
             targetX = Random::randomGhostTargetX(Random::mt);
 
-            if(win.getWindowArea()[targetY][targetX] != CellName::ghostBox && win.getWindowArea()[targetY][targetX] != CellName::perimeterValue && win.getWindowArea()[targetY][targetX] != CellName::obstacleValue)
+            if((targetY != m_inkyVec.y && targetX != m_inkyVec.x) && win.getWindowArea()[targetY][targetX] != CellName::ghostBox && win.getWindowArea()[targetY][targetX] != CellName::perimeterValue && win.getWindowArea()[targetY][targetX] != CellName::obstacleValue)
                 break;
         }
     }
@@ -76,6 +88,7 @@ bool Inky::setDirection(Window& win, Pacman& pacman)
     m_inkyVec.y = ghostPath[1].y;
     m_inkyVec.x = ghostPath[1].x;
 
+    // checks pacman collision
     if(m_inkyVec.y == pacman.getPacVec().y && m_inkyVec.x == pacman.getPacVec().x)
         return false;
 
@@ -91,7 +104,7 @@ std::vector<Vec> Inky::createGhostPath(Vec start, Window& win, Vec target)
     std::vector<std::vector<Vec>> parentCell(rows, std::vector<Vec>(cols));
 
     std::queue<Vec> q{};
-    q.push(start);                  // push in start point to q (0, 0)
+    q.push(start);                  // push in start point to q
     visited[start.y][start.x] = 1;  // assign start point visited
 
     while(!q.empty())

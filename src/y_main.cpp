@@ -125,6 +125,73 @@ std::vector<Obstacle> obstacleInit(Window& gameW)
     return obstacleList;
 }
 
+void controls(Window& gameW)
+{
+    gameW.drawBoxAndRefresh();
+
+    wattron(gameW.getWindow(), COLOR_PAIR(Color::yellow_black));
+
+    mvwprintw(gameW.getWindow(), 10, 5, "W A S D : MOVEMENT");
+    mvwprintw(gameW.getWindow(), 12, 5, "ENTER   : SELECT");
+
+    wattroff(gameW.getWindow(), COLOR_PAIR(Color::yellow_black));
+    wattron(gameW.getWindow(), COLOR_PAIR(Color::default_color));
+
+    wattron(gameW.getWindow(), COLOR_PAIR(Color::blue_black));
+
+    mvwprintw(gameW.getWindow(), 18, 1, "==========================");
+    mvwprintw(gameW.getWindow(), 23, 1, "==========================");
+
+    wattroff(gameW.getWindow(), COLOR_PAIR(Color::blue_black));
+    wattron(gameW.getWindow(), COLOR_PAIR(Color::default_color));
+
+    wattron(gameW.getWindow(), COLOR_PAIR(Color::yellow_black));
+
+    mvwprintw(gameW.getWindow(), 19, 14, " .--.       ");
+    mvwprintw(gameW.getWindow(), 20, 14, "/ _.-' .-.  ");
+    mvwprintw(gameW.getWindow(), 21, 14, "\\  '-. '-' ");
+    mvwprintw(gameW.getWindow(), 22, 14, " '--'       ");
+
+    wattroff(gameW.getWindow(), COLOR_PAIR(Color::yellow_black));
+    wattron(gameW.getWindow(), COLOR_PAIR(Color::default_color));
+
+    wattron(gameW.getWindow(), COLOR_PAIR(Color::cyan_black));
+
+    mvwprintw(gameW.getWindow(), 19, 2, " .-.  ");
+    mvwprintw(gameW.getWindow(), 20, 2, "| OO| ");
+    mvwprintw(gameW.getWindow(), 21, 2, "|   | ");
+    mvwprintw(gameW.getWindow(), 22, 2, "'^^^' ");
+
+    wattroff(gameW.getWindow(), COLOR_PAIR(Color::cyan_black));
+    wattron(gameW.getWindow(), COLOR_PAIR(Color::default_color));
+
+    wattron(gameW.getWindow(), COLOR_PAIR(Color::red_black));
+
+    mvwprintw(gameW.getWindow(), 19, 7, " .-. ");
+    mvwprintw(gameW.getWindow(), 20, 7, "| OO|");
+    mvwprintw(gameW.getWindow(), 21, 7, "|   |");
+    mvwprintw(gameW.getWindow(), 22, 7, "'^^^'");
+
+    wattroff(gameW.getWindow(), COLOR_PAIR(Color::red_black));
+    wattron(gameW.getWindow(), COLOR_PAIR(Color::default_color));
+
+    wrefresh(gameW.getWindow());
+
+    char input{};
+    while(true)
+    {
+        input = wgetch(gameW.getWindow());
+        if(input == '\n')
+            break;
+    }
+}
+
+void clearWindow(Window& gameW)
+{
+    wclear(gameW.getWindow());
+    wrefresh(gameW.getWindow());
+}
+
 MenuSelection menuLoop()
 {
     // Init menu stuff
@@ -144,14 +211,13 @@ MenuSelection menuLoop()
     }
 }
 
-void gameLoop()
+void gameLoop(Window& gameW)
 {
     // pacman's score
     static int score{};
     score = 0;
 
     // init game window stuff
-    Window gameW{};
     nodelay(gameW.getWindow(), true);
     gameW.drawBoxAndRefresh();
 
@@ -162,23 +228,43 @@ void gameLoop()
     VectorSpace vectorSpace{gameW, obstacleList};
     gameW.assignGhostBox();
 
+    Pacman pacman{gameW};
+    Ghost clyde{};
+    Blinky blinky{};
+    Pinky pinky{};
+    Inky inky{};
+
     // restart vector space | new round
     vectorSpace.assignPelletNotEaten(gameW);
-    vectorSpace.printAndRefreshPellet(gameW);
 
     for(int lives{4}; lives > 0; --lives)
     {
+        // print lives and score
         gameW.printLives(lives);
         gameW.printScoreOutline(score);
 
-        vectorSpace.printAndRefreshPellet(gameW);
+        // print pellets based on what has been eaten
+        vectorSpace.printPellet(gameW);
 
-        // init characters
-        Pacman pacman{gameW};
-        Ghost clyde{};
-        Blinky blinky{};
-        Pinky pinky{};
-        Inky inky{};
+        // set pac back to start + print
+        pacman.setPacVec();
+        pacman.printInitialPacman(gameW);
+
+        // set ghosts back to start + print
+        clyde.setGhostVec();
+        clyde.printGhost(gameW);
+
+        inky.setGhostVec();
+        inky.printGhost(gameW);
+
+        pinky.setGhostVec();
+        pinky.printGhost(gameW);
+
+        blinky.setGhostVec();
+        blinky.printGhost(gameW);
+        // done
+
+        wrefresh(gameW.getWindow());
 
         gameW.gameCountDown();
 
@@ -195,14 +281,22 @@ void gameLoop()
                     vectorSpace.assignPelletNotEaten(gameW);
                     gameW.flashingObstacles();
                     ++lives;
+                    // +5ms speed
+                    clyde.setSpeed();
+                    inky.setSpeed();
+                    blinky.setSpeed();
+                    pinky.setSpeed();
                     leaveLoop = true;
                     break;
             }
+
+            // If user gets 1000 points + 1 life
             if((score % 1000 == 0) && lives != 4)
             {
                 ++lives;
                 gameW.printLives(lives);
             }
+
             if(leaveLoop)
                 break;
 
@@ -243,15 +337,19 @@ int main()
 {
     ncursesInit();
 
+    Window gameW{};
+
     bool closeGame{false};
     while(true)
     {
         switch(menuLoop())
         {
             case MenuSelection::start:
-                gameLoop();
+                gameLoop(gameW);
                 break;
             case MenuSelection::controls:
+                controls(gameW);
+                clearWindow(gameW);
                 break;
             case MenuSelection::exit:
                 closeGame = true;
@@ -266,14 +364,10 @@ int main()
     return 0;
 }
 
-// BUGS:: PELLET SPAWNING IN TOP LEFT CORNER
-
 // *************************EASY********************************
 
 /*
-    1) Controls section
-    2) timed release
-    3) variable speed
+    1) timed release
 */
 
 // ************************MEDIUM*******************************
@@ -281,7 +375,6 @@ int main()
 /*
     1) External high score
     2) Implement random (1-4) fruits spawning in each level
-    3) Implement pathfinding through portals
 */
 
 // **************************HARD*******************************
@@ -291,6 +384,7 @@ int main()
     3) Improve movement responsivness
     4) Fix unfrequent ghost flicker
     5) Power ups
+    6) Implement pathfinding through portals
 */
 
 

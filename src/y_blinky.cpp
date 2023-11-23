@@ -18,6 +18,8 @@
 #include <queue>
 #include <algorithm>
 
+using namespace std::chrono_literals;
+
 // public method
 
 bool Blinky::timeToMove(Window& win, Pacman& pacman, Pinky& pinky, Inky& inky, Ghost& clyde)
@@ -41,9 +43,21 @@ bool Blinky::timeToMove(Window& win, Pacman& pacman, Pinky& pinky, Inky& inky, G
     return true;
 }
 
+void Blinky::printGhost(Window& win)
+{
+    wattron(win.getWindow(), COLOR_PAIR(Color::red_black));
+    mvwprintw(win.getWindow(), 15, 14, "ᗣ");
+    wattron(win.getWindow(), COLOR_PAIR(Color::red_black));
+    wattron(win.getWindow(), COLOR_PAIR(Color::default_color));
+}
+
 Vec Blinky::getBlinkyVec() { return m_blinkyVec; }
 
 Color::ColorPair Blinky::getBlinkyColor() { return m_blinkyColor; }
+
+void Blinky::setSpeed() { m_blinkyInterval -= 5ms; }
+
+void Blinky::setGhostVec() { m_blinkyVec = Vec{15, 14}; }
 
 /********************************************************************** PRIVATE MEMBERS **********************************************************************/
 
@@ -75,7 +89,7 @@ std::vector<Vec> Blinky::createGhostPath(Vec start, Window& win, Vec target)
     std::vector<std::vector<Vec>> parentCell(rows, std::vector<Vec>(cols));
 
     std::queue<Vec> q{};
-    q.push(start);                  // push in start point to q (0, 0)
+    q.push(start);                  // push in start point to q
     visited[start.y][start.x] = 1;  // assign start point visited
 
     while(!q.empty())
@@ -90,6 +104,7 @@ std::vector<Vec> Blinky::createGhostPath(Vec start, Window& win, Vec target)
         {
             Vec next{current.y + dir.y, current.x + dir.x};
 
+            //if(next.y >= 0 && next.y < rows && next.x >= 0 && next.x < cols && !visited[next.y][next.x]) 
             if(next.y > 0 && next.y < (rows - 1) && next.x > 0 && next.x < (cols - 1) && win.getWindowArea()[next.y][next.x] != CellName::obstacleValue && 
                 win.getWindowArea()[next.y][next.x] != CellName::perimeterValue && !visited[next.y][next.x])
             {
@@ -111,6 +126,95 @@ std::vector<Vec> Blinky::createGhostPath(Vec start, Window& win, Vec target)
     std::reverse(path.begin(), path.end());
     
     return path;
+
+    // working expanded
+    /*
+    auto rows{win.getWindowArea().size()};
+    auto cols{win.getWindowArea()[0].size()};
+
+    std::vector<std::vector<int>> visited(rows, std::vector<int>(cols, 0));
+    std::vector<std::vector<Vec>> parentCell(rows, std::vector<Vec>(cols));
+
+    std::vector<std::vector<int>> pathCost(rows, std::vector<int>(cols, 0));
+
+    //                               up      down    left     right
+    std::vector<Vec> directions = {{0, 1}, {0, -1}, {-1, 0}, {1, 0}};
+
+    std::queue<Vec> q{};
+    q.push(start);                  // push in start point to q
+    visited[start.y][start.x] = 1;  // assign start point visited
+
+    Vec portalRight{14, 26};
+    Vec portalLeft{14, 1};
+    bool whichPortal{};
+    bool wentThroughPortal{};
+
+    while(!q.empty())
+    {
+        wentThroughPortal = false;
+
+        Vec current{ q.front() };  // assigns current to element in front of q
+        q.pop();                          // then removes it from the q
+
+        for(const auto& dir : directions)
+        {
+            Vec next{current.y + dir.y, current.x + dir.x};   // assigns next to a neighbor node of current
+
+            if(win.getWindowArea()[next.y][next.x] == CellName::portalLeft)
+            {
+                q.push(next);
+                visited[next.y][next.x] = 1;
+                parentCell[next.y][next.x] = current;
+                next = portalRight;
+                whichPortal = true;
+                wentThroughPortal = true;
+            }
+            else if(win.getWindowArea()[next.y][next.x] == CellName::portalRight)
+            {
+                q.push(next);
+                visited[next.y][next.x] = 1;
+                parentCell[next.y][next.x] = current;
+                next = portalLeft;
+                whichPortal = false;
+                wentThroughPortal = true;
+            }
+
+            // if the neighbor node is in the playable area put it in the q, mark it visited, and set parentCell to the predessesor of next which is current
+            if(next.y >= 0 && next.y < rows && next.x >= 0 && next.x < cols && win.getWindowArea()[next.y][next.x] != CellName::obstacleValue && 
+                win.getWindowArea()[next.y][next.x] != CellName::perimeterValue && !visited[next.y][next.x])
+            {
+                q.push(next);
+                visited[next.y][next.x] = 1;
+                if(wentThroughPortal)
+                    parentCell[next.y][next.x] = whichPortal ? portalLeft : portalRight;
+                else   
+                    parentCell[next.y][next.x] = current;
+            }
+        }
+    }
+
+    // to store the path the ghost will take
+    std::vector<Vec> path{};
+
+    // set current to the target so you can back track to the root 
+    Vec current{target};
+
+    // while not at start node add the current node then set current to its predessesor until you get to start
+    while(current.y != start.y || current.x != start.x)
+    {
+        path.push_back(current);
+        current = parentCell[current.y][current.x];
+    }
+
+    // add the root node
+    path.push_back(start);
+
+    // reverse to get path to target
+    std::reverse(path.begin(), path.end());
+    
+    // done! return constructed path
+    return path;
+    */
 }
 
 /* _   _   _   _   _   _   _   _  

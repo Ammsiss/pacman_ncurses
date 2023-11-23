@@ -28,10 +28,14 @@ public:
 
     //public methods
     bool timeToMove(Window& win, Pinky& pinky, Inky& inky, Blinky& blinky, Pacman& pacman); 
+    void printGhost(Window& win);
 
     // getters
     Color::ColorPair getGhostColor();
     Vec getGhostVec();
+    
+    void setSpeed();
+    void setGhostVec();
 
 private:
     //private variables

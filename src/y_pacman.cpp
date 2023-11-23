@@ -25,13 +25,12 @@ using namespace std::chrono_literals;
 // constructor
 Pacman::Pacman(Window& win)
     : m_direction {Direction::right}
-    , m_pacVec {5, 13}, m_userInput{}
-    , m_interval{175ms}
+    , m_pacVec {23, 13}, m_userInput{}
+    , m_interval{130ms}
     , m_lastTime{std::chrono::high_resolution_clock::now()}
     , m_rightPortalX{ 26 }, m_leftPortalX{ 1 }
     , m_portalY{ 14 }
     {
-        printInitialPacman(win);
     }
 
 // public methods
@@ -97,8 +96,19 @@ void Pacman::printDeathAnimation(Window& win)
     }
 }
 
+void Pacman::printInitialPacman(Window& win)
+{
+    wattron(win.getWindow(), COLOR_PAIR(Color::yellow_black));
+    mvwprintw(win.getWindow(), m_pacVec.y, m_pacVec.x, "<");
+    wattroff(win.getWindow(), COLOR_PAIR(Color::yellow_black));
+    wattron(win.getWindow(), COLOR_PAIR(Color::default_color));
+
+    wrefresh(win.getWindow());
+}
+
 // getters
 Vec Pacman::getPacVec() { return m_pacVec; }
+void Pacman::setPacVec() { m_pacVec = Vec{23, 13}; }
 
 
 /********************************************************************** PRIVATE MEMBERS **********************************************************************/
@@ -298,16 +308,6 @@ void Pacman::updateEatenPelletsAndPrintScore(Window& win, int& score)
     }
 
     printScore(win, score);
-}
-
-void Pacman::printInitialPacman(Window& win)
-{
-    wattron(win.getWindow(), COLOR_PAIR(Color::yellow_black));
-    mvwprintw(win.getWindow(), m_pacVec.y, m_pacVec.x, "<");
-    wattroff(win.getWindow(), COLOR_PAIR(Color::yellow_black));
-    wattron(win.getWindow(), COLOR_PAIR(Color::default_color));
-
-    wrefresh(win.getWindow());
 }
 
 void Pacman::printScore(Window& win, int score)

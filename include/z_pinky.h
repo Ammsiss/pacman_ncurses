@@ -29,12 +29,16 @@ public:
     bool timeToMove(Window& win, Pacman& pacman, Inky& inky, Blinky& blinky, Ghost& clyde);
     Vec getPinkyVec();
     Color::ColorPair getPinkyColor();
+    void printGhost(Window& win);
+
+    void setSpeed();
+    void setGhostVec();
 
 private:
     //private variables
 
     //ghost attributes
-    Vec m_pinkyVec{15, 12};
+    Vec m_pinkyVec{15, 15};
     Color::ColorPair m_pinkyColor{Color::pink_black};
     //portal coorinates
     int m_rightPortalX{26};

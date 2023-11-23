@@ -31,7 +31,7 @@ void VectorSpace::assignPelletNotEaten(Window& win)
     }
 }
 
-void VectorSpace::printAndRefreshPellet(Window& win)
+void VectorSpace::printPellet(Window& win)
 {
     for(std::size_t y{0}; y < win.getWindowArea().size(); ++y)
     {
@@ -54,8 +54,6 @@ void VectorSpace::printAndRefreshPellet(Window& win)
             }
         }
     }
-
-    wrefresh(win.getWindow());
 }
 
 /********************************************************************** PRIVATE MEMBERS **********************************************************************/
@@ -76,4 +74,7 @@ void VectorSpace::init2DVectorSpace(Window& win, std::vector<Obstacle>& obstacle
             win.getWindowArea()[obstacleList[listIterator].getObsVec()[obstacleIterator].y][obstacleList[listIterator].getObsVec()[obstacleIterator].x] = CellName::obstacleValue;
         }
     }
+
+    win.getWindowArea()[14][1] = CellName::portalLeft;
+    win.getWindowArea()[14][26] = CellName::portalRight;
 }

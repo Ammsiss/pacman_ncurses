@@ -24,7 +24,7 @@ using namespace std::chrono_literals;
 // constructor
 Ghost::Ghost()
     : m_direction {Direction::right}
-    , m_ghostVec {15, 12} // randomInput{},
+    , m_ghostVec {15, 13} // randomInput{},
     , m_interval{150ms}
     , m_lastTime{std::chrono::high_resolution_clock::now()}
     , m_rightPortalX{ 26 }, m_leftPortalX{ 1 }
@@ -54,9 +54,21 @@ bool Ghost::timeToMove(Window& win, Pinky& pinky, Inky& inky, Blinky& blinky, Pa
     return true;
 }
 
+void Ghost::printGhost(Window& win)
+{
+    wattron(win.getWindow(), COLOR_PAIR(Color::orange_black));
+    mvwprintw(win.getWindow(), 15, 13, "ᗣ");
+    wattroff(win.getWindow(), COLOR_PAIR(Color::orange_black));
+    wattron(win.getWindow(), COLOR_PAIR(Color::default_color));
+}
+
 // getters
 Color::ColorPair Ghost::getGhostColor() { return m_ghostColor; }
 Vec Ghost::getGhostVec() { return m_ghostVec; }
+
+void Ghost::setSpeed() { m_interval -= 5ms; }
+
+void Ghost::setGhostVec() { m_ghostVec = Vec{15, 13}; }
 
 
 /********************************************************************** PRIVATE MEMBERS **********************************************************************/

@@ -29,6 +29,10 @@ public:
     bool timeToMove(Window& win, Pacman& pacman, Pinky& pinky, Blinky& blinky, Ghost& clyde);
     Vec getInkyVec();
     Color::ColorPair getInkyColor();
+    void printGhost(Window& win);
+    
+    void setSpeed();
+    void setGhostVec();
 
 private:
     //private variables

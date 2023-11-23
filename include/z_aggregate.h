@@ -52,6 +52,8 @@ namespace CellName
         obstacleValue,
         notEaten,
         ghostBox,
+        portalLeft,
+        portalRight,
     };
 }
 

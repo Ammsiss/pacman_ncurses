@@ -17,6 +17,8 @@
 #include <queue>
 #include <algorithm>
 
+using namespace std::chrono_literals;
+
 // public method
 
 bool Pinky::timeToMove(Window& win, Pacman& pacman, Inky& inky, Blinky& blinky, Ghost& clyde)
@@ -40,9 +42,21 @@ bool Pinky::timeToMove(Window& win, Pacman& pacman, Inky& inky, Blinky& blinky, 
     return true;
 }
 
+void Pinky::printGhost(Window& win)
+{
+    wattron(win.getWindow(), COLOR_PAIR(Color::pink_black));
+    mvwprintw(win.getWindow(), 15, 15, "ᗣ");
+    wattron(win.getWindow(), COLOR_PAIR(Color::pink_black));
+    wattron(win.getWindow(), COLOR_PAIR(Color::default_color));
+}
+
 Vec Pinky::getPinkyVec() { return m_pinkyVec; }
 
 Color::ColorPair Pinky::getPinkyColor() { return m_pinkyColor; }
+
+void Pinky::setSpeed() { m_pinkyInterval -= 5ms; }
+
+void Pinky::setGhostVec() { m_pinkyVec = Vec{15, 15}; }
 
 /********************************************************************** PRIVATE MEMBERS **********************************************************************/
 

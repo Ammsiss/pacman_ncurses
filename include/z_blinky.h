@@ -22,19 +22,22 @@ class Pacman;
 class Inky;
 class Ghost;
 class Pinky;
-
 class Blinky
 {
 public:
     bool timeToMove(Window& win, Pacman& pacman, Pinky& pinky, Inky& inky, Ghost& clyde);
     Vec getBlinkyVec();
     Color::ColorPair getBlinkyColor();
+    void printGhost(Window& win);
+
+    void setSpeed();
+    void setGhostVec();
 
 private:
     //private variables
 
     //ghost attributes
-    Vec m_blinkyVec{15, 12};
+    Vec m_blinkyVec{15, 14};
     Color::ColorPair m_blinkyColor{Color::red_black};
     //portal coorinates
     int m_rightPortalX{26};

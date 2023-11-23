@@ -27,8 +27,11 @@ public:
     // public method
     LevelState timeToMove(Window& win, Ghost& clyde, Inky& inky, Blinky& blinky, Pinky& pinky, int& score);
     void printDeathAnimation(Window& win);
+    void printInitialPacman(Window& win);
+
     // getter
     Vec getPacVec();
+    void setPacVec();
 
 private:
     // private variables
@@ -52,7 +55,6 @@ private:
     void updateEatenPelletsAndPrintScore(Window& win, int& score);
     void printPacmanBasedOnDirection(Window& win);
     void printScore(Window& win, int score);
-    void printInitialPacman(Window& win);
 
     // setting direction
     void setDirection();

@@ -16,7 +16,7 @@ public:
 
     // public methods
     void assignPelletNotEaten(Window& win);
-    void printAndRefreshPellet(Window& win);
+    void printPellet(Window& win);
 
 private:
     // private methods
