@@ -34,7 +34,7 @@ Pacman::Pacman(Window& win)
     }
 
 // public methods
-LevelState Pacman::timeToMove(Window& win, Ghost& clyde, Inky& inky, Blinky& blinky, Pinky& pinky, int& score, bool powerPelletActive)
+LevelState Pacman::timeToMove(Window& win, Ghost& clyde, Inky& inky, Blinky& blinky, Pinky& pinky, int& score, bool powerPelletActive, std::chrono::time_point<std::chrono::high_resolution_clock>& lastTime)
 {
     // define chrono duration and 2 system time instances to create pacman's timed movement
     auto currentTime{std::chrono::high_resolution_clock::now()};
@@ -67,6 +67,7 @@ LevelState Pacman::timeToMove(Window& win, Ghost& clyde, Inky& inky, Blinky& bli
             score += 200;
             printScore(win, score);
             wrefresh(win.getWindow());
+            lastTime += 1100ms;
             std::this_thread::sleep_for(1s);
             m_lastTime = currentTime;
 
@@ -91,6 +92,7 @@ LevelState Pacman::timeToMove(Window& win, Ghost& clyde, Inky& inky, Blinky& bli
         {
             printPacmanBasedOnDirection(win);
             wrefresh(win.getWindow());
+            m_lastTime = currentTime;
             return LevelState::powerUp;
         }
 

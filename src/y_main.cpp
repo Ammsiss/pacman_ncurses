@@ -295,7 +295,7 @@ void gameLoop(Window& gameW)
         {
             LevelState ateWhichGhost{LevelState::normalMovement};
             
-            switch(pacman.timeToMove(gameW, clyde, inky, blinky, pinky, score, powerPelletActive))
+            switch(pacman.timeToMove(gameW, clyde, inky, blinky, pinky, score, powerPelletActive, lastTime))
             {
                 case LevelState::pacmanDead:
                     leaveLoop = true;
@@ -347,19 +347,19 @@ void gameLoop(Window& gameW)
                 break;
             }
         
-            if(!inky.timeToMove(gameW, pacman, pinky, blinky, clyde))
+            if(!inky.timeToMove(gameW, pacman, pinky, blinky, clyde, powerPelletTimer(lastTime, powerPelletActive), ateWhichGhost, score, lastTime))
             {
                 pacman.printDeathAnimation(gameW);
                 break;
             }
             
-            if(!blinky.timeToMove(gameW, pacman, pinky, inky, clyde, powerPelletTimer(lastTime, powerPelletActive), ateWhichGhost, score))
+            if(!blinky.timeToMove(gameW, pacman, pinky, inky, clyde, powerPelletTimer(lastTime, powerPelletActive), ateWhichGhost, score, lastTime))
             {
                 pacman.printDeathAnimation(gameW);
                 break;
             }
             
-            if(!pinky.timeToMove(gameW, pacman, inky, blinky, clyde, powerPelletTimer(lastTime, powerPelletActive), ateWhichGhost, score))
+            if(!pinky.timeToMove(gameW, pacman, inky, blinky, clyde, powerPelletTimer(lastTime, powerPelletActive), ateWhichGhost, score, lastTime))
             {
                 pacman.printDeathAnimation(gameW);
                 break;

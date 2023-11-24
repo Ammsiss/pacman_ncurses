@@ -10,6 +10,7 @@
 #include "z_pacman.h"
 #include "z_pinky.h"
 #include "z_inky.h"
+#include "z_ghost.h"
 
 //std
 #include <vector>
@@ -22,7 +23,7 @@ using namespace std::chrono_literals;
 
 // public method
 
-bool Pinky::timeToMove(Window& win, Pacman& pacman, Inky& inky, Blinky& blinky, Ghost& clyde, bool powerPelletTimer, LevelState ateWhichGhost, int& score)
+bool Pinky::timeToMove(Window& win, Pacman& pacman, Inky& inky, Blinky& blinky, Ghost& clyde, bool powerPelletTimer, LevelState ateWhichGhost, int& score, std::chrono::time_point<std::chrono::high_resolution_clock>& lastTime)
 {
     // define chrono duration and 2 system time instances to create pacman's timed movement
     auto currentTime{std::chrono::high_resolution_clock::now()};
@@ -68,6 +69,7 @@ bool Pinky::timeToMove(Window& win, Pacman& pacman, Inky& inky, Blinky& blinky, 
                 wattroff(win.getWindow(), COLOR_PAIR(Color::yellow_black));
                 wattron(win.getWindow(), COLOR_PAIR(Color::default_color));
                 wrefresh(win.getWindow());
+                lastTime += 1100ms;
                 std::this_thread::sleep_for(1s);
 
                 score += 200;
@@ -119,6 +121,12 @@ bool Pinky::setDirection(Window& win, Pacman& pacman, Blinky& blinky, bool power
         if(m_pinkyVec.y != blinky.getBlinkyVec().y || m_pinkyVec.x != blinky.getBlinkyVec().x)
         {
             ghostPath = createGhostPath(Vec{m_pinkyVec.y, m_pinkyVec.x}, win, Vec{blinky.getBlinkyVec().y, blinky.getBlinkyVec().x});
+            m_pinkyVec.y = ghostPath[1].y;
+            m_pinkyVec.x = ghostPath[1].x;
+        }
+        else
+        {
+            ghostPath = createGhostPath(Vec{m_pinkyVec.y, m_pinkyVec.x}, win, Vec{1, 1});
             m_pinkyVec.y = ghostPath[1].y;
             m_pinkyVec.x = ghostPath[1].x;
         }

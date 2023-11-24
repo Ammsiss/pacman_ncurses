@@ -25,7 +25,7 @@ public:
     // constructor
     Pacman(Window& win);
     // public method
-    LevelState timeToMove(Window& win, Ghost& clyde, Inky& inky, Blinky& blinky, Pinky& pinky, int& score, bool powerPelletActive);
+    LevelState timeToMove(Window& win, Ghost& clyde, Inky& inky, Blinky& blinky, Pinky& pinky, int& score, bool powerPelletActive, std::chrono::time_point<std::chrono::high_resolution_clock>& lastTime);
     void printDeathAnimation(Window& win);
     void printInitialPacman(Window& win);
 

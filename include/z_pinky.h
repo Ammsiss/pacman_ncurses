@@ -8,9 +8,9 @@
 #include "z_window.h"
 #include "z_obstacle.h"
 #include "z_pacman.h"
-#include "z_pinky.h"
 #include "z_inky.h"
 #include "z_ghost.h"
+#include "z_blinky.h"
 
 //std
 #include <vector>
@@ -25,7 +25,7 @@ class Blinky;
 class Pinky
 {
 public:
-    bool timeToMove(Window& win, Pacman& pacman, Inky& inky, Blinky& blinky, Ghost& clyde, bool powerPelletTimer, LevelState ateWhichGhost, int& score);
+    bool timeToMove(Window& win, Pacman& pacman, Inky& inky, Blinky& blinky, Ghost& clyde, bool powerPelletTimer, LevelState ateWhichGhost, int& score, std::chrono::time_point<std::chrono::high_resolution_clock>& lastTime);
     Vec getPinkyVec();
     Color::ColorPair getPinkyColor();
     void printGhost(Window& win);
