@@ -45,7 +45,17 @@ LevelState Pacman::timeToMove(Window& win, Ghost& clyde, Inky& inky, Blinky& bli
         erase(win);
         updateEatenPelletsAndPrintScore(win, score);
 
-        if(score % 298 == 0)
+        int count{0};
+        for(std::size_t y{0}; y < win.getWindowArea().size(); ++y)
+        {
+            for(std::size_t x{0}; x < win.getWindowArea()[y].size(); ++x)
+            {
+                if(win.getWindowArea()[y][x] == CellName::pelletEaten || win.getWindowArea()[y][x] == CellName::powerPelletEaten)
+                    ++count;
+            }
+        }
+
+        if(count == 298)
             return LevelState::levelClear;
 
         GhostCollision collision{ movePacmanBasedOnDirection(win, clyde, inky, blinky, pinky, powerPelletActive) };
@@ -53,8 +63,12 @@ LevelState Pacman::timeToMove(Window& win, Ghost& clyde, Inky& inky, Blinky& bli
         // if pacman moved into ghost with power pellet
         if((collision == GhostCollision::blinky || collision == GhostCollision::clyde || collision == GhostCollision::inky || collision == GhostCollision::pinky) && powerPelletActive)
         {
-            printPacmanBasedOnDirection(win);
+            printPlusEatGhost(win);
+            score += 200;
+            printScore(win, score);
             wrefresh(win.getWindow());
+            std::this_thread::sleep_for(1s);
+            m_lastTime = currentTime;
 
             if(collision == GhostCollision::blinky)         
                 return LevelState::ateBlinky;
@@ -65,7 +79,7 @@ LevelState Pacman::timeToMove(Window& win, Ghost& clyde, Inky& inky, Blinky& bli
             else if(collision == GhostCollision::pinky)
                 return LevelState::atePinky;
         }
-        else if((collision == GhostCollision::blinky || collision == GhostCollision::clyde || collision == GhostCollision::inky || collision == GhostCollision::pinky))
+        else if((collision != GhostCollision::null))
         {
             printPacmanBasedOnDirection(win);
             wrefresh(win.getWindow());
@@ -302,6 +316,14 @@ void Pacman::erase(Window& win)
     mvwprintw(win.getWindow(), m_pacVec.y, m_pacVec.x, " ");
 }
 
+void Pacman::printPlusEatGhost(Window& win)
+{
+    wattron(win.getWindow(), COLOR_PAIR(Color::yellow_black));
+    mvwprintw(win.getWindow(), m_pacVec.y, m_pacVec.x, "+");
+    wattroff(win.getWindow(), COLOR_PAIR(Color::yellow_black));
+    wattron(win.getWindow(), COLOR_PAIR(Color::default_color));
+}
+
 void Pacman::printPacmanBasedOnDirection(Window& win)
 {
     std::string setString{};
@@ -332,7 +354,7 @@ void Pacman::printPacmanBasedOnDirection(Window& win)
 
 void Pacman::updateEatenPelletsAndPrintScore(Window& win, int& score)
 {
-    if(win.getWindowArea()[m_pacVec.y][m_pacVec.x] != CellName::pelletEaten)
+    if(win.getWindowArea()[m_pacVec.y][m_pacVec.x] != CellName::pelletEaten && win.getWindowArea()[m_pacVec.y][m_pacVec.x] != CellName::powerPelletEaten)
     {
         ++score;
         win.getWindowArea()[m_pacVec.y][m_pacVec.x] = CellName::pelletEaten;

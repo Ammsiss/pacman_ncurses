@@ -33,7 +33,7 @@ bool Blinky::timeToMove(Window& win, Pacman& pacman, Pinky& pinky, Inky& inky, G
         if (currentTime - m_lastTime >= m_blinkyInterval)
         {
             eraseLastPosition(win);
-            checkForAndPrintOverLaps(win, pinky, inky, clyde);
+            checkForAndPrintOverLaps(win, pinky, inky, clyde, powerPelletTimer);
 
             if(!setDirection(win, pacman, false))
                 return false;
@@ -48,15 +48,28 @@ bool Blinky::timeToMove(Window& win, Pacman& pacman, Pinky& pinky, Inky& inky, G
     else // if power pellet is active
     {
         m_blinkyIntervalStorage = m_blinkyInterval;
-        m_blinkyInterval = 300ms;
+        m_blinkyInterval = 350ms;
+
+        if(ateWhichGhost == LevelState::ateBlinky)
+        {
+            m_blinkyVec.y = 15;
+            m_blinkyVec.x = 14;
+        }
 
         if(currentTime - m_lastTime >= m_blinkyInterval)
         {
             eraseLastPosition(win);
-            checkForAndPrintOverLaps(win, pinky, inky, clyde);
+            checkForAndPrintOverLaps(win, pinky, inky, clyde, powerPelletTimer);
             
-            if(!setDirection(win, pacman, true) || ateWhichGhost == LevelState::ateBlinky)
+           if(!setDirection(win, pacman, true))
             {
+                wattron(win.getWindow(), COLOR_PAIR(Color::yellow_black));
+                mvwprintw(win.getWindow(), m_blinkyVec.y, m_blinkyVec.x, "+");
+                wattroff(win.getWindow(), COLOR_PAIR(Color::yellow_black));
+                wattron(win.getWindow(), COLOR_PAIR(Color::default_color));
+                wrefresh(win.getWindow());
+                std::this_thread::sleep_for(1s);
+
                 score += 200;
                 m_blinkyVec.y = 15;
                 m_blinkyVec.x = 14;
@@ -190,10 +203,10 @@ void Blinky::eraseLastPosition(Window& win)
 }
 
 // deals with overlaps (pellets && ghost)
-void Blinky::checkForAndPrintOverLaps(Window& win, Pinky& pinky, Inky& inky, Ghost& clyde)
+void Blinky::checkForAndPrintOverLaps(Window& win, Pinky& pinky, Inky& inky, Ghost& clyde, bool powerPelletActive)
 {
     printPelletBackIfNotEaten(win);
-    printOverLap(win, checkGhostOverLap(pinky, inky, clyde));
+    printOverLap(win, checkGhostOverLap(pinky, inky, clyde), powerPelletActive);
 }
 
 void Blinky::printPelletBackIfNotEaten(Window& win)
@@ -234,10 +247,17 @@ Color::ColorPair Blinky::checkGhostOverLap(Pinky& pinky, Inky& inky, Ghost& clyd
     return Color::null;
 }
 
-void Blinky::printOverLap(Window& win, Color::ColorPair overLapColor)
+void Blinky::printOverLap(Window& win, Color::ColorPair overLapColor, bool powerPelletActive)
 {
     // prints ghost back if overlapped
-    if(overLapColor != Color::null)
+    if(powerPelletActive && overLapColor != Color::null)
+    {
+        wattron(win.getWindow(), COLOR_PAIR(Color::blue_black));
+        mvwprintw(win.getWindow(), m_blinkyVec.y, m_blinkyVec.x, "ᗣ");
+        wattroff(win.getWindow(), COLOR_PAIR(Color::blue_black));
+        wattron(win.getWindow(), COLOR_PAIR(Color::default_color)); 
+    }
+    else if(overLapColor != Color::null)
     {
         wattron(win.getWindow(), COLOR_PAIR(overLapColor));
         mvwprintw(win.getWindow(), m_blinkyVec.y, m_blinkyVec.x, "ᗣ");

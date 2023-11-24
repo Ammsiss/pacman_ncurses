@@ -56,9 +56,9 @@ private:
 
     // printing
     void eraseLastPosition(Window& win);
-    void checkForAndPrintOverLaps(Window& win, Pinky& pinky, Inky& inky, Ghost& clyde);
+    void checkForAndPrintOverLaps(Window& win, Pinky& pinky, Inky& inky, Ghost& clyde, bool powerPelletActive);
     void printPelletBackIfNotEaten(Window& win);
     Color::ColorPair checkGhostOverLap(Pinky& pinky, Inky& inky, Ghost& clyde);
-    void printOverLap(Window& win, Color::ColorPair overLapColor);
+    void printOverLap(Window& win, Color::ColorPair overLapColor, bool powerPelletActie);
     void printAndRefreshGhost(Window& win, bool powerPelletActive);
 };

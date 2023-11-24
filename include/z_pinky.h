@@ -45,7 +45,7 @@ private:
     int m_leftPortalX{1};
     int m_portalY{14};
     //timer variables
-    std::chrono::milliseconds m_pinkyInterval{3000ms};
+    std::chrono::milliseconds m_pinkyInterval{300ms};
     std::chrono::time_point<std::chrono::high_resolution_clock> m_lastTime;
 
     //private methods

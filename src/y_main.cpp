@@ -404,9 +404,9 @@ int main()
     return 0;
 }
 
-// BUGS PACMAN SPED UP MOVEMENT
+// ghost overlap color should print blue
 
-// PACMAN MOVING INTO GHOST DOESNT KILL GHOST
+// You got this!
 
 // *************************EASY********************************
 

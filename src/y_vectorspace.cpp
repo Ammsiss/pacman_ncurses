@@ -29,6 +29,12 @@ void VectorSpace::assignPelletNotEaten(Window& win)
                 win.getWindowArea()[y][x] = CellName::notEaten;
         }
     }
+
+    // re assigns power pellets to not eaten
+    win.getWindowArea()[23][1] = CellName::powerPellet;
+    win.getWindowArea()[23][26] = CellName::powerPellet;
+    win.getWindowArea()[3][1] = CellName::powerPellet;
+    win.getWindowArea()[3][26] = CellName::powerPellet;
 }
 
 void VectorSpace::printPellet(Window& win)
@@ -45,7 +51,7 @@ void VectorSpace::printPellet(Window& win)
 
             // reprints pellets based on what has been eaten by pacman
             if(win.getWindowArea()[y][x] != CellName::ghostBox && win.getWindowArea()[y][x] != CellName::perimeterValue 
-                && win.getWindowArea()[y][x] != CellName::obstacleValue && win.getWindowArea()[y][x] != CellName::pelletEaten)
+                && win.getWindowArea()[y][x] != CellName::obstacleValue && win.getWindowArea()[y][x] != CellName::pelletEaten && win.getWindowArea()[y][x] != CellName::powerPelletEaten)
             {
                 wattron(win.getWindow(), COLOR_PAIR(Color::white_black));
                 mvwprintw(win.getWindow(), y, x, "•");

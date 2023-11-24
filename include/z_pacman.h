@@ -55,6 +55,7 @@ private:
     void updateEatenPelletsAndPrintScore(Window& win, int& score);
     void printPacmanBasedOnDirection(Window& win);
     void printScore(Window& win, int score);
+    void printPlusEatGhost(Window& win);
 
     // setting direction
     void setDirection();
