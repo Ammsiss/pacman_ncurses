@@ -359,7 +359,7 @@ void gameLoop(Window& gameW)
                 break;
             }
             
-            if(!pinky.timeToMove(gameW, pacman, inky, blinky, clyde))
+            if(!pinky.timeToMove(gameW, pacman, inky, blinky, clyde, powerPelletTimer(lastTime, powerPelletActive), ateWhichGhost, score))
             {
                 pacman.printDeathAnimation(gameW);
                 break;
