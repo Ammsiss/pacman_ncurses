@@ -1,5 +1,5 @@
 # pacman_ncurses
-Pacman game!
+**Pacman game!**
 
 - Used breadth first search for the pathfinding.
 - The map is stored in a 2d vector.
