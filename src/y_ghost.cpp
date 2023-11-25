@@ -16,6 +16,8 @@
 #include <chrono>
 #include <thread>
 #include <vector>
+#include <algorithm>
+#include <queue>
 
 using namespace std::chrono_literals;
 
@@ -33,25 +35,69 @@ Ghost::Ghost()
     }
 
 // public methods
-bool Ghost::timeToMove(Window& win, Pinky& pinky, Inky& inky, Blinky& blinky, Pacman& pacman)
+bool Ghost::timeToMove(Window& win, Pinky& pinky, Inky& inky, Blinky& blinky, Pacman& pacman, bool powerPelletTimer, LevelState ateWhichGhost, int& score, std::chrono::time_point<std::chrono::high_resolution_clock>& lastTime)
 {
     // define chrono duration and 2 system time instances to create pacman's timed movement
     auto currentTime{std::chrono::high_resolution_clock::now()};
 
-    if (currentTime - m_lastTime >= m_interval)
+    // if power pellet not active
+    if(!powerPelletTimer)
     {
-        eraseLastPosition(win);
-        CheckForAndPrintOverLaps(win, pinky, inky, blinky);
+        if (currentTime - m_lastTime >= m_interval)
+        {
+            eraseLastPosition(win);
+            checkForAndPrintOverLaps(win, pinky, inky, blinky, false);
 
-        if(!setValidDirection(win, pacman))
-            return false;
+            if(!setValidDirection(win, pacman, false))
+                return false;
 
-        printAndRefreshGhost(win);
+            printAndRefreshGhost(win, false);
 
-        m_lastTime = currentTime;
+            m_lastTime = currentTime;
+        }
+
+        return true;
     }
+    else // if power pellet is active
+    {
+        m_ghostIntervalStorage = m_interval;
+        m_interval = 350ms;
 
-    return true;
+        if(ateWhichGhost == LevelState::ateClyde)
+        {
+            m_ghostVec.y = 15;
+            m_ghostVec.x = 13;
+        }
+
+        if(currentTime - m_lastTime >= m_interval)
+        {
+            eraseLastPosition(win);
+            checkForAndPrintOverLaps(win, pinky, inky, blinky, true);
+            
+           if(!setValidDirection(win, pacman, true))
+            {
+                wattron(win.getWindow(), COLOR_PAIR(Color::yellow_black));
+                mvwprintw(win.getWindow(), m_ghostVec.y, m_ghostVec.x, "+");
+                wattroff(win.getWindow(), COLOR_PAIR(Color::yellow_black));
+                wattron(win.getWindow(), COLOR_PAIR(Color::default_color));
+                wrefresh(win.getWindow());
+                lastTime += 1100ms;
+                std::this_thread::sleep_for(1s);
+
+                score += 200;
+                m_ghostVec.y = 15;
+                m_ghostVec.x = 13;
+            }
+
+            printAndRefreshGhost(win, true);
+
+            m_lastTime = currentTime;
+        }
+
+        m_interval = m_ghostIntervalStorage;
+
+        return true;
+    }
 }
 
 void Ghost::printGhost(Window& win)
@@ -79,26 +125,99 @@ void Ghost::setGhostVec() { m_ghostVec = Vec{15, 13}; }
   \_/ \_/ \_/ \_/ \_/ \_/ \_/   \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/   
 */
 
-bool Ghost::setValidDirection(Window& win, Pacman& pacman)  
+bool Ghost::setValidDirection(Window& win, Pacman& pacman, bool powerPelletTimer)  
 {
-    // sets value to current direction to check if new random value is the direction ghost came from
-    Direction directionCheck{ m_direction };
-
-    while(true)
+    if(!powerPelletTimer)
     {
-        // Ghost cant move in direction he came
-        if(oppositeDirectionCheck(directionCheck))
-            continue;
+        // sets value to current direction to check if new random value is the direction ghost came from
+        Direction directionCheck{ m_direction };
 
-        // continues loop if invalid direction
-        switch(moveGhostInValidDirection(win, pacman))
+        while(true)
         {
-            case GhostState::validDirection:
-                return true;
-            case GhostState::insidePacman:
-                return false;
+            // Ghost cant move in direction he came
+            if(oppositeDirectionCheck(directionCheck))
+                continue;
+
+            // continues loop if invalid direction
+            switch(moveGhostInValidDirection(win, pacman))
+            {
+                case GhostState::validDirection:
+                    return true;
+                case GhostState::insidePacman:
+                    return false;
+            }
         }
     }
+    else
+    {
+        std::vector<Vec> ghostPath{};
+
+        if(m_ghostVec.y != 3 || m_ghostVec.x != 26)
+        {
+            ghostPath = createGhostPath(Vec{m_ghostVec.y, m_ghostVec.x}, win, Vec{3, 26});
+            m_ghostVec.y = ghostPath[1].y;
+            m_ghostVec.x = ghostPath[1].x;
+        }
+        else
+        {
+            ghostPath = createGhostPath(Vec{m_ghostVec.y, m_ghostVec.x}, win, Vec{5, 26});
+            m_ghostVec.y = ghostPath[1].y;
+            m_ghostVec.x = ghostPath[1].x;
+        }
+
+        if(m_ghostVec.y == pacman.getPacVec().y && m_ghostVec.x == pacman.getPacVec().x)
+            return false;
+        else
+            return true;
+    }
+}
+
+std::vector<Vec> Ghost::createGhostPath(Vec start, Window& win, Vec target)
+{
+    auto rows{win.getWindowArea().size()};
+    auto cols{win.getWindowArea()[0].size()};
+
+    std::vector<std::vector<int>> visited(rows, std::vector<int>(cols, 0));
+    std::vector<std::vector<Vec>> parentCell(rows, std::vector<Vec>(cols));
+
+    std::queue<Vec> q{};
+    q.push(start);                  // push in start point to q
+    visited[start.y][start.x] = 1;  // assign start point visited
+
+    while(!q.empty())
+    {
+        Vec current{ q.front() };  // assigns new variable "current" to element first out.
+        q.pop();                          // removes element at front of q
+
+        // Directions: up, down, left, right
+        std::vector<Vec> directions = {{0, 1}, {0, -1}, {-1, 0}, {1, 0}};
+
+        for(const auto& dir : directions)
+        {
+            Vec next{current.y + dir.y, current.x + dir.x};
+
+            //if(next.y >= 0 && next.y < rows && next.x >= 0 && next.x < cols && !visited[next.y][next.x]) 
+            if(next.y > 0 && next.y < (rows - 1) && next.x > 0 && next.x < (cols - 1) && win.getWindowArea()[next.y][next.x] != CellName::obstacleValue && 
+                win.getWindowArea()[next.y][next.x] != CellName::perimeterValue && !visited[next.y][next.x])
+            {
+                q.push(next);
+                visited[next.y][next.x] = 1;
+                parentCell[next.y][next.x] = current;
+            }
+        }
+    }
+
+    std::vector<Vec> path{};
+    Vec current{target};
+    while(current.y != start.y || current.x != start.x)
+    {
+        path.push_back(current);
+        current = parentCell[current.y][current.x];
+    }
+    path.push_back(start);
+    std::reverse(path.begin(), path.end());
+    
+    return path;
 }
 
 bool Ghost::oppositeDirectionCheck(Direction directionCheck)
@@ -256,21 +375,33 @@ void Ghost::eraseLastPosition(Window& win)
 }
 
 // deals with overlaps (pellets && ghost)
-void Ghost::CheckForAndPrintOverLaps(Window& win, Pinky& pinky, Inky& inky, Blinky& blinky)
+void Ghost::checkForAndPrintOverLaps(Window& win, Pinky& pinky, Inky& inky, Blinky& blinky, bool powerPelletTimer)
 {
     printPelletBackIfNotEaten(win);
-    printOverLap(win, checkGhostOverLap(pinky, inky, blinky));
+    printOverLap(win, checkGhostOverLap(pinky, inky, blinky), powerPelletTimer);
 }
 
 void Ghost::printPelletBackIfNotEaten(Window& win)
 {
     if(win.getWindowArea()[m_ghostVec.y][m_ghostVec.x] != CellName::pelletEaten && win.getWindowArea()[m_ghostVec.y][m_ghostVec.x] != CellName::ghostBox &&
-        win.getWindowArea()[m_ghostVec.y][m_ghostVec.x] != CellName::perimeterValue)
+        win.getWindowArea()[m_ghostVec.y][m_ghostVec.x] != CellName::perimeterValue && win.getWindowArea()[m_ghostVec.y][m_ghostVec.x] != CellName::powerPelletEaten)
     {
+        if(win.getWindowArea()[m_ghostVec.y][m_ghostVec.x] == CellName::powerPellet)
+        {
+            wattron(win.getWindow(), COLOR_PAIR(Color::yellow_black));
+            wattron(win.getWindow(), A_BLINK);
+            mvwprintw(win.getWindow(), m_ghostVec.y, m_ghostVec.x, "⬤");
+            wattroff(win.getWindow(), COLOR_PAIR(Color::yellow_black));
+            wattroff(win.getWindow(), A_BLINK);
+            wattron(win.getWindow(), COLOR_PAIR(Color::default_color));  
+        }
+        else
+        {
         wattron(win.getWindow(), COLOR_PAIR(Color::white_black));
         mvwprintw(win.getWindow(), m_ghostVec.y, m_ghostVec.x, "•");
         wattroff(win.getWindow(), COLOR_PAIR(Color::white_black));
         wattron(win.getWindow(), COLOR_PAIR(Color::default_color));    
+        }
     }
 }
 
@@ -288,7 +419,7 @@ Color::ColorPair Ghost::checkGhostOverLap(Pinky& pinky, Inky& inky, Blinky& blin
     return Color::null;
 }
 
-void Ghost::printOverLap(Window& win, Color::ColorPair overLapColor)
+void Ghost::printOverLap(Window& win, Color::ColorPair overLapColor, bool powerPelletTimer)
 {
     // prints ghost back if overlapped
     if(overLapColor != Color::null)
@@ -298,14 +429,40 @@ void Ghost::printOverLap(Window& win, Color::ColorPair overLapColor)
         wattroff(win.getWindow(), COLOR_PAIR(overLapColor));
         wattron(win.getWindow(), COLOR_PAIR(Color::default_color));
     }
+
+    // prints ghost back if overlapped
+    if(powerPelletTimer && overLapColor != Color::null)
+    {
+        wattron(win.getWindow(), COLOR_PAIR(Color::blue_black));
+        mvwprintw(win.getWindow(), m_ghostVec.y, m_ghostVec.x, "ᗣ");
+        wattroff(win.getWindow(), COLOR_PAIR(Color::blue_black));
+        wattron(win.getWindow(), COLOR_PAIR(Color::default_color)); 
+    }
+    else if(overLapColor != Color::null)
+    {
+        wattron(win.getWindow(), COLOR_PAIR(overLapColor));
+        mvwprintw(win.getWindow(), m_ghostVec.y, m_ghostVec.x, "ᗣ");
+        wattroff(win.getWindow(), COLOR_PAIR(overLapColor));
+        wattron(win.getWindow(), COLOR_PAIR(Color::default_color));
+    }
 }
 
-void Ghost::printAndRefreshGhost(Window& win)
+void Ghost::printAndRefreshGhost(Window& win, bool powerPelletActive)
 {
-    wattron(win.getWindow(), COLOR_PAIR(m_ghostColor));
-    mvwprintw(win.getWindow(), m_ghostVec.y, m_ghostVec.x, "ᗣ");
-    wattroff(win.getWindow(), COLOR_PAIR(m_ghostColor));
-    wattroff(win.getWindow(), COLOR_PAIR(Color::default_color));
+    if(!powerPelletActive)
+    {
+        wattron(win.getWindow(), COLOR_PAIR(m_ghostColor));
+        mvwprintw(win.getWindow(), m_ghostVec.y, m_ghostVec.x, "ᗣ");
+        wattroff(win.getWindow(), COLOR_PAIR(m_ghostColor));
+        wattroff(win.getWindow(), COLOR_PAIR(Color::default_color));
+    }
+    else
+    {
+        wattron(win.getWindow(), COLOR_PAIR(Color::blue_black));
+        mvwprintw(win.getWindow(), m_ghostVec.y, m_ghostVec.x, "ᗣ");
+        wattroff(win.getWindow(), COLOR_PAIR(Color::blue_black));
+        wattroff(win.getWindow(), COLOR_PAIR(Color::default_color));
+    }
 
     wrefresh(win.getWindow());
 }

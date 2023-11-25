@@ -255,8 +255,12 @@ void gameLoop(Window& gameW)
     // restart vector space | new round
     vectorSpace.assignPelletNotEaten(gameW);
 
+    // stuff for power pellet timer
     auto lastTime{ std::chrono::high_resolution_clock::now() }; 
     bool powerPelletActive{ false };
+
+    // 1up score stuff
+    int levelUpCount{1};
 
     for(int lives{4}; lives > 0; --lives)
     {
@@ -331,17 +335,22 @@ void gameLoop(Window& gameW)
             }
 
             // If user gets 1000 points + 1 life
-            if((score % 1000 == 0) && lives != 4)
+            if((score >= (1000 * levelUpCount)))
             {
-                ++lives;
-                gameW.printLives(lives);
+                ++levelUpCount;
+
+                if(lives != 4)
+                {
+                    ++lives;
+                    gameW.printLives(lives);
+                }
             }
 
             if(leaveLoop)
                 break;
 
             // if ghosts killed pacman break from loop
-            if(!clyde.timeToMove(gameW, pinky, inky, blinky, pacman))
+            if(!clyde.timeToMove(gameW, pinky, inky, blinky, pacman, powerPelletTimer(lastTime, powerPelletActive), ateWhichGhost, score, lastTime))
             {
                 pacman.printDeathAnimation(gameW);
                 break;
@@ -404,7 +413,7 @@ int main()
     return 0;
 }
 
-// ghost overlap color should print blue
+// LIVES DONT UPDATE UNLESS PERFECT MULTIPLE OF 1000
 
 // You got this!
 

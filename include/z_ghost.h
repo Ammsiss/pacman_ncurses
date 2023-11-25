@@ -27,7 +27,7 @@ public:
     Ghost();
 
     //public methods
-    bool timeToMove(Window& win, Pinky& pinky, Inky& inky, Blinky& blinky, Pacman& pacman); 
+    bool timeToMove(Window& win, Pinky& pinky, Inky& inky, Blinky& blinky, Pacman& pacman, bool powerPelletTimer, LevelState ateWhichGhost, int& score, std::chrono::time_point<std::chrono::high_resolution_clock>& lastTime); 
     void printGhost(Window& win);
 
     // getters
@@ -50,12 +50,14 @@ private:
     int m_portalY;
     //timer variables
     std::chrono::milliseconds m_interval;
+    std::chrono::milliseconds m_ghostIntervalStorage;
     std::chrono::time_point<std::chrono::high_resolution_clock> m_lastTime;
 
     //private methods
 
     //setting valid directionss
-    bool setValidDirection(Window& win, Pacman& pacman);
+    bool setValidDirection(Window& win, Pacman& pacman, bool powerPelletTimer);
+    std::vector<Vec> createGhostPath(Vec start, Window& win, Vec target);
     bool oppositeDirectionCheck(Direction directionCheck);
     GhostState moveGhostInValidDirection(Window& win, Pacman& pacman);
     void setY(PositionChange direction);
@@ -66,9 +68,9 @@ private:
 
     // printing
     void eraseLastPosition(Window& win);
-    void CheckForAndPrintOverLaps(Window& win, Pinky& pinky, Inky& inky, Blinky& blinky);
+    void checkForAndPrintOverLaps(Window& win, Pinky& pinky, Inky& inky, Blinky& blinky, bool powerPelletTimer);
     void printPelletBackIfNotEaten(Window& win);
     Color::ColorPair checkGhostOverLap(Pinky& pinky, Inky& inky, Blinky& blinky);
-    void printOverLap(Window& win, Color::ColorPair overLapColor);
-    void printAndRefreshGhost(Window& win);
+    void printOverLap(Window& win, Color::ColorPair overLapColor, bool powerPelletTimer);
+    void printAndRefreshGhost(Window& win, bool powerPelletActive);
 };
