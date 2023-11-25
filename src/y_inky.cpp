@@ -72,7 +72,7 @@ bool Inky::timeToMove(Window& win, Pacman& pacman, Pinky& pinky, Blinky& blinky,
                 lastTime += 1100ms;
                 std::this_thread::sleep_for(1s);
 
-                score += 200;
+                score += 20;
                 m_inkyVec.y = 15;
                 m_inkyVec.x = 12;
             }
@@ -149,7 +149,7 @@ bool Inky::setDirection(Window& win, Pacman& pacman, bool powerPelletActive)
                     m_inkyVec.x = ghostPath[1].x;
                 }
                 
-                if(currentTime - m_pathLastTime >= 10s)
+                if(currentTime - m_pathLastTime >= 16s)
                     m_pathLastTime = currentTime;
             }
             else

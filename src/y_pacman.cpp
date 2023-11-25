@@ -64,7 +64,7 @@ LevelState Pacman::timeToMove(Window& win, Ghost& clyde, Inky& inky, Blinky& bli
         if((collision == GhostCollision::blinky || collision == GhostCollision::clyde || collision == GhostCollision::inky || collision == GhostCollision::pinky) && powerPelletActive)
         {
             printPlusEatGhost(win);
-            score += 200;
+            score += 20;
             printScore(win, score);
             wrefresh(win.getWindow());
             lastTime += 1100ms;

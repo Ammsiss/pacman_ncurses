@@ -72,7 +72,7 @@ bool Pinky::timeToMove(Window& win, Pacman& pacman, Inky& inky, Blinky& blinky, 
                 lastTime += 1100ms;
                 std::this_thread::sleep_for(1s);
 
-                score += 200;
+                score += 20;
                 m_pinkyVec.y = 15;
                 m_pinkyVec.x = 15;
             }

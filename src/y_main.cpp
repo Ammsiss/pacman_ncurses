@@ -131,8 +131,10 @@ void controls(Window& gameW)
 
     wattron(gameW.getWindow(), COLOR_PAIR(Color::yellow_black));
 
-    mvwprintw(gameW.getWindow(), 10, 5, "W A S D : MOVEMENT");
-    mvwprintw(gameW.getWindow(), 12, 5, "ENTER   : SELECT");
+    mvwprintw(gameW.getWindow(), 6, 5, "W A S D : MOVEMENT");
+    mvwprintw(gameW.getWindow(), 8, 5, "ENTER   : SELECT");
+    mvwprintw(gameW.getWindow(), 12, 5, "1000 POINTS = 1UP");
+    mvwprintw(gameW.getWindow(), 14, 5, "GHOST = 20 POINTS");
 
     wattroff(gameW.getWindow(), COLOR_PAIR(Color::yellow_black));
     wattron(gameW.getWindow(), COLOR_PAIR(Color::default_color));
@@ -211,9 +213,8 @@ MenuSelection menuLoop()
     }
 }
 
-bool powerPelletTimer(std::chrono::time_point<std::chrono::high_resolution_clock> lastTime, bool& powerPelletActive)
+bool powerPelletTimer(std::chrono::time_point<std::chrono::high_resolution_clock> lastTime, bool& powerPelletActive, std::chrono::milliseconds interval)
 {
-    auto interval{ std::chrono::duration(4s) };
     auto currentTime{ std::chrono::high_resolution_clock::now() };
 
     if(currentTime - lastTime <= interval && powerPelletActive)
@@ -261,6 +262,8 @@ void gameLoop(Window& gameW)
 
     // 1up score stuff
     int levelUpCount{1};
+
+    auto interval{ std::chrono::duration(5000ms) };
 
     for(int lives{4}; lives > 0; --lives)
     {
@@ -314,6 +317,8 @@ void gameLoop(Window& gameW)
                     inky.setSpeed();
                     blinky.setSpeed();
                     pinky.setSpeed();
+                    if(interval != 2000ms)
+                        interval -= 500ms;
                     leaveLoop = true;
                     break;
                 case LevelState::powerUp:
@@ -350,25 +355,25 @@ void gameLoop(Window& gameW)
                 break;
 
             // if ghosts killed pacman break from loop
-            if(!clyde.timeToMove(gameW, pinky, inky, blinky, pacman, powerPelletTimer(lastTime, powerPelletActive), ateWhichGhost, score, lastTime))
+            if(!clyde.timeToMove(gameW, pinky, inky, blinky, pacman, powerPelletTimer(lastTime, powerPelletActive, interval), ateWhichGhost, score, lastTime))
             {
                 pacman.printDeathAnimation(gameW);
                 break;
             }
         
-            if(!inky.timeToMove(gameW, pacman, pinky, blinky, clyde, powerPelletTimer(lastTime, powerPelletActive), ateWhichGhost, score, lastTime))
+            if(!inky.timeToMove(gameW, pacman, pinky, blinky, clyde, powerPelletTimer(lastTime, powerPelletActive, interval), ateWhichGhost, score, lastTime))
             {
                 pacman.printDeathAnimation(gameW);
                 break;
             }
             
-            if(!blinky.timeToMove(gameW, pacman, pinky, inky, clyde, powerPelletTimer(lastTime, powerPelletActive), ateWhichGhost, score, lastTime))
+            if(!blinky.timeToMove(gameW, pacman, pinky, inky, clyde, powerPelletTimer(lastTime, powerPelletActive, interval), ateWhichGhost, score, lastTime))
             {
                 pacman.printDeathAnimation(gameW);
                 break;
             }
             
-            if(!pinky.timeToMove(gameW, pacman, inky, blinky, clyde, powerPelletTimer(lastTime, powerPelletActive), ateWhichGhost, score, lastTime))
+            if(!pinky.timeToMove(gameW, pacman, inky, blinky, clyde, powerPelletTimer(lastTime, powerPelletActive, interval), ateWhichGhost, score, lastTime))
             {
                 pacman.printDeathAnimation(gameW);
                 break;

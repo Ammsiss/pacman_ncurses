@@ -84,7 +84,7 @@ bool Ghost::timeToMove(Window& win, Pinky& pinky, Inky& inky, Blinky& blinky, Pa
                 lastTime += 1100ms;
                 std::this_thread::sleep_for(1s);
 
-                score += 200;
+                score += 20;
                 m_ghostVec.y = 15;
                 m_ghostVec.x = 13;
             }
