@@ -5,3 +5,4 @@ Pacman game!
 - The map is stored in a 2d vector.
 
 - used ncurses for the TUI and std::chrono for timing
+- Works best with a black terminal background
