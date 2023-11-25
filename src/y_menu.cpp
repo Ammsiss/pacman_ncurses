@@ -127,6 +127,7 @@ void Menu::printWelcomeDisplayAndRefresh()
     mvwaddch(m_welcomeDisplayWindow.getWindow(), 1, 8, ACS_CKBOARD);
     mvwaddch(m_welcomeDisplayWindow.getWindow(), 2, 8, ACS_CKBOARD);
     mvwaddch(m_welcomeDisplayWindow.getWindow(), 3, 8, ACS_CKBOARD);
+    mvwprintw(m_welcomeDisplayWindow.getWindow(), 2, 9, "🍒");
 
     mvwaddch(m_welcomeDisplayWindow.getWindow(), 4, 8, ACS_CKBOARD);
     mvwaddch(m_welcomeDisplayWindow.getWindow(), 4, 9, ACS_CKBOARD);
