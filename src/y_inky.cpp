@@ -129,31 +129,52 @@ bool Inky::setDirection(Window& win, Pacman& pacman, bool powerPelletActive)
         }
     }
 
-    std::vector<Vec> ghostPath{};
+    auto currentTime{ std::chrono::high_resolution_clock::now() };    
 
+    std::vector<Vec> ghostPath{};
     if(!powerPelletActive)
-    {
-        std::vector<Vec> ghostPath{ createGhostPath(Vec{m_inkyVec.y, m_inkyVec.x}, win, Vec{targetY, targetX}) };
-        m_inkyVec.y = ghostPath[1].y;
-        m_inkyVec.x = ghostPath[1].x;
-    }
-    else
-    {
-        if(m_inkyVec.y != 3 || m_inkyVec.x != 1)
         {
-            ghostPath = createGhostPath(Vec{m_inkyVec.y, m_inkyVec.x}, win, Vec{3, 1});
-            m_inkyVec.y = ghostPath[1].y;
-            m_inkyVec.x = ghostPath[1].x;
+            if(currentTime - m_pathLastTime >= m_inkyPathInterval)
+            {
+                if(m_inkyVec.y != pacman.getPacVec().y || m_inkyVec.x != pacman.getPacVec().x)
+                {
+                    ghostPath = createGhostPath(Vec{m_inkyVec.y, m_inkyVec.x}, win, Vec{pacman.getPacVec().y, pacman.getPacVec().x});
+                    m_inkyVec.y = ghostPath[1].y;
+                    m_inkyVec.x = ghostPath[1].x;
+                }
+                else
+                {
+                    ghostPath = createGhostPath(Vec{m_inkyVec.y, m_inkyVec.x}, win, Vec{1, 1});
+                    m_inkyVec.y = ghostPath[1].y;
+                    m_inkyVec.x = ghostPath[1].x;
+                }
+                
+                if(currentTime - m_pathLastTime >= 10s)
+                    m_pathLastTime = currentTime;
+            }
+            else
+            {
+                std::vector<Vec> ghostPath{ createGhostPath(Vec{m_inkyVec.y, m_inkyVec.x}, win, Vec{targetY, targetX}) };
+                m_inkyVec.y = ghostPath[1].y;
+                m_inkyVec.x = ghostPath[1].x;
+            }
         }
         else
         {
-            ghostPath = createGhostPath(Vec{m_inkyVec.y, m_inkyVec.x}, win, Vec{5, 1});
-            m_inkyVec.y = ghostPath[1].y;
-            m_inkyVec.x = ghostPath[1].x;
+            if(m_inkyVec.y != 3 || m_inkyVec.x != 1)
+            {
+                ghostPath = createGhostPath(Vec{m_inkyVec.y, m_inkyVec.x}, win, Vec{3, 1});
+                m_inkyVec.y = ghostPath[1].y;
+                m_inkyVec.x = ghostPath[1].x;
+            }
+            else
+            {
+                ghostPath = createGhostPath(Vec{m_inkyVec.y, m_inkyVec.x}, win, Vec{5, 1});
+                m_inkyVec.y = ghostPath[1].y;
+                m_inkyVec.x = ghostPath[1].x;
+            }
         }
-    }
-
-
+    
     if(m_inkyVec.y == pacman.getPacVec().y && m_inkyVec.x == pacman.getPacVec().x)
         return false;
     else

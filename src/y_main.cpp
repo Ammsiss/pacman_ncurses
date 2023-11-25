@@ -213,7 +213,7 @@ MenuSelection menuLoop()
 
 bool powerPelletTimer(std::chrono::time_point<std::chrono::high_resolution_clock> lastTime, bool& powerPelletActive)
 {
-    auto interval{ std::chrono::duration(5s) };
+    auto interval{ std::chrono::duration(4s) };
     auto currentTime{ std::chrono::high_resolution_clock::now() };
 
     if(currentTime - lastTime <= interval && powerPelletActive)
