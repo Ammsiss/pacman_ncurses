@@ -25,8 +25,9 @@ void VectorSpace::assignPelletNotEaten(Window& win)
     {
         for(std::size_t x{0}; x < win.getWindowArea()[y].size(); ++x)
         {
-            if(win.getWindowArea()[y][x] != CellName::obstacleValue && win.getWindowArea()[y][x] != CellName::perimeterValue && win.getWindowArea()[y][x] != CellName::ghostBox && win.getWindowArea()[y][x] != CellName::powerPellet && win.getWindowArea()[y][x] != CellName::powerPelletEaten)
-                win.getWindowArea()[y][x] = CellName::notEaten;
+            if(win.getWindowArea()[y][x] != CellName::obstacleValue && win.getWindowArea()[y][x] != CellName::perimeterValue && win.getWindowArea()[y][x] != CellName::ghostBox && 
+                win.getWindowArea()[y][x] != CellName::powerPellet && win.getWindowArea()[y][x] != CellName::powerPelletEaten)
+                    win.getWindowArea()[y][x] = CellName::notEaten;
         }
     }
 

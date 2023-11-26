@@ -214,8 +214,15 @@ void Window::printHighScore()
 
 void Window::setHighScore(int score)
 {
+    std::ifstream inputFile(m_highscore);
+    int highscore{};
+    inputFile >> highscore;
+
+    if(score > highscore)
+    {
     std::ofstream outputFile(m_highscore);
     outputFile << score;
+    }
 }
 
 void Window::printGameOverMessage()
