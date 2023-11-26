@@ -22,7 +22,7 @@ using namespace std::chrono_literals;
 
 // public method
 
-bool Blinky::timeToMove(Window& win, Pacman& pacman, Pinky& pinky, Inky& inky, Ghost& clyde, bool powerPelletTimer, LevelState ateWhichGhost, int& score, std::chrono::time_point<std::chrono::high_resolution_clock>& lastTime)
+bool Blinky::timeToMove(Window& win, Pacman& pacman, Pinky& pinky, Inky& inky, Ghost& clyde, bool powerPelletTimer, LevelState ateWhichGhost, int& score, std::chrono::time_point<std::chrono::high_resolution_clock>& lastTime, std::chrono::milliseconds& interval)
 {
     // define chrono duration and 2 system time instances to create pacman's timed movement
     auto currentTime{std::chrono::high_resolution_clock::now()};
@@ -38,7 +38,7 @@ bool Blinky::timeToMove(Window& win, Pacman& pacman, Pinky& pinky, Inky& inky, G
             if(!setDirection(win, pacman, false))
                 return false;
 
-            printAndRefreshGhost(win, false);
+            printAndRefreshGhost(win, false, lastTime, interval);
 
             m_lastTime = currentTime;
         }
@@ -47,6 +47,64 @@ bool Blinky::timeToMove(Window& win, Pacman& pacman, Pinky& pinky, Inky& inky, G
     }
     else // if power pellet is active
     {
+        auto elapsedTime{ currentTime - lastTime };
+        auto remainingTime{ interval - elapsedTime };
+
+        if(remainingTime <= 250ms)
+        {
+            wattron(win.getWindow(), COLOR_PAIR(Color::blue_black));
+            mvwprintw(win.getWindow(), m_blinkyVec.y, m_blinkyVec.x, "ᗣ");
+            wattroff(win.getWindow(), COLOR_PAIR(Color::blue_black));
+            wattroff(win.getWindow(), COLOR_PAIR(Color::default_color));
+
+            wrefresh(win.getWindow());
+        }
+        else if(remainingTime <= 500ms)
+        {
+            wattron(win.getWindow(), COLOR_PAIR(Color::white_black));
+            mvwprintw(win.getWindow(), m_blinkyVec.y, m_blinkyVec.x, "ᗣ");
+            wattroff(win.getWindow(), COLOR_PAIR(Color::white_black));
+            wattroff(win.getWindow(), COLOR_PAIR(Color::default_color));
+
+            wrefresh(win.getWindow());
+        }
+        else if(remainingTime <= 750ms)
+        {
+            wattron(win.getWindow(), COLOR_PAIR(Color::blue_black));
+            mvwprintw(win.getWindow(), m_blinkyVec.y, m_blinkyVec.x, "ᗣ");
+            wattroff(win.getWindow(), COLOR_PAIR(Color::blue_black));
+            wattroff(win.getWindow(), COLOR_PAIR(Color::default_color));
+
+            wrefresh(win.getWindow());
+        }
+        else if(remainingTime <= 1000ms)
+        {
+            wattron(win.getWindow(), COLOR_PAIR(Color::white_black));
+            mvwprintw(win.getWindow(), m_blinkyVec.y, m_blinkyVec.x, "ᗣ");
+            wattroff(win.getWindow(), COLOR_PAIR(Color::white_black));
+            wattroff(win.getWindow(), COLOR_PAIR(Color::default_color));
+        
+            wrefresh(win.getWindow());
+        }
+        else if(remainingTime <= 1250ms)
+        {
+            wattron(win.getWindow(), COLOR_PAIR(Color::blue_black));
+            mvwprintw(win.getWindow(), m_blinkyVec.y, m_blinkyVec.x, "ᗣ");
+            wattroff(win.getWindow(), COLOR_PAIR(Color::blue_black));
+            wattroff(win.getWindow(), COLOR_PAIR(Color::default_color));
+
+            wrefresh(win.getWindow());
+        }
+        else if(remainingTime <= 1500ms)
+        {
+            wattron(win.getWindow(), COLOR_PAIR(Color::white_black));
+            mvwprintw(win.getWindow(), m_blinkyVec.y, m_blinkyVec.x, "ᗣ");
+            wattroff(win.getWindow(), COLOR_PAIR(Color::white_black));
+            wattroff(win.getWindow(), COLOR_PAIR(Color::default_color));
+
+            wrefresh(win.getWindow());
+        }
+
         m_blinkyIntervalStorage = m_blinkyInterval;
         m_blinkyInterval = 350ms;
 
@@ -76,7 +134,7 @@ bool Blinky::timeToMove(Window& win, Pacman& pacman, Pinky& pinky, Inky& inky, G
                 m_blinkyVec.x = 14;
             }
 
-            printAndRefreshGhost(win, true);
+            printAndRefreshGhost(win, true, lastTime, interval);
 
             m_lastTime = currentTime;
         }
@@ -276,7 +334,7 @@ void Blinky::printOverLap(Window& win, Color::ColorPair overLapColor, bool power
     }
 }
 
-void Blinky::printAndRefreshGhost(Window& win, bool powerPelletActive)
+void Blinky::printAndRefreshGhost(Window& win, bool powerPelletActive, std::chrono::time_point<std::chrono::high_resolution_clock>& lastTime, std::chrono::milliseconds& interval)
 {
     if(!powerPelletActive)
     {

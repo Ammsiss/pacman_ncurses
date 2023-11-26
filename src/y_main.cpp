@@ -213,7 +213,7 @@ MenuSelection menuLoop()
     }
 }
 
-bool powerPelletTimer(std::chrono::time_point<std::chrono::high_resolution_clock> lastTime, bool& powerPelletActive, std::chrono::milliseconds interval)
+bool powerPelletTimer(std::chrono::time_point<std::chrono::high_resolution_clock> lastTime, bool& powerPelletActive, std::chrono::milliseconds& interval)
 {
     auto currentTime{ std::chrono::high_resolution_clock::now() };
 
@@ -355,25 +355,25 @@ void gameLoop(Window& gameW)
                 break;
 
             // if ghosts killed pacman break from loop
-            if(!clyde.timeToMove(gameW, pinky, inky, blinky, pacman, powerPelletTimer(lastTime, powerPelletActive, interval), ateWhichGhost, score, lastTime))
+            if(!clyde.timeToMove(gameW, pinky, inky, blinky, pacman, powerPelletTimer(lastTime, powerPelletActive, interval), ateWhichGhost, score, lastTime, interval))
             {
                 pacman.printDeathAnimation(gameW);
                 break;
             }
         
-            if(!inky.timeToMove(gameW, pacman, pinky, blinky, clyde, powerPelletTimer(lastTime, powerPelletActive, interval), ateWhichGhost, score, lastTime))
+            if(!inky.timeToMove(gameW, pacman, pinky, blinky, clyde, powerPelletTimer(lastTime, powerPelletActive, interval), ateWhichGhost, score, lastTime, interval))
             {
                 pacman.printDeathAnimation(gameW);
                 break;
             }
             
-            if(!blinky.timeToMove(gameW, pacman, pinky, inky, clyde, powerPelletTimer(lastTime, powerPelletActive, interval), ateWhichGhost, score, lastTime))
+            if(!blinky.timeToMove(gameW, pacman, pinky, inky, clyde, powerPelletTimer(lastTime, powerPelletActive, interval), ateWhichGhost, score, lastTime, interval))
             {
                 pacman.printDeathAnimation(gameW);
                 break;
             }
             
-            if(!pinky.timeToMove(gameW, pacman, inky, blinky, clyde, powerPelletTimer(lastTime, powerPelletActive, interval), ateWhichGhost, score, lastTime))
+            if(!pinky.timeToMove(gameW, pacman, inky, blinky, clyde, powerPelletTimer(lastTime, powerPelletActive, interval), ateWhichGhost, score, lastTime, interval))
             {
                 pacman.printDeathAnimation(gameW);
                 break;
@@ -402,6 +402,7 @@ int main()
                 gameLoop(gameW);
                 break;
             case MenuSelection::controls:
+                clearWindow(gameW);
                 controls(gameW);
                 clearWindow(gameW);
                 break;

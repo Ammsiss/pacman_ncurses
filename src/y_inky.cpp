@@ -23,7 +23,7 @@ using namespace std::chrono_literals;
 
 // public method
 
-bool Inky::timeToMove(Window& win, Pacman& pacman, Pinky& pinky, Blinky& blinky, Ghost& clyde, bool powerPelletTimer, LevelState ateWhichGhost, int& score, std::chrono::time_point<std::chrono::high_resolution_clock>& lastTime)
+bool Inky::timeToMove(Window& win, Pacman& pacman, Pinky& pinky, Blinky& blinky, Ghost& clyde, bool powerPelletTimer, LevelState ateWhichGhost, int& score, std::chrono::time_point<std::chrono::high_resolution_clock>& lastTime, std::chrono::milliseconds& interval)
 {
     // define chrono duration and 2 system time instances to create pacman's timed movement
     auto currentTime{std::chrono::high_resolution_clock::now()};
@@ -48,6 +48,64 @@ bool Inky::timeToMove(Window& win, Pacman& pacman, Pinky& pinky, Blinky& blinky,
     }
     else // if power pellet is active
     {
+        auto elapsedTime{ currentTime - lastTime };
+        auto remainingTime{ interval - elapsedTime };
+
+        if(remainingTime <= 250ms)
+        {
+            wattron(win.getWindow(), COLOR_PAIR(Color::blue_black));
+            mvwprintw(win.getWindow(), m_inkyVec.y, m_inkyVec.x, "ᗣ");
+            wattroff(win.getWindow(), COLOR_PAIR(Color::blue_black));
+            wattroff(win.getWindow(), COLOR_PAIR(Color::default_color));
+
+            wrefresh(win.getWindow());
+        }
+        else if(remainingTime <= 500ms)
+        {
+            wattron(win.getWindow(), COLOR_PAIR(Color::white_black));
+            mvwprintw(win.getWindow(), m_inkyVec.y, m_inkyVec.x, "ᗣ");
+            wattroff(win.getWindow(), COLOR_PAIR(Color::white_black));
+            wattroff(win.getWindow(), COLOR_PAIR(Color::default_color));
+
+            wrefresh(win.getWindow());
+        }
+        else if(remainingTime <= 750ms)
+        {
+            wattron(win.getWindow(), COLOR_PAIR(Color::blue_black));
+            mvwprintw(win.getWindow(), m_inkyVec.y, m_inkyVec.x, "ᗣ");
+            wattroff(win.getWindow(), COLOR_PAIR(Color::blue_black));
+            wattroff(win.getWindow(), COLOR_PAIR(Color::default_color));
+
+            wrefresh(win.getWindow());
+        }
+        else if(remainingTime <= 1000ms)
+        {
+            wattron(win.getWindow(), COLOR_PAIR(Color::white_black));
+            mvwprintw(win.getWindow(), m_inkyVec.y, m_inkyVec.x, "ᗣ");
+            wattroff(win.getWindow(), COLOR_PAIR(Color::white_black));
+            wattroff(win.getWindow(), COLOR_PAIR(Color::default_color));
+        
+            wrefresh(win.getWindow());
+        }
+        else if(remainingTime <= 1250ms)
+        {
+            wattron(win.getWindow(), COLOR_PAIR(Color::blue_black));
+            mvwprintw(win.getWindow(), m_inkyVec.y, m_inkyVec.x, "ᗣ");
+            wattroff(win.getWindow(), COLOR_PAIR(Color::blue_black));
+            wattroff(win.getWindow(), COLOR_PAIR(Color::default_color));
+
+            wrefresh(win.getWindow());
+        }
+        else if(remainingTime <= 1500ms)
+        {
+            wattron(win.getWindow(), COLOR_PAIR(Color::white_black));
+            mvwprintw(win.getWindow(), m_inkyVec.y, m_inkyVec.x, "ᗣ");
+            wattroff(win.getWindow(), COLOR_PAIR(Color::white_black));
+            wattroff(win.getWindow(), COLOR_PAIR(Color::default_color));
+
+            wrefresh(win.getWindow());
+        }
+
         m_inkyIntervalStorage = m_inkyInterval;
         m_inkyInterval = 350ms;
 
