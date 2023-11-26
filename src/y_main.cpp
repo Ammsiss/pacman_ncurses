@@ -257,7 +257,7 @@ void gameLoop(Window& gameW)
     // stuff for power pellet timer
     auto lastTime{ std::chrono::high_resolution_clock::now() }; 
     bool powerPelletActive{ false };
-    auto interval{ std::chrono::duration(5000ms) };
+    auto interval{ std::chrono::duration(6000ms) };
 
     // 1up score stuff
     int levelUpCount{1};
@@ -426,10 +426,3 @@ int main()
     endwin();
     return 0;
 }
-
-/*
-    1) External high score
-*/
-
-
-

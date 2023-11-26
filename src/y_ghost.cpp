@@ -170,7 +170,7 @@ void Ghost::printGhost(Window& win)
 Color::ColorPair Ghost::getGhostColor() { return m_ghostColor; }
 Vec Ghost::getGhostVec() { return m_ghostVec; }
 
-void Ghost::setSpeed() { m_interval -= 15ms; }
+void Ghost::setSpeed() { m_interval -= 10ms; }
 
 void Ghost::setGhostVec() { m_ghostVec = Vec{15, 13}; }
 

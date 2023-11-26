@@ -46,7 +46,7 @@ private:
     int m_leftPortalX{1};
     int m_portalY{14};
     //timer variables
-    std::chrono::milliseconds m_inkyInterval{175ms};
+    std::chrono::milliseconds m_inkyInterval{185ms};
     std::chrono::milliseconds m_inkyPathInterval{7s};
     std::chrono::milliseconds m_inkyIntervalStorage{};
     std::chrono::time_point<std::chrono::high_resolution_clock> m_lastTime;
