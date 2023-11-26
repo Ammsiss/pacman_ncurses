@@ -14,6 +14,7 @@
 // std
 #include <vector>
 #include <chrono>
+#include <string>
 
 class Ghost;
 class Inky;

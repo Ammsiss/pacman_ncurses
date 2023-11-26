@@ -270,6 +270,7 @@ void gameLoop(Window& gameW)
         // print lives and score
         gameW.printLives(lives);
         gameW.printScoreOutline(score);
+        gameW.printHighScore();
 
         // print pellets based on what has been eaten
         vectorSpace.printPellet(gameW);
@@ -390,6 +391,7 @@ void gameLoop(Window& gameW)
         }
     }
 
+    gameW.setHighScore(score);
     gameW.printGameOverMessage();
 }
 

@@ -11,6 +11,7 @@
 #include <chrono>
 #include <thread>
 #include <string>
+#include <fstream>
 
 using namespace std::chrono_literals;
 
@@ -171,6 +172,50 @@ void Window::printScoreOutline(int score)
     mvwprintw(m_window, 11, 26, "ᗣ");
     wattroff(m_window, COLOR_PAIR(Color::pink_black));
     wattron(m_window, COLOR_PAIR(Color::default_color));
+}
+
+void Window::printHighScore()
+{
+    std::ifstream inputFile(m_highscore);
+    int highscore{};
+    inputFile >> highscore;
+
+    wattron(m_window, COLOR_PAIR(Color::yellow_black));
+    mvwprintw(m_window, 16, 23, "HgSc");
+    mvwprintw(m_window, 18, 23, "    ");
+    mvwprintw(m_window, 18, 23, "%d", highscore);
+    wattroff(m_window, COLOR_PAIR(Color::yellow_black));
+    wattron(m_window, COLOR_PAIR(Color::default_color));
+
+    // cyan
+    wattron(m_window, COLOR_PAIR(Color::cyan_black));
+    mvwprintw(m_window, 17, 23, "ᗣ");
+    wattroff(m_window, COLOR_PAIR(Color::cyan_black));
+    wattron(m_window, COLOR_PAIR(Color::default_color));
+
+    // orange
+    wattron(m_window, COLOR_PAIR(Color::orange_black));
+    mvwprintw(m_window, 17, 24, "ᗣ");
+    wattroff(m_window, COLOR_PAIR(Color::orange_black));
+    wattron(m_window, COLOR_PAIR(Color::default_color));
+
+    // red
+    wattron(m_window, COLOR_PAIR(Color::red_black));
+    mvwprintw(m_window, 17, 25, "ᗣ");
+    wattroff(m_window, COLOR_PAIR(Color::red_black));
+    wattron(m_window, COLOR_PAIR(Color::default_color));
+
+    // pink
+    wattron(m_window, COLOR_PAIR(Color::pink_black));
+    mvwprintw(m_window, 17, 26, "ᗣ");
+    wattroff(m_window, COLOR_PAIR(Color::pink_black));
+    wattron(m_window, COLOR_PAIR(Color::default_color));
+}
+
+void Window::setHighScore(int score)
+{
+    std::ofstream outputFile(m_highscore);
+    outputFile << score;
 }
 
 void Window::printGameOverMessage()

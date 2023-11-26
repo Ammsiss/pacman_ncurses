@@ -8,6 +8,7 @@
 
 // std
 #include <vector>
+#include <string>
 
 class Window
 {
@@ -25,6 +26,8 @@ public:
     void printScoreOutline(int score);
     void printGameOverMessage();
     void flashingObstacles();
+    void printHighScore();
+    void setHighScore(int score);
 
     // getters
     WINDOW* getWindow();
@@ -46,6 +49,7 @@ private:
     std::vector<Vec> m_windowPerimeter{};
     // main vector space
     std::vector<std::vector<int>> m_windowArea{};
+    std::string m_highscore{ "highscore.txt" };
 
     // private methods
     void initWindowPerimeter();
