@@ -25,7 +25,9 @@ class Pinky;
 class Blinky
 {
 public:
-    bool timeToMove(Window& win, Pacman& pacman, Pinky& pinky, Inky& inky, Ghost& clyde, bool powerPelletTimer, LevelState ateWhichGhost, int& score, std::chrono::time_point<std::chrono::high_resolution_clock>& lastTime, std::chrono::milliseconds& interval);
+    bool timeToMove(Window& win, Pacman& pacman, Pinky& pinky, Inky& inky, Ghost& clyde, bool powerPelletTimer, LevelState ateWhichGhost, 
+        int& score, std::chrono::time_point<std::chrono::high_resolution_clock>& lastTime, std::chrono::milliseconds& interval);
+        
     Vec getBlinkyVec();
     Color::ColorPair getBlinkyColor();
     void printGhost(Window& win);

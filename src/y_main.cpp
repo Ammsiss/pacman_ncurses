@@ -247,23 +247,23 @@ void gameLoop(Window& gameW)
     VectorSpace vectorSpace{gameW, obstacleList};
     gameW.assignGhostBox();
 
+    // init characters
     Pacman pacman{gameW};
     Ghost clyde{};
     Blinky blinky{};
     Pinky pinky{};
     Inky inky{};
 
-    // restart vector space | new round
-    vectorSpace.assignPelletNotEaten(gameW);
-
     // stuff for power pellet timer
     auto lastTime{ std::chrono::high_resolution_clock::now() }; 
     bool powerPelletActive{ false };
+    auto interval{ std::chrono::duration(5000ms) };
 
     // 1up score stuff
     int levelUpCount{1};
 
-    auto interval{ std::chrono::duration(5000ms) };
+    // restart vector space | new round
+    vectorSpace.assignPelletNotEaten(gameW);
 
     for(int lives{4}; lives > 0; --lives)
     {
@@ -317,6 +317,7 @@ void gameLoop(Window& gameW)
                     inky.setSpeed();
                     blinky.setSpeed();
                     pinky.setSpeed();
+                    // quicker pp timer
                     if(interval != 2000ms)
                         interval -= 500ms;
                     leaveLoop = true;
@@ -354,26 +355,31 @@ void gameLoop(Window& gameW)
             if(leaveLoop)
                 break;
 
-            // if ghosts killed pacman break from loop
-            if(!clyde.timeToMove(gameW, pinky, inky, blinky, pacman, powerPelletTimer(lastTime, powerPelletActive, interval), ateWhichGhost, score, lastTime, interval))
+            // if timeToMove returns false Pacman was murdered
+            
+            if(!clyde.timeToMove(gameW, pinky, inky, blinky, pacman, powerPelletTimer(lastTime, powerPelletActive, interval), 
+                ateWhichGhost, score, lastTime, interval))
             {
                 pacman.printDeathAnimation(gameW);
                 break;
             }
         
-            if(!inky.timeToMove(gameW, pacman, pinky, blinky, clyde, powerPelletTimer(lastTime, powerPelletActive, interval), ateWhichGhost, score, lastTime, interval))
+            if(!inky.timeToMove(gameW, pacman, pinky, blinky, clyde, powerPelletTimer(lastTime, powerPelletActive, interval), 
+                ateWhichGhost, score, lastTime, interval))
             {
                 pacman.printDeathAnimation(gameW);
                 break;
             }
             
-            if(!blinky.timeToMove(gameW, pacman, pinky, inky, clyde, powerPelletTimer(lastTime, powerPelletActive, interval), ateWhichGhost, score, lastTime, interval))
+            if(!blinky.timeToMove(gameW, pacman, pinky, inky, clyde, powerPelletTimer(lastTime, powerPelletActive, interval), 
+                ateWhichGhost, score, lastTime, interval))
             {
                 pacman.printDeathAnimation(gameW);
                 break;
             }
             
-            if(!pinky.timeToMove(gameW, pacman, inky, blinky, clyde, powerPelletTimer(lastTime, powerPelletActive, interval), ateWhichGhost, score, lastTime, interval))
+            if(!pinky.timeToMove(gameW, pacman, inky, blinky, clyde, powerPelletTimer(lastTime, powerPelletActive, interval), 
+                ateWhichGhost, score, lastTime, interval))
             {
                 pacman.printDeathAnimation(gameW);
                 break;
@@ -419,31 +425,9 @@ int main()
     return 0;
 }
 
-// LIVES DONT UPDATE UNLESS PERFECT MULTIPLE OF 1000
-
-// You got this!
-
-// *************************EASY********************************
-
-/*
-    1) timed release
-*/
-
-// ************************MEDIUM*******************************
-
 /*
     1) External high score
-    2) Implement random (1-4) fruits spawning in each level
 */
 
-// **************************HARD*******************************
-
-/*
-    1) Pacman menu animation
-    3) Improve movement responsivness
-    4) Fix unfrequent ghost flicker
-    5) Power ups
-    6) Implement pathfinding through portals
-*/
 
 
