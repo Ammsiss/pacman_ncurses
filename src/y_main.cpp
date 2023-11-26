@@ -60,61 +60,72 @@ std::vector<Obstacle> obstacleInit(Window& gameW)
 {
 
     // Initialize obstacle use format: 
-    // {yoffset, xoffset}, {ydimension, xdimension}
+
+    // {Y offset, X offset}, {Y dimension, X dimension}, window
     std::vector<Obstacle> obstacleList
     {
+        // layer 1
+        { {1, 13}, {4, 2}, gameW },
+
+        // layer 2
         { {2, 2}, {3, 4}, gameW },
         { {2, 7}, {3, 5}, gameW },
-        { {1, 13}, {4, 2}, gameW },
         { {2, 16}, {3, 5}, gameW },
         { {2, 22}, {3, 4}, gameW },
 
+        // layer 3
         { {6, 2}, {2, 4}, gameW },
-
         { {6, 7}, {8, 2}, gameW },
-        { {9, 9}, {2, 3}, gameW },
-
         { {6, 10}, {2, 8}, gameW },
-        { {8, 13}, {3, 2}, gameW },
-        
         { {6, 19}, {8, 2}, gameW },
-        { {9, 16}, {2, 3}, gameW },
-
         { {6, 22}, {2, 4}, gameW },
 
-        { {9, 1}, {5, 5}, gameW },
-        { {15, 1}, {5, 5}, gameW },
-        { {9, 22}, {5, 5}, gameW },
-        { {15, 22}, {5, 5}, gameW },
+        // layer 4
+        { {8, 13}, {3, 2}, gameW },
 
+        // layer 5
+        { {9, 9}, {2, 3}, gameW },
+        { {9, 16}, {2, 3}, gameW },
+        { {9, 1}, {5, 5}, gameW },
+        { {9, 22}, {5, 5}, gameW },
+
+        // layer 6
+        { {15, 22}, {5, 5}, gameW },
+        { {15, 1}, {5, 5}, gameW },
         { {15, 7}, {5, 2}, gameW },
         { {15, 19}, {5, 2}, gameW },
 
+        // layer 7
         { {18, 10}, {2, 8}, gameW },
+
+        // layer 7.5
         { {20, 13}, {3, 2}, gameW },
 
+        // layer 8
         { {21, 2}, {2, 4}, gameW },
-        { {23, 4}, {3, 2}, gameW },
-
         { {21, 7}, {2, 5}, gameW },
         { {21, 16}, {2, 5}, gameW },
-
         { {21, 22}, {2, 4}, gameW },
+
+        // layer 9
+        { {23, 4}, {3, 2}, gameW },
         { {23, 22}, {3, 2}, gameW },
 
+        // layer 10
+        { {24, 19}, {3, 2}, gameW },
         { {24, 1}, {2, 2}, gameW },
         { {24, 25}, {2, 2}, gameW },
-
-        { {27, 2}, {2, 10}, gameW },
         { {24, 7}, {3, 2}, gameW },
-
         { {24, 10}, {2, 8}, gameW },
+
+        // layer 11
         { {26, 13}, {3, 2}, gameW },
 
-        { {24, 19}, {3, 2}, gameW },
+        // layer 12
+        { {27, 2}, {2, 10}, gameW },
         { {27, 16}, {2, 10}, gameW },
 
-        // ghost box
+        // Ghost Box
         { {12, 10}, {1, 3}, gameW },
         { {12, 15}, {1, 3}, gameW },
         { {13, 10}, {4, 1}, gameW },
