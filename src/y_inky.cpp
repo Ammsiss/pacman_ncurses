@@ -48,63 +48,7 @@ bool Inky::timeToMove(Window& win, Pacman& pacman, Pinky& pinky, Blinky& blinky,
     }
     else // if power pellet is active
     {
-        auto elapsedTime{ currentTime - lastTime };
-        auto remainingTime{ interval - elapsedTime };
-
-        if(remainingTime <= 250ms)
-        {
-            wattron(win.getWindow(), COLOR_PAIR(Color::blue_black));
-            mvwprintw(win.getWindow(), m_inkyVec.y, m_inkyVec.x, "ᗣ");
-            wattroff(win.getWindow(), COLOR_PAIR(Color::blue_black));
-            wattroff(win.getWindow(), COLOR_PAIR(Color::default_color));
-
-            wrefresh(win.getWindow());
-        }
-        else if(remainingTime <= 500ms)
-        {
-            wattron(win.getWindow(), COLOR_PAIR(Color::white_black));
-            mvwprintw(win.getWindow(), m_inkyVec.y, m_inkyVec.x, "ᗣ");
-            wattroff(win.getWindow(), COLOR_PAIR(Color::white_black));
-            wattroff(win.getWindow(), COLOR_PAIR(Color::default_color));
-
-            wrefresh(win.getWindow());
-        }
-        else if(remainingTime <= 750ms)
-        {
-            wattron(win.getWindow(), COLOR_PAIR(Color::blue_black));
-            mvwprintw(win.getWindow(), m_inkyVec.y, m_inkyVec.x, "ᗣ");
-            wattroff(win.getWindow(), COLOR_PAIR(Color::blue_black));
-            wattroff(win.getWindow(), COLOR_PAIR(Color::default_color));
-
-            wrefresh(win.getWindow());
-        }
-        else if(remainingTime <= 1000ms)
-        {
-            wattron(win.getWindow(), COLOR_PAIR(Color::white_black));
-            mvwprintw(win.getWindow(), m_inkyVec.y, m_inkyVec.x, "ᗣ");
-            wattroff(win.getWindow(), COLOR_PAIR(Color::white_black));
-            wattroff(win.getWindow(), COLOR_PAIR(Color::default_color));
-        
-            wrefresh(win.getWindow());
-        }
-        else if(remainingTime <= 1250ms)
-        {
-            wattron(win.getWindow(), COLOR_PAIR(Color::blue_black));
-            mvwprintw(win.getWindow(), m_inkyVec.y, m_inkyVec.x, "ᗣ");
-            wattroff(win.getWindow(), COLOR_PAIR(Color::blue_black));
-            wattroff(win.getWindow(), COLOR_PAIR(Color::default_color));
-
-            wrefresh(win.getWindow());
-        }
-        else if(remainingTime <= 1500ms)
-        {
-            wattron(win.getWindow(), COLOR_PAIR(Color::white_black));
-            mvwprintw(win.getWindow(), m_inkyVec.y, m_inkyVec.x, "ᗣ");
-            wattroff(win.getWindow(), COLOR_PAIR(Color::white_black));
-            wattroff(win.getWindow(), COLOR_PAIR(Color::default_color));
-
-            wrefresh(win.getWindow());
-        }
+        ghostFlashing(win, lastTime, interval, currentTime);
 
         m_inkyIntervalStorage = m_inkyInterval;
         m_inkyInterval = 350ms;
@@ -380,4 +324,33 @@ void Inky::printAndRefreshGhost(Window& win, bool powerPelletActive)
     }
 
     wrefresh(win.getWindow());
+}
+
+// Every 250 ms in the last 1.5 seconds of the power pellet change ghost color to indicate time is almost out
+void Inky::ghostFlashing(Window& win, std::chrono::time_point<std::chrono::high_resolution_clock>& lastTime, std::chrono::milliseconds& interval, std::chrono::time_point<std::chrono::high_resolution_clock>& currentTime)
+{
+    auto elapsedTime{ currentTime - lastTime };
+    auto remainingTime{ interval - elapsedTime };
+
+    Color::ColorPair color{};
+    std::array<std::chrono::milliseconds, 6> ghostIntervals{250ms, 500ms, 750ms, 1000ms, 1250ms, 1500ms};
+
+    for(std::size_t i{0}; i < ghostIntervals.size(); ++i)
+    {
+        if(remainingTime <= ghostIntervals[i])
+        {
+            if(i % 2 == 0)
+                color = Color::white_black;
+            else
+                color = Color::blue_black;
+
+            wattron(win.getWindow(), COLOR_PAIR(color));
+            mvwprintw(win.getWindow(), m_inkyVec.y, m_inkyVec.x, "ᗣ");
+            wattroff(win.getWindow(), COLOR_PAIR(color));
+            wattroff(win.getWindow(), COLOR_PAIR(Color::default_color));
+            wrefresh(win.getWindow());
+
+            break;
+        }
+    }
 }

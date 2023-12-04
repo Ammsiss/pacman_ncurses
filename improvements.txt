@@ -1,0 +1,2 @@
+1) Use type aliases for really long chrono names in ghost classes.
+2) Reduce amount of code clutter with turning on color pairs

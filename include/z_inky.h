@@ -65,4 +65,5 @@ private:
     Color::ColorPair checkGhostOverLap(Pinky& pinky, Blinky& blinky, Ghost& clyde);
     void printOverLap(Window& win, Color::ColorPair overLapColor, bool powerPelletActie);
     void printAndRefreshGhost(Window& win, bool powerPelletActive);
+    void ghostFlashing(Window& win, std::chrono::time_point<std::chrono::high_resolution_clock>& lastTime, std::chrono::milliseconds& interval, std::chrono::time_point<std::chrono::high_resolution_clock>& currentTime);
 };
