@@ -11,6 +11,7 @@
 #include "z_pinky.h"
 #include "z_inky.h"
 #include "z_ghost.h"
+#include "typealiases.h"
 
 //std
 #include <vector>
@@ -26,7 +27,7 @@ class Blinky
 {
 public:
     bool timeToMove(Window& win, Pacman& pacman, Pinky& pinky, Inky& inky, Ghost& clyde, bool powerPelletTimer, LevelState ateWhichGhost, 
-        int& score, std::chrono::time_point<std::chrono::high_resolution_clock>& lastTime, std::chrono::milliseconds& interval);
+        int& score, TypeAlias::timepoint& lastTime, std::chrono::milliseconds& interval);
         
     Vec getBlinkyVec();
     Color::ColorPair getBlinkyColor();
@@ -48,7 +49,7 @@ private:
     //timer variables
     std::chrono::milliseconds m_blinkyInterval{215ms};
     std::chrono::milliseconds m_blinkyIntervalStorage{};
-    std::chrono::time_point<std::chrono::high_resolution_clock> m_lastTime;
+    TypeAlias::timepoint m_lastTime;
 
     //private methods
 
@@ -62,6 +63,6 @@ private:
     void printPelletBackIfNotEaten(Window& win);
     Color::ColorPair checkGhostOverLap(Pinky& pinky, Inky& inky, Ghost& clyde);
     void printOverLap(Window& win, Color::ColorPair overLapColor, bool powerPelletActie);
-    void printAndRefreshGhost(Window& win, bool powerPelletActive, std::chrono::time_point<std::chrono::high_resolution_clock>& lastTime, std::chrono::milliseconds& interval);
-    void ghostFlashing(Window& win, std::chrono::time_point<std::chrono::high_resolution_clock>& lastTime, std::chrono::milliseconds& interval, std::chrono::time_point<std::chrono::high_resolution_clock>& currentTime);
+    void printAndRefreshGhost(Window& win, bool powerPelletActive, TypeAlias::timepoint& lastTime, std::chrono::milliseconds& interval);
+    void ghostFlashing(Window& win, TypeAlias::timepoint& lastTime, std::chrono::milliseconds& interval, TypeAlias::timepoint& currentTime);
 };

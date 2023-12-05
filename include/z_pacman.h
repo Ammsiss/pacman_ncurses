@@ -10,6 +10,7 @@
 #include "z_vectorspace.h"
 #include "z_ghost.h"
 #include "z_random.h"
+#include "typealiases.h"
 
 // std
 #include <vector>
@@ -26,7 +27,7 @@ public:
     // constructor
     Pacman(Window& win);
     // public method
-    LevelState timeToMove(Window& win, Ghost& clyde, Inky& inky, Blinky& blinky, Pinky& pinky, int& score, bool powerPelletActive, std::chrono::time_point<std::chrono::high_resolution_clock>& lastTime);
+    LevelState timeToMove(Window& win, Ghost& clyde, Inky& inky, Blinky& blinky, Pinky& pinky, int& score, bool powerPelletActive, TypeAlias::timepoint& lastTime);
     void printDeathAnimation(Window& win);
     void printInitialPacman(Window& win);
 
@@ -49,7 +50,7 @@ private:
 
     // timing
     std::chrono::milliseconds m_interval;
-    std::chrono::time_point<std::chrono::high_resolution_clock> m_lastTime;
+    TypeAlias::timepoint m_lastTime;
 
     // printing
     void erase(Window& win);
