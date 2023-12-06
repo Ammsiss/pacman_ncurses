@@ -53,6 +53,11 @@ void Window::drawBoxAndRefresh()
     wrefresh(m_window);
 }
 
+int& Window::operator[] (std::pair<int, int> indices)
+{
+    return m_windowArea[indices.first][indices.second];
+}
+
 // Count down for main game window
 void Window::gameCountDown()
 {

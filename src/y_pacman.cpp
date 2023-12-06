@@ -51,7 +51,7 @@ LevelState Pacman::timeToMove(Window& win, Ghost& clyde, Inky& inky, Blinky& bli
         {
             for(std::size_t x{0}; x < win.getWindowArea()[y].size(); ++x)
             {
-                if(win.getWindowArea()[y][x] == CellName::pelletEaten || win.getWindowArea()[y][x] == CellName::powerPelletEaten)
+                if(win[{y, x}] == CellName::pelletEaten || win[{y, x}] == CellName::powerPelletEaten)
                     ++count;
             }
         }
@@ -274,7 +274,7 @@ void Pacman::setX(PositionChange direction)
 
 bool Pacman::obstacleBoundsCheck(Window& win)
 {
-    if(win.getWindowArea()[m_pacVec.y][m_pacVec.x] == CellName::obstacleValue)
+    if(win[{m_pacVec.y, m_pacVec.x}] == CellName::obstacleValue)
         return true;
 
     return false;
@@ -299,9 +299,9 @@ GhostCollision Pacman::ghostCollisionCheck(Ghost& clyde, Inky& inky, Blinky& bli
 
 bool Pacman::powerPelletCheck(Window& win)
 {
-    if(win.getWindowArea()[m_pacVec.y][m_pacVec.x] == CellName::powerPellet)
+    if(win[{m_pacVec.y, m_pacVec.x}] == CellName::powerPellet)
     {
-        win.getWindowArea()[m_pacVec.y][m_pacVec.x] = CellName::powerPelletEaten;
+        win[{m_pacVec.y, m_pacVec.x}] = CellName::powerPelletEaten;
         return true;
     }
     else
@@ -357,10 +357,10 @@ void Pacman::printPacmanBasedOnDirection(Window& win)
 
 void Pacman::updateEatenPelletsAndPrintScore(Window& win, int& score)
 {
-    if(win.getWindowArea()[m_pacVec.y][m_pacVec.x] != CellName::pelletEaten && win.getWindowArea()[m_pacVec.y][m_pacVec.x] != CellName::powerPelletEaten)
+    if(win[{m_pacVec.y, m_pacVec.x}] != CellName::pelletEaten && win[{m_pacVec.y, m_pacVec.x}] != CellName::powerPelletEaten)
     {
         ++score;
-        win.getWindowArea()[m_pacVec.y][m_pacVec.x] = CellName::pelletEaten;
+        win[{m_pacVec.y, m_pacVec.x}] = CellName::pelletEaten;
     }
 
     printScore(win, score);

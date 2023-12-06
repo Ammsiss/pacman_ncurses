@@ -1,2 +1,3 @@
-1) Use type aliases for really long chrono names in ghost classes.
+1) Change 2d vectors to use new c++23 feature object[x, y];
 2) Reduce amount of code clutter with turning on color pairs
+ 3) add boolean variables for better discriptions

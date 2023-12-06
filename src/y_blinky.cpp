@@ -182,8 +182,8 @@ std::vector<Vec> Blinky::createGhostPath(Vec start, Window& win, Vec target)
             Vec next{current.y + dir.y, current.x + dir.x};
 
             //if(next.y >= 0 && next.y < rows && next.x >= 0 && next.x < cols && !visited[next.y][next.x]) 
-            if(next.y > 0 && next.y < (rows - 1) && next.x > 0 && next.x < (cols - 1) && win.getWindowArea()[next.y][next.x] != CellName::obstacleValue && 
-                win.getWindowArea()[next.y][next.x] != CellName::perimeterValue && !visited[next.y][next.x])
+            if(next.y > 0 && next.y < (rows - 1) && next.x > 0 && next.x < (cols - 1) && win[{next.y, next.x}] != CellName::obstacleValue && 
+                win[{next.y, next.x}] != CellName::perimeterValue && !visited[next.y][next.x])
             {
                 q.push(next);
                 visited[next.y][next.x] = 1;
@@ -225,10 +225,10 @@ void Blinky::checkForAndPrintOverLaps(Window& win, Pinky& pinky, Inky& inky, Gho
 
 void Blinky::printPelletBackIfNotEaten(Window& win)
 {
-    if(win.getWindowArea()[m_blinkyVec.y][m_blinkyVec.x] != CellName::pelletEaten && win.getWindowArea()[m_blinkyVec.y][m_blinkyVec.x] != CellName::ghostBox &&
-        win.getWindowArea()[m_blinkyVec.y][m_blinkyVec.x] != CellName::perimeterValue && win.getWindowArea()[m_blinkyVec.y][m_blinkyVec.x] != CellName::powerPelletEaten)
+    if(win[{m_blinkyVec.y, m_blinkyVec.x}] != CellName::pelletEaten && win[{m_blinkyVec.y, m_blinkyVec.x}] != CellName::ghostBox &&
+        win[{m_blinkyVec.y, m_blinkyVec.x}] != CellName::perimeterValue && win[{m_blinkyVec.y, m_blinkyVec.x}] != CellName::powerPelletEaten)
     {
-        if(win.getWindowArea()[m_blinkyVec.y][m_blinkyVec.x] == CellName::powerPellet)
+        if(win[{m_blinkyVec.y, m_blinkyVec.x}] == CellName::powerPellet)
         {
             wattron(win.getWindow(), COLOR_PAIR(Color::yellow_black));
             wattron(win.getWindow(), A_BLINK);

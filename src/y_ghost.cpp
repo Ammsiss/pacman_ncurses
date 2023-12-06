@@ -199,8 +199,8 @@ std::vector<Vec> Ghost::createGhostPath(Vec start, Window& win, Vec target)
             Vec next{current.y + dir.y, current.x + dir.x};
 
             //if(next.y >= 0 && next.y < rows && next.x >= 0 && next.x < cols && !visited[next.y][next.x]) 
-            if(next.y > 0 && next.y < (rows - 1) && next.x > 0 && next.x < (cols - 1) && win.getWindowArea()[next.y][next.x] != CellName::obstacleValue && 
-                win.getWindowArea()[next.y][next.x] != CellName::perimeterValue && !visited[next.y][next.x])
+            if(next.y > 0 && next.y < (rows - 1) && next.x > 0 && next.x < (cols - 1) && win[{next.y, next.x}] != CellName::obstacleValue && 
+                win[{next.y, next.x}] != CellName::perimeterValue && !visited[next.y][next.x])
             {
                 q.push(next);
                 visited[next.y][next.x] = 1;
@@ -343,7 +343,7 @@ void Ghost::setX(PositionChange direction)
 
 bool Ghost::obstacleBoundsCheck(Window& win)
 {
-    if(win.getWindowArea()[m_ghostVec.y][m_ghostVec.x] == CellName::obstacleValue)
+    if(win[{m_ghostVec.y, m_ghostVec.x}] == CellName::obstacleValue)
         return false;
 
     return true;
@@ -351,7 +351,7 @@ bool Ghost::obstacleBoundsCheck(Window& win)
 
 bool Ghost::perimeterBoundsCheck(Window& win)
 {
-    if(win.getWindowArea()[m_ghostVec.y][m_ghostVec.x] == CellName::perimeterValue)
+    if(win[{m_ghostVec.y, m_ghostVec.x}] == CellName::perimeterValue)
         return false;
 
     return true;
@@ -385,10 +385,10 @@ void Ghost::checkForAndPrintOverLaps(Window& win, Pinky& pinky, Inky& inky, Blin
 
 void Ghost::printPelletBackIfNotEaten(Window& win)
 {
-    if(win.getWindowArea()[m_ghostVec.y][m_ghostVec.x] != CellName::pelletEaten && win.getWindowArea()[m_ghostVec.y][m_ghostVec.x] != CellName::ghostBox &&
-        win.getWindowArea()[m_ghostVec.y][m_ghostVec.x] != CellName::perimeterValue && win.getWindowArea()[m_ghostVec.y][m_ghostVec.x] != CellName::powerPelletEaten)
+    if(win[{m_ghostVec.y, m_ghostVec.x}] != CellName::pelletEaten && win[{m_ghostVec.y, m_ghostVec.x}] != CellName::ghostBox &&
+        win[{m_ghostVec.y, m_ghostVec.x}] != CellName::perimeterValue && win[{m_ghostVec.y, m_ghostVec.x}] != CellName::powerPelletEaten)
     {
-        if(win.getWindowArea()[m_ghostVec.y][m_ghostVec.x] == CellName::powerPellet)
+        if(win[{m_ghostVec.y, m_ghostVec.x}] == CellName::powerPellet)
         {
             wattron(win.getWindow(), COLOR_PAIR(Color::yellow_black));
             wattron(win.getWindow(), A_BLINK);

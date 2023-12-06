@@ -9,6 +9,7 @@
 // std
 #include <vector>
 #include <string>
+#include <utility>
 
 class Window
 {
@@ -28,6 +29,9 @@ public:
     void flashingObstacles();
     void printHighScore();
     void setHighScore(int score);
+
+    // overload methods
+    int& operator[] (std::pair<int, int> indices);
 
     // getters
     WINDOW* getWindow();

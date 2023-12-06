@@ -25,17 +25,17 @@ void VectorSpace::assignPelletNotEaten(Window& win)
     {
         for(std::size_t x{0}; x < win.getWindowArea()[y].size(); ++x)
         {
-            if(win.getWindowArea()[y][x] != CellName::obstacleValue && win.getWindowArea()[y][x] != CellName::perimeterValue && win.getWindowArea()[y][x] != CellName::ghostBox && 
-                win.getWindowArea()[y][x] != CellName::powerPellet && win.getWindowArea()[y][x] != CellName::powerPelletEaten)
-                    win.getWindowArea()[y][x] = CellName::notEaten;
+            if(win[{y, x}] != CellName::obstacleValue && win[{y, x}] != CellName::perimeterValue && win[{y, x}] != CellName::ghostBox && 
+                win[{y, x}] != CellName::powerPellet && win[{y, x}] != CellName::powerPelletEaten)
+                    win[{y, x}] = CellName::notEaten;
         }
     }
 
     // re assigns power pellets to not eaten
-    win.getWindowArea()[23][1] = CellName::powerPellet;
-    win.getWindowArea()[23][26] = CellName::powerPellet;
-    win.getWindowArea()[3][1] = CellName::powerPellet;
-    win.getWindowArea()[3][26] = CellName::powerPellet;
+    win[{23, 1}] = CellName::powerPellet;
+    win[{23, 26}] = CellName::powerPellet;
+    win[{3, 1}] = CellName::powerPellet;
+    win[{3, 26}] = CellName::powerPellet;
 }
 
 void VectorSpace::printPellet(Window& win)
@@ -45,14 +45,14 @@ void VectorSpace::printPellet(Window& win)
         for(std::size_t x{0}; x < win.getWindowArea()[y].size(); ++x) 
         {
             // clears maze
-            if(win.getWindowArea()[y][x] != CellName::perimeterValue && win.getWindowArea()[y][x] != CellName::obstacleValue)
+            if(win[{y, x}] != CellName::perimeterValue && win[{y, x}] != CellName::obstacleValue)
             {
                 mvwprintw(win.getWindow(), y, x, " ");
             }
 
             // reprints pellets based on what has been eaten by pacman
-            if(win.getWindowArea()[y][x] != CellName::ghostBox && win.getWindowArea()[y][x] != CellName::perimeterValue 
-                && win.getWindowArea()[y][x] != CellName::obstacleValue && win.getWindowArea()[y][x] != CellName::pelletEaten && win.getWindowArea()[y][x] != CellName::powerPelletEaten)
+            if(win[{y, x}] != CellName::ghostBox && win[{y, x}] != CellName::perimeterValue 
+                && win[{y, x}] != CellName::obstacleValue && win[{y, x}] != CellName::pelletEaten && win[{y, x}] != CellName::powerPelletEaten)
             {
                 wattron(win.getWindow(), COLOR_PAIR(Color::white_black));
                 mvwprintw(win.getWindow(), y, x, "•");
@@ -68,16 +68,16 @@ void VectorSpace::printPowerPellet(Window& win)
     wattron(win.getWindow(), COLOR_PAIR(Color::yellow_black));
     wattron(win.getWindow(), A_BLINK);
 
-    if(win.getWindowArea()[23][1] == CellName::powerPellet)
+    if(win[{23, 1}] == CellName::powerPellet)
         mvwprintw(win.getWindow(), 23, 1, "⬤");
     
-    if(win.getWindowArea()[23][26] == CellName::powerPellet)
+    if(win[{23, 26}] == CellName::powerPellet)
         mvwprintw(win.getWindow(), 23, 26, "⬤");
 
-    if(win.getWindowArea()[3][1] == CellName::powerPellet)
+    if(win[{3, 1}] == CellName::powerPellet)
         mvwprintw(win.getWindow(), 3, 1, "⬤");
 
-    if(win.getWindowArea()[3][26] == CellName::powerPellet)
+    if(win[{3, 26}] == CellName::powerPellet)
         mvwprintw(win.getWindow(), 3, 26, "⬤");   
 
     wattroff(win.getWindow(), COLOR_PAIR(Color::yellow_black));
@@ -92,7 +92,7 @@ void VectorSpace::init2DVectorSpace(Window& win, std::vector<Obstacle>& obstacle
     // ADD PERIMETER TO windowArea vector space
     for(std::size_t perimeterIterator{0}; perimeterIterator < win.getWindowPerimeter().size(); ++perimeterIterator)
     {
-        win.getWindowArea()[win.getWindowPerimeter()[perimeterIterator].y][win.getWindowPerimeter()[perimeterIterator].x] = CellName::perimeterValue;
+        win[{win.getWindowPerimeter()[perimeterIterator].y, win.getWindowPerimeter()[perimeterIterator].x}] = CellName::perimeterValue;
     }
 
     // ADD OBSTACLES TO windowArea vector space
@@ -100,15 +100,15 @@ void VectorSpace::init2DVectorSpace(Window& win, std::vector<Obstacle>& obstacle
     {
         for(std::size_t obstacleIterator{0}; obstacleIterator < obstacleList[listIterator].getObsVec().size(); ++obstacleIterator)
         {
-            win.getWindowArea()[obstacleList[listIterator].getObsVec()[obstacleIterator].y][obstacleList[listIterator].getObsVec()[obstacleIterator].x] = CellName::obstacleValue;
+            win[{obstacleList[listIterator].getObsVec()[obstacleIterator].y, obstacleList[listIterator].getObsVec()[obstacleIterator].x}] = CellName::obstacleValue;
         }
     }
 
-    win.getWindowArea()[14][1] = CellName::portalLeft;
-    win.getWindowArea()[14][26] = CellName::portalRight;
+    win[{14, 1}] = CellName::portalLeft;
+    win[{14, 26}] = CellName::portalRight;
 
-    win.getWindowArea()[23][1] = CellName::powerPellet;
-    win.getWindowArea()[23][26] = CellName::powerPellet;
-    win.getWindowArea()[3][1] = CellName::powerPellet;
-    win.getWindowArea()[3][26] = CellName::powerPellet;
+    win[{23, 1}] = CellName::powerPellet;
+    win[{23, 26}] = CellName::powerPellet;
+    win[{3, 1}] = CellName::powerPellet;
+    win[{3, 26}] = CellName::powerPellet;
 }
