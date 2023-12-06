@@ -14,6 +14,7 @@
 #include "z_pinky.h"
 #include "z_inky.h"
 #include "typealiases.h"
+#include "color_utils.h"
 
 //std
 #include <chrono>
@@ -141,53 +142,39 @@ void controls(Window& gameW)
 {
     gameW.drawBoxAndRefresh();
 
-    wattron(gameW.getWindow(), COLOR_PAIR(Color::yellow_black));
-
+    ColorUtils::colorOn(Color::yellow_black, gameW);
     mvwprintw(gameW.getWindow(), 6, 5, "W A S D : MOVEMENT");
     mvwprintw(gameW.getWindow(), 8, 5, "ENTER   : SELECT");
     mvwprintw(gameW.getWindow(), 12, 5, "1000 POINTS = 1UP");
     mvwprintw(gameW.getWindow(), 14, 5, "GHOST = 20 POINTS");
 
-    wattroff(gameW.getWindow(), COLOR_PAIR(Color::yellow_black));
-    wattron(gameW.getWindow(), COLOR_PAIR(Color::default_color));
-
-    wattron(gameW.getWindow(), COLOR_PAIR(Color::blue_black));
-
-    mvwprintw(gameW.getWindow(), 18, 1, "==========================");
-    mvwprintw(gameW.getWindow(), 23, 1, "==========================");
-
-    wattroff(gameW.getWindow(), COLOR_PAIR(Color::blue_black));
-    wattron(gameW.getWindow(), COLOR_PAIR(Color::default_color));
-
-    wattron(gameW.getWindow(), COLOR_PAIR(Color::yellow_black));
-
     mvwprintw(gameW.getWindow(), 19, 14, " .--.       ");
     mvwprintw(gameW.getWindow(), 20, 14, "/ _.-' .-.  ");
     mvwprintw(gameW.getWindow(), 21, 14, "\\  '-. '-' ");
     mvwprintw(gameW.getWindow(), 22, 14, " '--'       ");
+    ColorUtils::colorOff(Color::yellow_black, gameW);
 
-    wattroff(gameW.getWindow(), COLOR_PAIR(Color::yellow_black));
-    wattron(gameW.getWindow(), COLOR_PAIR(Color::default_color));
 
-    wattron(gameW.getWindow(), COLOR_PAIR(Color::cyan_black));
+    ColorUtils::colorOn(Color::blue_black, gameW);
+    mvwprintw(gameW.getWindow(), 18, 1, "==========================");
+    mvwprintw(gameW.getWindow(), 23, 1, "==========================");
+    ColorUtils::colorOff(Color::blue_black, gameW);
 
+
+    ColorUtils::colorOn(Color::cyan_black, gameW);
     mvwprintw(gameW.getWindow(), 19, 2, " .-.  ");
     mvwprintw(gameW.getWindow(), 20, 2, "| OO| ");
     mvwprintw(gameW.getWindow(), 21, 2, "|   | ");
     mvwprintw(gameW.getWindow(), 22, 2, "'^^^' ");
+    ColorUtils::colorOff(Color::cyan_black, gameW);
 
-    wattroff(gameW.getWindow(), COLOR_PAIR(Color::cyan_black));
-    wattron(gameW.getWindow(), COLOR_PAIR(Color::default_color));
 
-    wattron(gameW.getWindow(), COLOR_PAIR(Color::red_black));
-
+    ColorUtils::colorOn(Color::red_black, gameW);
     mvwprintw(gameW.getWindow(), 19, 7, " .-. ");
     mvwprintw(gameW.getWindow(), 20, 7, "| OO|");
     mvwprintw(gameW.getWindow(), 21, 7, "|   |");
     mvwprintw(gameW.getWindow(), 22, 7, "'^^^'");
-
-    wattroff(gameW.getWindow(), COLOR_PAIR(Color::red_black));
-    wattron(gameW.getWindow(), COLOR_PAIR(Color::default_color));
+    ColorUtils::colorOff(Color::red_black, gameW);
 
     wrefresh(gameW.getWindow());
 
