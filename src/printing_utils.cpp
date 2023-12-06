@@ -53,3 +53,19 @@ void PrintingUtils::printAndRefreshGhost(Window& win, bool powerPelletActive, Co
 
     wrefresh(win.getWindow());
 }
+
+void PrintingUtils::printOverLap(Window& win, Color::ColorPair overLapColor, bool powerPelletActive, Vec position)
+{
+    // checks for overlap
+    if(overLapColor != Color::null)
+    {
+        // if power pellet active need to replace overlapped ghost with blue instead of ghost color
+        if(powerPelletActive)
+            ColorUtils::colorOn(Color::blue_black, win);
+        else
+            ColorUtils::colorOn(overLapColor, win);
+
+        mvwprintw(win.getWindow(), position.y, position.x, "ᗣ");
+        ColorUtils::colorOff(powerPelletActive ? Color::blue_black : overLapColor, win);
+    }
+}

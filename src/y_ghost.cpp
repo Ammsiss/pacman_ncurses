@@ -378,27 +378,7 @@ Color::ColorPair Ghost::checkGhostOverLap(Pinky& pinky, Inky& inky, Blinky& blin
 
 void Ghost::printOverLap(Window& win, Color::ColorPair overLapColor, bool powerPelletTimer)
 {
-    // prints ghost back if overlapped
-    if(overLapColor != Color::null)
-    {
-        ColorUtils::colorOn(overLapColor, win);
-        mvwprintw(win.getWindow(), m_ghostVec.y, m_ghostVec.x, "ᗣ");
-        ColorUtils::colorOff(overLapColor, win);
-    }
-
-    // prints ghost back if overlapped
-    if(powerPelletTimer && overLapColor != Color::null)
-    {
-        ColorUtils::colorOn(Color::blue_black, win);
-        mvwprintw(win.getWindow(), m_ghostVec.y, m_ghostVec.x, "ᗣ");
-        ColorUtils::colorOff(Color::blue_black, win);
-    }
-    else if(overLapColor != Color::null)
-    {
-        ColorUtils::colorOn(overLapColor, win);
-        mvwprintw(win.getWindow(), m_ghostVec.y, m_ghostVec.x, "ᗣ");
-        ColorUtils::colorOff(overLapColor, win);
-    }
+    PrintingUtils::printOverLap(win, overLapColor, powerPelletTimer, m_ghostVec);
 }
 
 void Ghost::printAndRefreshGhost(Window& win, bool powerPelletActive)
