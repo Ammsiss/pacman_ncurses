@@ -261,20 +261,7 @@ void Inky::printOverLap(Window& win, Color::ColorPair overLapColor, bool powerPe
 
 void Inky::printAndRefreshGhost(Window& win, bool powerPelletActive)
 {
-    if(!powerPelletActive)
-    {
-        ColorUtils::colorOn(m_inkyColor, win);
-        mvwprintw(win.getWindow(), m_inkyVec.y, m_inkyVec.x, "ᗣ");
-        ColorUtils::colorOff(m_inkyColor, win);
-    }
-    else
-    {
-        ColorUtils::colorOn(Color::blue_black, win);
-        mvwprintw(win.getWindow(), m_inkyVec.y, m_inkyVec.x, "ᗣ");
-        ColorUtils::colorOff(Color::blue_black, win);
-    }
-
-    wrefresh(win.getWindow());
+    PrintingUtils::printAndRefreshGhost(win, powerPelletActive, m_inkyColor, m_inkyVec);
 }
 
 // Every 250 ms in the last 1.5 seconds of the power pellet change ghost color to indicate time is almost out

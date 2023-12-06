@@ -35,3 +35,21 @@ void PrintingUtils::ghostFlashing(Window& win, TypeAlias::timepoint& lastTime, s
         }
     }
 }
+
+void PrintingUtils::printAndRefreshGhost(Window& win, bool powerPelletActive, Color::ColorPair color, Vec position)
+{
+    if(!powerPelletActive)
+    {
+        ColorUtils::colorOn(color, win);
+        mvwprintw(win.getWindow(), position.y, position.x, "ᗣ");
+        ColorUtils::colorOff(color, win);
+    }
+    else
+    {
+        ColorUtils::colorOn(Color::blue_black, win);
+        mvwprintw(win.getWindow(), position.y, position.x, "ᗣ");
+        ColorUtils::colorOff(Color::blue_black, win);
+    }
+
+    wrefresh(win.getWindow());
+}

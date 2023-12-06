@@ -14,6 +14,7 @@ class PrintingUtils
 {
 private:
     static void ghostFlashing(Window& win, TypeAlias::timepoint& lastTime, std::chrono::milliseconds& interval, TypeAlias::timepoint& currentTime, Vec position);
+    static void printAndRefreshGhost(Window& win, bool powerPelletActive, Color::ColorPair color, Vec position);
 
     friend class Blinky;
     friend class Inky;

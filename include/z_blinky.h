@@ -63,6 +63,6 @@ private:
     void printPelletBackIfNotEaten(Window& win);
     Color::ColorPair checkGhostOverLap(Pinky& pinky, Inky& inky, Ghost& clyde);
     void printOverLap(Window& win, Color::ColorPair overLapColor, bool powerPelletActie);
-    void printAndRefreshGhost(Window& win, bool powerPelletActive, TypeAlias::timepoint& lastTime, std::chrono::milliseconds& interval);
+    void printAndRefreshGhost(Window& win, bool powerPelletActive);
     void ghostFlashing(Window& win, TypeAlias::timepoint& lastTime, std::chrono::milliseconds& interval, TypeAlias::timepoint& currentTime);
 };

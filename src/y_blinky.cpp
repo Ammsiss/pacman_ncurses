@@ -44,7 +44,7 @@ bool Blinky::timeToMove(Window& win, Pacman& pacman, Pinky& pinky, Inky& inky, G
             if(!setDirection(win, pacman, false))
                 return false;
 
-            printAndRefreshGhost(win, false, lastTime, interval);
+            printAndRefreshGhost(win, false);
 
             m_lastTime = currentTime;
         }
@@ -83,7 +83,7 @@ bool Blinky::timeToMove(Window& win, Pacman& pacman, Pinky& pinky, Inky& inky, G
                 m_blinkyVec.x = 14;
             }
 
-            printAndRefreshGhost(win, true, lastTime, interval);
+            printAndRefreshGhost(win, true);
 
             m_lastTime = currentTime;
         }
@@ -233,22 +233,9 @@ void Blinky::printOverLap(Window& win, Color::ColorPair overLapColor, bool power
     }
 }
 
-void Blinky::printAndRefreshGhost(Window& win, bool powerPelletActive, TypeAlias::timepoint& lastTime, std::chrono::milliseconds& interval)
+void Blinky::printAndRefreshGhost(Window& win, bool powerPelletActive)
 {
-    if(!powerPelletActive)
-    {
-        ColorUtils::colorOn(m_blinkyColor, win);
-        mvwprintw(win.getWindow(), m_blinkyVec.y, m_blinkyVec.x, "ᗣ");
-        ColorUtils::colorOff(m_blinkyColor, win);
-    }
-    else
-    {
-        ColorUtils::colorOn(Color::blue_black, win);
-        mvwprintw(win.getWindow(), m_blinkyVec.y, m_blinkyVec.x, "ᗣ");
-        ColorUtils::colorOff(Color::blue_black, win);
-    }
-
-    wrefresh(win.getWindow());
+    PrintingUtils::printAndRefreshGhost(win, powerPelletActive, m_blinkyColor, m_blinkyVec);
 }
 
 // Every 250 ms in the last 1.5 seconds of the power pellet change ghost color to indicate time is almost out
