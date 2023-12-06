@@ -10,6 +10,7 @@
 #include "z_pacman.h"
 #include "z_pinky.h"
 #include "z_inky.h"
+#include "typealiases.h"
 
 //std
 #include <vector>
@@ -24,7 +25,7 @@ using namespace std::chrono_literals;
 
 // public method
 
-bool Blinky::timeToMove(Window& win, Pacman& pacman, Pinky& pinky, Inky& inky, Ghost& clyde, bool powerPelletTimer, LevelState ateWhichGhost, int& score, std::chrono::time_point<std::chrono::high_resolution_clock>& lastTime, std::chrono::milliseconds& interval)
+bool Blinky::timeToMove(Window& win, Pacman& pacman, Pinky& pinky, Inky& inky, Ghost& clyde, bool powerPelletTimer, LevelState ateWhichGhost, int& score, TypeAlias::timepoint& lastTime, std::chrono::milliseconds& interval)
 {
     // define chrono duration and 2 system time instances to create pacman's timed movement
     auto currentTime{std::chrono::high_resolution_clock::now()};
@@ -280,7 +281,7 @@ void Blinky::printOverLap(Window& win, Color::ColorPair overLapColor, bool power
     }
 }
 
-void Blinky::printAndRefreshGhost(Window& win, bool powerPelletActive, std::chrono::time_point<std::chrono::high_resolution_clock>& lastTime, std::chrono::milliseconds& interval)
+void Blinky::printAndRefreshGhost(Window& win, bool powerPelletActive, TypeAlias::timepoint& lastTime, std::chrono::milliseconds& interval)
 {
     if(!powerPelletActive)
     {
@@ -301,7 +302,7 @@ void Blinky::printAndRefreshGhost(Window& win, bool powerPelletActive, std::chro
 }
 
 // Every 250 ms in the last 1.5 seconds of the power pellet change ghost color to indicate time is almost out
-void Blinky::ghostFlashing(Window& win, std::chrono::time_point<std::chrono::high_resolution_clock>& lastTime, std::chrono::milliseconds& interval, std::chrono::time_point<std::chrono::high_resolution_clock>& currentTime)
+void Blinky::ghostFlashing(Window& win, TypeAlias::timepoint& lastTime, std::chrono::milliseconds& interval, TypeAlias::timepoint& currentTime)
 {
     auto elapsedTime{ currentTime - lastTime };
     auto remainingTime{ interval - elapsedTime };

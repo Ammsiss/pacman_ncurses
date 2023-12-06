@@ -11,6 +11,7 @@
 #include "z_pinky.h"
 #include "z_inky.h"
 #include "z_ghost.h"
+#include "typealiases.h"
 
 //std
 #include <vector>
@@ -23,7 +24,7 @@ using namespace std::chrono_literals;
 
 // public method
 
-bool Pinky::timeToMove(Window& win, Pacman& pacman, Inky& inky, Blinky& blinky, Ghost& clyde, bool powerPelletTimer, LevelState ateWhichGhost, int& score, std::chrono::time_point<std::chrono::high_resolution_clock>& lastTime, std::chrono::milliseconds& interval)
+bool Pinky::timeToMove(Window& win, Pacman& pacman, Inky& inky, Blinky& blinky, Ghost& clyde, bool powerPelletTimer, LevelState ateWhichGhost, int& score, TypeAlias::timepoint& lastTime, std::chrono::milliseconds& interval)
 {
     // define chrono duration and 2 system time instances to create pacman's timed movement
     auto currentTime{std::chrono::high_resolution_clock::now()};
@@ -300,7 +301,7 @@ void Pinky::printAndRefreshGhost(Window& win, bool powerPelletActive)
 }
 
 // Every 250 ms in the last 1.5 seconds of the power pellet change ghost color to indicate time is almost out
-void Pinky::ghostFlashing(Window& win, std::chrono::time_point<std::chrono::high_resolution_clock>& lastTime, std::chrono::milliseconds& interval, std::chrono::time_point<std::chrono::high_resolution_clock>& currentTime)
+void Pinky::ghostFlashing(Window& win, TypeAlias::timepoint& lastTime, std::chrono::milliseconds& interval, TypeAlias::timepoint& currentTime)
 {
     auto elapsedTime{ currentTime - lastTime };
     auto remainingTime{ interval - elapsedTime };

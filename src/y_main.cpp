@@ -13,6 +13,7 @@
 #include "z_blinky.h"
 #include "z_pinky.h"
 #include "z_inky.h"
+#include "typealiases.h"
 
 //std
 #include <chrono>
@@ -224,7 +225,7 @@ MenuSelection menuLoop()
     }
 }
 
-bool powerPelletTimer(std::chrono::time_point<std::chrono::high_resolution_clock> lastTime, bool& powerPelletActive, std::chrono::milliseconds& interval)
+bool powerPelletTimer(TypeAlias::timepoint lastTime, bool& powerPelletActive, std::chrono::milliseconds& interval)
 {
     auto currentTime{ std::chrono::high_resolution_clock::now() };
 

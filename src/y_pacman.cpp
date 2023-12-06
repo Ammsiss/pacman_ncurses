@@ -35,7 +35,7 @@ Pacman::Pacman(Window& win)
     }
 
 // public methods
-LevelState Pacman::timeToMove(Window& win, Ghost& clyde, Inky& inky, Blinky& blinky, Pinky& pinky, int& score, bool powerPelletActive, std::chrono::time_point<std::chrono::high_resolution_clock>& lastTime)
+LevelState Pacman::timeToMove(Window& win, Ghost& clyde, Inky& inky, Blinky& blinky, Pinky& pinky, int& score, bool powerPelletActive, TypeAlias::timepoint& lastTime)
 {
     // define chrono duration and 2 system time instances to create pacman's timed movement
     auto currentTime{std::chrono::high_resolution_clock::now()};
