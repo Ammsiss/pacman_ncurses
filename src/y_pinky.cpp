@@ -12,6 +12,7 @@
 #include "z_inky.h"
 #include "z_ghost.h"
 #include "typealiases.h"
+#include "color_utils.h"
 
 //std
 #include <vector>
@@ -67,10 +68,9 @@ bool Pinky::timeToMove(Window& win, Pacman& pacman, Inky& inky, Blinky& blinky, 
             
            if(!setDirection(win, pacman, blinky, true))
             {
-                wattron(win.getWindow(), COLOR_PAIR(Color::yellow_black));
+                ColorUtils::colorOn(Color::yellow_black, win);
                 mvwprintw(win.getWindow(), m_pinkyVec.y, m_pinkyVec.x, "+");
-                wattroff(win.getWindow(), COLOR_PAIR(Color::yellow_black));
-                wattron(win.getWindow(), COLOR_PAIR(Color::default_color));
+                ColorUtils::colorOff(Color::yellow_black, win);
                 wrefresh(win.getWindow());
                 lastTime += 1100ms;
                 std::this_thread::sleep_for(1s);
@@ -93,10 +93,9 @@ bool Pinky::timeToMove(Window& win, Pacman& pacman, Inky& inky, Blinky& blinky, 
 
 void Pinky::printGhost(Window& win)
 {
-    wattron(win.getWindow(), COLOR_PAIR(Color::pink_black));
+    ColorUtils::colorOn(Color::pink_black, win);
     mvwprintw(win.getWindow(), 15, 15, "ᗣ");
-    wattron(win.getWindow(), COLOR_PAIR(Color::pink_black));
-    wattron(win.getWindow(), COLOR_PAIR(Color::default_color));
+    ColorUtils::colorOff(Color::pink_black, win);
 }
 
 Vec Pinky::getPinkyVec() { return m_pinkyVec; }
@@ -230,19 +229,15 @@ void Pinky::printPelletBackIfNotEaten(Window& win)
     {
         if(win[{m_pinkyVec.y, m_pinkyVec.x}] == CellName::powerPellet)
         {
-            wattron(win.getWindow(), COLOR_PAIR(Color::yellow_black));
-            wattron(win.getWindow(), A_BLINK);
+            ColorUtils::colorOn(Color::yellow_black, win, true);
             mvwprintw(win.getWindow(), m_pinkyVec.y, m_pinkyVec.x, "⬤");
-            wattroff(win.getWindow(), COLOR_PAIR(Color::yellow_black));
-            wattroff(win.getWindow(), A_BLINK);
-            wattron(win.getWindow(), COLOR_PAIR(Color::default_color));  
+            ColorUtils::colorOff(Color::yellow_black, win);
         }
         else
         {
-        wattron(win.getWindow(), COLOR_PAIR(Color::white_black));
-        mvwprintw(win.getWindow(), m_pinkyVec.y, m_pinkyVec.x, "•");
-        wattroff(win.getWindow(), COLOR_PAIR(Color::white_black));
-        wattron(win.getWindow(), COLOR_PAIR(Color::default_color));    
+            ColorUtils::colorOn(Color::white_black, win);
+            mvwprintw(win.getWindow(), m_pinkyVec.y, m_pinkyVec.x, "•");
+            ColorUtils::colorOff(Color::white_black, win);    
         }
     }
 }
@@ -266,17 +261,15 @@ void Pinky::printOverLap(Window& win, Color::ColorPair overLapColor, bool powerP
     // prints ghost back if overlapped
     if(powerPelletActive && overLapColor != Color::null)
     {
-        wattron(win.getWindow(), COLOR_PAIR(Color::blue_black));
+        ColorUtils::colorOn(Color::blue_black, win);
         mvwprintw(win.getWindow(), m_pinkyVec.y, m_pinkyVec.x, "ᗣ");
-        wattroff(win.getWindow(), COLOR_PAIR(Color::blue_black));
-        wattron(win.getWindow(), COLOR_PAIR(Color::default_color)); 
+        ColorUtils::colorOff(Color::blue_black, win);
     }
     else if(overLapColor != Color::null)
     {
-        wattron(win.getWindow(), COLOR_PAIR(overLapColor));
+        ColorUtils::colorOn(overLapColor, win);
         mvwprintw(win.getWindow(), m_pinkyVec.y, m_pinkyVec.x, "ᗣ");
-        wattroff(win.getWindow(), COLOR_PAIR(overLapColor));
-        wattron(win.getWindow(), COLOR_PAIR(Color::default_color));
+        ColorUtils::colorOff(overLapColor, win);
     }
 }
 
@@ -284,17 +277,15 @@ void Pinky::printAndRefreshGhost(Window& win, bool powerPelletActive)
 {
     if(!powerPelletActive)
     {
-        wattron(win.getWindow(), COLOR_PAIR(m_pinkyColor));
+        ColorUtils::colorOn(m_pinkyColor, win);
         mvwprintw(win.getWindow(), m_pinkyVec.y, m_pinkyVec.x, "ᗣ");
-        wattroff(win.getWindow(), COLOR_PAIR(m_pinkyColor));
-        wattroff(win.getWindow(), COLOR_PAIR(Color::default_color));
+        ColorUtils::colorOff(m_pinkyColor, win);
     }
     else
     {
-        wattron(win.getWindow(), COLOR_PAIR(Color::blue_black));
+        ColorUtils::colorOn(Color::blue_black, win);
         mvwprintw(win.getWindow(), m_pinkyVec.y, m_pinkyVec.x, "ᗣ");
-        wattroff(win.getWindow(), COLOR_PAIR(Color::blue_black));
-        wattroff(win.getWindow(), COLOR_PAIR(Color::default_color));
+        ColorUtils::colorOff(Color::blue_black, win);
     }
 
     wrefresh(win.getWindow());
@@ -318,10 +309,9 @@ void Pinky::ghostFlashing(Window& win, TypeAlias::timepoint& lastTime, std::chro
             else
                 color = Color::blue_black;
 
-            wattron(win.getWindow(), COLOR_PAIR(color));
+            ColorUtils::colorOn(color, win);
             mvwprintw(win.getWindow(), m_pinkyVec.y, m_pinkyVec.x, "ᗣ");
-            wattroff(win.getWindow(), COLOR_PAIR(color));
-            wattroff(win.getWindow(), COLOR_PAIR(Color::default_color));
+            ColorUtils::colorOff(color, win);
             wrefresh(win.getWindow());
 
             break;

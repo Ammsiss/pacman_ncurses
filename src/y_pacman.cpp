@@ -11,6 +11,7 @@
 #include "z_inky.h"
 #include "z_pinky.h"
 #include "z_blinky.h"
+#include "color_utils.h"
 
 //std
 #include <vector>
@@ -121,10 +122,9 @@ void Pacman::printDeathAnimation(Window& win)
         {
             ++subscript;
 
-            wattron(win.getWindow(), COLOR_PAIR(Color::yellow_black));
+            ColorUtils::colorOn(Color::yellow_black, win);
             mvwprintw(win.getWindow(), m_pacVec.y, m_pacVec.x, "%s", animationFrames[subscript].c_str());
-            wattroff(win.getWindow(), COLOR_PAIR(Color::yellow_black));
-            wattron(win.getWindow(), COLOR_PAIR(Color::default_color));
+            ColorUtils::colorOff(Color::yellow_black, win);
 
             wrefresh(win.getWindow());
 
@@ -138,10 +138,9 @@ void Pacman::printDeathAnimation(Window& win)
 
 void Pacman::printInitialPacman(Window& win)
 {
-    wattron(win.getWindow(), COLOR_PAIR(Color::yellow_black));
+    ColorUtils::colorOn(Color::yellow_black, win);
     mvwprintw(win.getWindow(), m_pacVec.y, m_pacVec.x, "<");
-    wattroff(win.getWindow(), COLOR_PAIR(Color::yellow_black));
-    wattron(win.getWindow(), COLOR_PAIR(Color::default_color));
+    ColorUtils::colorOff(Color::yellow_black, win);
 
     wrefresh(win.getWindow());
 }
@@ -321,10 +320,9 @@ void Pacman::erase(Window& win)
 
 void Pacman::printPlusEatGhost(Window& win)
 {
-    wattron(win.getWindow(), COLOR_PAIR(Color::yellow_black));
+    ColorUtils::colorOn(Color::yellow_black, win);
     mvwprintw(win.getWindow(), m_pacVec.y, m_pacVec.x, "+");
-    wattroff(win.getWindow(), COLOR_PAIR(Color::yellow_black));
-    wattron(win.getWindow(), COLOR_PAIR(Color::default_color));
+    ColorUtils::colorOff(Color::yellow_black, win);
 }
 
 void Pacman::printPacmanBasedOnDirection(Window& win)
@@ -349,10 +347,9 @@ void Pacman::printPacmanBasedOnDirection(Window& win)
             break;
     }
 
-    wattron(win.getWindow(), COLOR_PAIR(Color::yellow_black));
+    ColorUtils::colorOn(Color::yellow_black, win);
     mvwprintw(win.getWindow(), m_pacVec.y, m_pacVec.x, "%s", setString.c_str());
-    wattroff(win.getWindow(), COLOR_PAIR(Color::yellow_black));
-    wattron(win.getWindow(), COLOR_PAIR(Color::default_color));
+    ColorUtils::colorOff(Color::yellow_black, win);
 }
 
 void Pacman::updateEatenPelletsAndPrintScore(Window& win, int& score)
@@ -371,39 +368,33 @@ void Pacman::printScore(Window& win, int score)
     mvwprintw(win.getWindow(), 11, 23, "    ");
     mvwprintw(win.getWindow(), 10, 23, "    ");
 
-    wattron(win.getWindow(), COLOR_PAIR(Color::yellow_black));
+    ColorUtils::colorOn(Color::yellow_black, win);
     mvwprintw(win.getWindow(), 10, 23, "PNTS");
-    wattroff(win.getWindow(), COLOR_PAIR(Color::yellow_black));
-    wattron(win.getWindow(), COLOR_PAIR(Color::default_color));
+    ColorUtils::colorOff(Color::yellow_black, win);
 
     mvwprintw(win.getWindow(), 12, 23, "    ");
 
     // cyan
-    wattron(win.getWindow(), COLOR_PAIR(Color::cyan_black));
+    ColorUtils::colorOn(Color::cyan_black, win);
     mvwprintw(win.getWindow(), 11, 23, "ᗣ");
-    wattroff(win.getWindow(), COLOR_PAIR(Color::cyan_black));
-    wattron(win.getWindow(), COLOR_PAIR(Color::default_color));
+    ColorUtils::colorOff(Color::cyan_black, win);
 
     // orange
-    wattron(win.getWindow(), COLOR_PAIR(Color::orange_black));
+    ColorUtils::colorOn(Color::orange_black, win);
     mvwprintw(win.getWindow(), 11, 24, "ᗣ");
-    wattroff(win.getWindow(), COLOR_PAIR(Color::orange_black));
-    wattron(win.getWindow(), COLOR_PAIR(Color::default_color));
+    ColorUtils::colorOff(Color::orange_black, win);
 
     // red
-    wattron(win.getWindow(), COLOR_PAIR(Color::red_black));
+    ColorUtils::colorOn(Color::red_black, win);
     mvwprintw(win.getWindow(), 11, 25, "ᗣ");
-    wattroff(win.getWindow(), COLOR_PAIR(Color::red_black));
-    wattron(win.getWindow(), COLOR_PAIR(Color::default_color));
+    ColorUtils::colorOff(Color::red_black, win);
 
     // pink
-    wattron(win.getWindow(), COLOR_PAIR(Color::pink_black));
+    ColorUtils::colorOn(Color::pink_black, win);
     mvwprintw(win.getWindow(), 11, 26, "ᗣ");
-    wattroff(win.getWindow(), COLOR_PAIR(Color::pink_black));
-    wattron(win.getWindow(), COLOR_PAIR(Color::default_color));
+    ColorUtils::colorOff(Color::pink_black, win);
 
-    wattron(win.getWindow(), COLOR_PAIR(Color::yellow_black));
+    ColorUtils::colorOn(Color::yellow_black, win);
     mvwprintw(win.getWindow(), 12, 23, "%d", score);
-    wattroff(win.getWindow(), COLOR_PAIR(Color::yellow_black));
-    wattron(win.getWindow(), COLOR_PAIR(Color::default_color));
+    ColorUtils::colorOff(Color::yellow_black, win);
 }

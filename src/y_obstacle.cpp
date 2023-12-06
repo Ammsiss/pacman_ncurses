@@ -2,6 +2,7 @@
 #include "z_aggregate.h"
 #include "z_obstacle.h"
 #include "z_window.h"
+#include "color_utils.h"
 
 //std
 #include <vector>
@@ -49,10 +50,9 @@ void Obstacle::printAndRefreshObstacle(Window& win)
 {
     for(std::size_t i{0}; i < m_obsVec.size(); ++i)
     {
-        wattron(win.getWindow(), COLOR_PAIR(Color::blue_black));
+        ColorUtils::colorOn(Color::blue_black, win);
         mvwaddch(win.getWindow(), m_obsVec[i].y, m_obsVec[i].x, obsCh);
-        wattroff(win.getWindow(), COLOR_PAIR(Color::blue_black));
-        wattron(win.getWindow(), COLOR_PAIR(Color::default_color));
+        ColorUtils::colorOff(Color::blue_black, win);
     }
     wrefresh(win.getWindow());
 }

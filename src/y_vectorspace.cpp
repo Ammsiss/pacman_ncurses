@@ -6,6 +6,7 @@
 #include "z_vectorspace.h"
 #include "z_obstacle.h"
 #include "z_window.h"
+#include "color_utils.h"
 
 //std
 #include <vector>
@@ -54,10 +55,9 @@ void VectorSpace::printPellet(Window& win)
             if(win[{y, x}] != CellName::ghostBox && win[{y, x}] != CellName::perimeterValue 
                 && win[{y, x}] != CellName::obstacleValue && win[{y, x}] != CellName::pelletEaten && win[{y, x}] != CellName::powerPelletEaten)
             {
-                wattron(win.getWindow(), COLOR_PAIR(Color::white_black));
+                ColorUtils::colorOn(Color::white_black, win);
                 mvwprintw(win.getWindow(), y, x, "•");
-                wattroff(win.getWindow(), COLOR_PAIR(Color::white_black));
-                wattron(win.getWindow(), COLOR_PAIR(Color::default_color));
+                ColorUtils::colorOff(Color::white_black, win);
             }
         }
     }
@@ -65,8 +65,7 @@ void VectorSpace::printPellet(Window& win)
 
 void VectorSpace::printPowerPellet(Window& win)
 {
-    wattron(win.getWindow(), COLOR_PAIR(Color::yellow_black));
-    wattron(win.getWindow(), A_BLINK);
+    ColorUtils::colorOn(Color::yellow_black, win, true);
 
     if(win[{23, 1}] == CellName::powerPellet)
         mvwprintw(win.getWindow(), 23, 1, "⬤");
@@ -80,9 +79,7 @@ void VectorSpace::printPowerPellet(Window& win)
     if(win[{3, 26}] == CellName::powerPellet)
         mvwprintw(win.getWindow(), 3, 26, "⬤");   
 
-    wattroff(win.getWindow(), COLOR_PAIR(Color::yellow_black));
-    wattroff(win.getWindow(), A_BLINK);
-    wattron(win.getWindow(), COLOR_PAIR(Color::default_color));
+    ColorUtils::colorOff(Color::yellow_black, win);
 }
 
 /********************************************************************** PRIVATE MEMBERS **********************************************************************/
