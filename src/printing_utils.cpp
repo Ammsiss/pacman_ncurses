@@ -69,3 +69,23 @@ void PrintingUtils::printOverLap(Window& win, Color::ColorPair overLapColor, boo
         ColorUtils::colorOff(powerPelletActive ? Color::blue_black : overLapColor, win);
     }
 }
+
+void PrintingUtils::printPelletBackIfNotEaten(Window& win, Vec position)
+{
+    if(win[{position.y, position.x}] != CellName::pelletEaten && win[{position.y, position.x}] != CellName::ghostBox &&
+        win[{position.y, position.x}] != CellName::perimeterValue && win[{position.y, position.x}] != CellName::powerPelletEaten)
+    {
+        if(win[{position.y, position.x}] == CellName::powerPellet)
+        {
+            ColorUtils::colorOn(Color::yellow_black, win, true);
+            mvwprintw(win.getWindow(), position.y, position.x, "⬤");
+            ColorUtils::colorOff(Color::yellow_black, win);
+        }
+        else
+        {
+            ColorUtils::colorOn(Color::white_black, win);
+            mvwprintw(win.getWindow(), position.y, position.x, "•");
+            ColorUtils::colorOff(Color::white_black, win);
+        }
+    }
+}

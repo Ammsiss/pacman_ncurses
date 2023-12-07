@@ -210,22 +210,7 @@ void Inky::checkForAndPrintOverLaps(Window& win, Pinky& pinky, Blinky& blinky, G
 
 void Inky::printPelletBackIfNotEaten(Window& win)
 {
-    if(win[{m_inkyVec.y, m_inkyVec.x}] != CellName::pelletEaten && win[{m_inkyVec.y, m_inkyVec.x}] != CellName::ghostBox &&
-        win[{m_inkyVec.y, m_inkyVec.x}] != CellName::perimeterValue && win[{m_inkyVec.y, m_inkyVec.x}] != CellName::powerPelletEaten)
-    {
-        if(win[{m_inkyVec.y, m_inkyVec.x}] == CellName::powerPellet)
-        {
-            ColorUtils::colorOn(Color::yellow_black, win, true);
-            mvwprintw(win.getWindow(), m_inkyVec.y, m_inkyVec.x, "⬤");
-            ColorUtils::colorOff(Color::yellow_black, win);
-        }
-        else
-        {
-            ColorUtils::colorOn(Color::white_black, win);
-            mvwprintw(win.getWindow(), m_inkyVec.y, m_inkyVec.x, "•");
-            ColorUtils::colorOff(Color::white_black, win);
-        }
-    }
+    PrintingUtils::printPelletBackIfNotEaten(win, m_inkyVec);
 }
 
 Color::ColorPair Inky::checkGhostOverLap(Pinky& pinky, Blinky& blinky, Ghost& clyde)
