@@ -53,6 +53,11 @@ private:
 
     //private methods
 
+    //refactor
+    bool ppActive(TypeAlias::timepoint& currentTime, TypeAlias::timepoint& lastTime, std::chrono::milliseconds& interval,Window& win, Pinky& pinky, Inky& inky, Ghost& clyde, 
+        bool powerPelletTimer, Pacman& pacman, LevelState& ateWhichGhost, int& score);
+    bool ppNotActive(TypeAlias::timepoint& currentTime, Window& win, Pinky& pinky, Inky& inky, Ghost& clyde, bool powerPelletTimer, Pacman& pacman);
+
     //setting valid directionss
     bool setDirection(Window& win, Pacman& pacman, bool powerPelletActive);
     std::vector<Vec> createGhostPath(Vec start, Window& win, Vec target);

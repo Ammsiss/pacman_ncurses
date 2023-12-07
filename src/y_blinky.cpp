@@ -28,70 +28,17 @@ using namespace std::chrono_literals;
 
 // public method
 
-bool Blinky::timeToMove(Window& win, Pacman& pacman, Pinky& pinky, Inky& inky, Ghost& clyde, bool powerPelletTimer, LevelState ateWhichGhost, int& score, TypeAlias::timepoint& lastTime, std::chrono::milliseconds& interval)
+bool Blinky::timeToMove(Window& win, Pacman& pacman, Pinky& pinky, Inky& inky, Ghost& clyde, bool powerPelletTimer, LevelState ateWhichGhost, int& score, 
+    TypeAlias::timepoint& lastTime, std::chrono::milliseconds& interval)
 {
     // define chrono duration and 2 system time instances to create pacman's timed movement
     auto currentTime{std::chrono::high_resolution_clock::now()};
 
     // if power pellet not active
     if(!powerPelletTimer)
-    {
-        if (currentTime - m_lastTime >= m_blinkyInterval)
-        {
-            eraseLastPosition(win);
-            checkForAndPrintOverLaps(win, pinky, inky, clyde, powerPelletTimer);
-
-            if(!setDirection(win, pacman, false))
-                return false;
-
-            printAndRefreshGhost(win, false);
-
-            m_lastTime = currentTime;
-        }
-
-        return true;
-    }
+        return ppNotActive(currentTime, win, pinky, inky, clyde, powerPelletTimer, pacman);
     else // if power pellet is active
-    {
-        ghostFlashing(win, lastTime, interval, currentTime);
-
-        m_blinkyIntervalStorage = m_blinkyInterval;
-        m_blinkyInterval = 350ms;
-
-        if(ateWhichGhost == LevelState::ateBlinky)
-        {
-            m_blinkyVec.y = 15;
-            m_blinkyVec.x = 14;
-        }
-
-        if(currentTime - m_lastTime >= m_blinkyInterval)
-        {
-            eraseLastPosition(win);
-            checkForAndPrintOverLaps(win, pinky, inky, clyde, powerPelletTimer);
-            
-           if(!setDirection(win, pacman, true))
-            {
-                ColorUtils::colorOn(Color::yellow_black, win);
-                mvwprintw(win.getWindow(), m_blinkyVec.y, m_blinkyVec.x, "+");
-                ColorUtils::colorOff(Color::yellow_black, win);
-                wrefresh(win.getWindow());
-                lastTime += 1100ms;
-                std::this_thread::sleep_for(1s);
-
-                score += 20;
-                m_blinkyVec.y = 15;
-                m_blinkyVec.x = 14;
-            }
-
-            printAndRefreshGhost(win, true);
-
-            m_lastTime = currentTime;
-        }
-
-        m_blinkyInterval = m_blinkyIntervalStorage;
-
-        return true;
-    }
+        return ppActive(currentTime, lastTime, interval, win, pinky, inky, clyde, powerPelletTimer, pacman, ateWhichGhost, score);
 }
 
 void Blinky::printGhost(Window& win)
@@ -110,6 +57,67 @@ void Blinky::setSpeed() { m_blinkyInterval -= 5ms; }
 void Blinky::setGhostVec() { m_blinkyVec = Vec{15, 14}; }
 
 /********************************************************************** PRIVATE MEMBERS **********************************************************************/
+
+bool Blinky::ppNotActive(TypeAlias::timepoint& currentTime, Window& win, Pinky& pinky, Inky& inky, Ghost& clyde, bool powerPelletTimer, Pacman& pacman)
+{
+    if (currentTime - m_lastTime >= m_blinkyInterval)
+    {
+        eraseLastPosition(win);
+        checkForAndPrintOverLaps(win, pinky, inky, clyde, powerPelletTimer);
+
+        if(!setDirection(win, pacman, false))
+            return false;
+
+        printAndRefreshGhost(win, false);
+
+        m_lastTime = currentTime;
+    }
+
+    return true;
+}
+
+bool Blinky::ppActive(TypeAlias::timepoint& currentTime, TypeAlias::timepoint& lastTime, std::chrono::milliseconds& interval,Window& win, Pinky& pinky, Inky& inky, 
+    Ghost& clyde, bool powerPelletTimer, Pacman& pacman, LevelState& ateWhichGhost, int& score)
+{
+    ghostFlashing(win, lastTime, interval, currentTime);
+
+    m_blinkyIntervalStorage = m_blinkyInterval;
+    m_blinkyInterval = 350ms;
+
+    if(ateWhichGhost == LevelState::ateBlinky)
+    {
+        m_blinkyVec.y = 15;
+        m_blinkyVec.x = 14;
+    }
+
+    if(currentTime - m_lastTime >= m_blinkyInterval)
+    {
+        eraseLastPosition(win);
+        checkForAndPrintOverLaps(win, pinky, inky, clyde, powerPelletTimer);
+        
+    if(!setDirection(win, pacman, true))
+        {
+            ColorUtils::colorOn(Color::yellow_black, win);
+            mvwprintw(win.getWindow(), m_blinkyVec.y, m_blinkyVec.x, "+");
+            ColorUtils::colorOff(Color::yellow_black, win);
+            wrefresh(win.getWindow());
+            lastTime += 1100ms;
+            std::this_thread::sleep_for(1s);
+
+            score += 20;
+            m_blinkyVec.y = 15;
+            m_blinkyVec.x = 14;
+        }
+
+        printAndRefreshGhost(win, true);
+
+        m_lastTime = currentTime;
+    }
+
+    m_blinkyInterval = m_blinkyIntervalStorage;
+
+    return true;
+}
 
 /* _   _   _   _   _   _   _     _   _   _   _   _   _   _   _   _  
   / \ / \ / \ / \ / \ / \ / \   / \ / \ / \ / \ / \ / \ / \ / \ / \   Functions related to checking ghost's location and either using it for printing or
