@@ -1,5 +1,5 @@
 # pacman_ncurses
-**Pacman game!**
+**Janky Terminal Pacman game**
 
 - ncurses for the TUI
 - Black terminal Background looks best
